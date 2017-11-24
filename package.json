@@ -1,0 +1,38 @@
+{
+  "name": "stylelint-bundle",
+  "version": "8.2.0",
+  "description": "Create & provide a bundled version of Stylelint",
+  "keywords": [
+    "css",
+    "less",
+    "scss",
+    "sugarss",
+    "lint",
+    "linter",
+    "stylelint",
+    "bundle",
+    "browserify"
+  ],
+  "authors": [
+    "Rob Garrison"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mottie/stylelint-bundle.git"
+  },
+  "main": "stylelint-bundle.min.js",
+  "devDependencies": {
+    "browserify": "^14.5.0",
+    "del": "^3.0.0",
+    "mocha": "^4.0.1",
+    "stylelint": "^8.2.0",
+    "uglify-es": "^3.1.10"
+  },
+  "scripts": {
+    "build": "node build/index.js && npm run bundle && node build/post-build.js && npm run uglify",
+    "bundle": "browserify -r stylelint -o stylelint-bundle.js",
+    "test": "mocha",
+    "uglify": "uglifyjs ./stylelint-bundle.js --comments \"/^!=/\" -o stylelint-bundle.min.js -c -m"
+  }
+}

@@ -92,13 +92,58 @@ function flat(arr, res) {
 
 },{}],4:[function(require,module,exports){
 'use strict';
+
+module.exports = iterate;
+
+var own = {}.hasOwnProperty;
+
+function iterate(values, callback, context) {
+  var index = -1;
+  var result;
+
+  if (!values) {
+    throw new Error('Iterate requires that |this| not be ' + values);
+  }
+
+  if (!own.call(values, 'length')) {
+    throw new Error('Iterate requires that |this| has a `length`');
+  }
+
+  if (typeof callback !== 'function') {
+    throw new Error('`callback` must be a function');
+  }
+
+  /* The length might change, so we do not cache it. */
+  while (++index < values.length) {
+    /* Skip missing values. */
+    if (!(index in values)) {
+      continue;
+    }
+
+    result = callback.call(context, values[index], index, values);
+
+    /* If `callback` returns a `number`, move `index` over to
+     * `number`. */
+    if (typeof result === 'number') {
+      /* Make sure that negative numbers do not break the loop. */
+      if (result < 0) {
+        index = 0;
+      }
+
+      index = result - 1;
+    }
+  }
+}
+
+},{}],5:[function(require,module,exports){
+'use strict';
 var arrayUniq = require('array-uniq');
 
 module.exports = function () {
 	return arrayUniq([].concat.apply([], arguments));
 };
 
-},{"array-uniq":5}],5:[function(require,module,exports){
+},{"array-uniq":6}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -164,7 +209,7 @@ if ('Set' in global) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * array-unique <https://github.com/jonschlinkert/array-unique>
  *
@@ -194,7 +239,7 @@ module.exports = function unique(arr) {
   return arr;
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 module.exports = function (val) {
 	if (val === null || val === undefined) {
@@ -204,7 +249,7 @@ module.exports = function (val) {
 	return Array.isArray(val) ? val : [val];
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -698,7 +743,18 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":614}],9:[function(require,module,exports){
+},{"util/":793}],10:[function(require,module,exports){
+'use strict';
+
+module.exports = bail;
+
+function bail(err) {
+  if (err) {
+    throw err;
+  }
+}
+
+},{}],11:[function(require,module,exports){
 'use strict';
 module.exports = balanced;
 function balanced(a, b, str) {
@@ -759,7 +815,7 @@ function range(a, b, str) {
   return result;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -875,7 +931,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var concatMap = require('concat-map');
 var balanced = require('balanced-match');
 
@@ -1078,7 +1134,7 @@ function expand(str, isTop) {
 }
 
 
-},{"balanced-match":9,"concat-map":18}],12:[function(require,module,exports){
+},{"balanced-match":11,"concat-map":26}],14:[function(require,module,exports){
 /*!
  * braces <https://github.com/jonschlinkert/braces>
  *
@@ -1479,11 +1535,11 @@ function filter(arr, cb) {
   return res;
 }
 
-},{"expand-range":38,"preserve":281,"repeat-element":307}],13:[function(require,module,exports){
+},{"expand-range":70,"preserve":322,"repeat-element":441}],15:[function(require,module,exports){
 
-},{}],14:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],17:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -3199,7 +3255,2656 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":10,"ieee754":68}],16:[function(require,module,exports){
+},{"base64-js":12,"ieee754":106}],18:[function(require,module,exports){
+'use strict';
+
+module.exports = ccount;
+
+function ccount(value, character) {
+  var count = 0;
+  var index;
+
+  value = String(value);
+
+  if (typeof character !== 'string' || character.length !== 1) {
+    throw new Error('Expected character');
+  }
+
+  index = value.indexOf(character);
+
+  while (index !== -1) {
+    count++;
+    index = value.indexOf(character, index + 1);
+  }
+
+  return count;
+}
+
+},{}],19:[function(require,module,exports){
+module.exports={
+  "nbsp": " ",
+  "iexcl": "¡",
+  "cent": "¢",
+  "pound": "£",
+  "curren": "¤",
+  "yen": "¥",
+  "brvbar": "¦",
+  "sect": "§",
+  "uml": "¨",
+  "copy": "©",
+  "ordf": "ª",
+  "laquo": "«",
+  "not": "¬",
+  "shy": "­",
+  "reg": "®",
+  "macr": "¯",
+  "deg": "°",
+  "plusmn": "±",
+  "sup2": "²",
+  "sup3": "³",
+  "acute": "´",
+  "micro": "µ",
+  "para": "¶",
+  "middot": "·",
+  "cedil": "¸",
+  "sup1": "¹",
+  "ordm": "º",
+  "raquo": "»",
+  "frac14": "¼",
+  "frac12": "½",
+  "frac34": "¾",
+  "iquest": "¿",
+  "Agrave": "À",
+  "Aacute": "Á",
+  "Acirc": "Â",
+  "Atilde": "Ã",
+  "Auml": "Ä",
+  "Aring": "Å",
+  "AElig": "Æ",
+  "Ccedil": "Ç",
+  "Egrave": "È",
+  "Eacute": "É",
+  "Ecirc": "Ê",
+  "Euml": "Ë",
+  "Igrave": "Ì",
+  "Iacute": "Í",
+  "Icirc": "Î",
+  "Iuml": "Ï",
+  "ETH": "Ð",
+  "Ntilde": "Ñ",
+  "Ograve": "Ò",
+  "Oacute": "Ó",
+  "Ocirc": "Ô",
+  "Otilde": "Õ",
+  "Ouml": "Ö",
+  "times": "×",
+  "Oslash": "Ø",
+  "Ugrave": "Ù",
+  "Uacute": "Ú",
+  "Ucirc": "Û",
+  "Uuml": "Ü",
+  "Yacute": "Ý",
+  "THORN": "Þ",
+  "szlig": "ß",
+  "agrave": "à",
+  "aacute": "á",
+  "acirc": "â",
+  "atilde": "ã",
+  "auml": "ä",
+  "aring": "å",
+  "aelig": "æ",
+  "ccedil": "ç",
+  "egrave": "è",
+  "eacute": "é",
+  "ecirc": "ê",
+  "euml": "ë",
+  "igrave": "ì",
+  "iacute": "í",
+  "icirc": "î",
+  "iuml": "ï",
+  "eth": "ð",
+  "ntilde": "ñ",
+  "ograve": "ò",
+  "oacute": "ó",
+  "ocirc": "ô",
+  "otilde": "õ",
+  "ouml": "ö",
+  "divide": "÷",
+  "oslash": "ø",
+  "ugrave": "ù",
+  "uacute": "ú",
+  "ucirc": "û",
+  "uuml": "ü",
+  "yacute": "ý",
+  "thorn": "þ",
+  "yuml": "ÿ",
+  "fnof": "ƒ",
+  "Alpha": "Α",
+  "Beta": "Β",
+  "Gamma": "Γ",
+  "Delta": "Δ",
+  "Epsilon": "Ε",
+  "Zeta": "Ζ",
+  "Eta": "Η",
+  "Theta": "Θ",
+  "Iota": "Ι",
+  "Kappa": "Κ",
+  "Lambda": "Λ",
+  "Mu": "Μ",
+  "Nu": "Ν",
+  "Xi": "Ξ",
+  "Omicron": "Ο",
+  "Pi": "Π",
+  "Rho": "Ρ",
+  "Sigma": "Σ",
+  "Tau": "Τ",
+  "Upsilon": "Υ",
+  "Phi": "Φ",
+  "Chi": "Χ",
+  "Psi": "Ψ",
+  "Omega": "Ω",
+  "alpha": "α",
+  "beta": "β",
+  "gamma": "γ",
+  "delta": "δ",
+  "epsilon": "ε",
+  "zeta": "ζ",
+  "eta": "η",
+  "theta": "θ",
+  "iota": "ι",
+  "kappa": "κ",
+  "lambda": "λ",
+  "mu": "μ",
+  "nu": "ν",
+  "xi": "ξ",
+  "omicron": "ο",
+  "pi": "π",
+  "rho": "ρ",
+  "sigmaf": "ς",
+  "sigma": "σ",
+  "tau": "τ",
+  "upsilon": "υ",
+  "phi": "φ",
+  "chi": "χ",
+  "psi": "ψ",
+  "omega": "ω",
+  "thetasym": "ϑ",
+  "upsih": "ϒ",
+  "piv": "ϖ",
+  "bull": "•",
+  "hellip": "…",
+  "prime": "′",
+  "Prime": "″",
+  "oline": "‾",
+  "frasl": "⁄",
+  "weierp": "℘",
+  "image": "ℑ",
+  "real": "ℜ",
+  "trade": "™",
+  "alefsym": "ℵ",
+  "larr": "←",
+  "uarr": "↑",
+  "rarr": "→",
+  "darr": "↓",
+  "harr": "↔",
+  "crarr": "↵",
+  "lArr": "⇐",
+  "uArr": "⇑",
+  "rArr": "⇒",
+  "dArr": "⇓",
+  "hArr": "⇔",
+  "forall": "∀",
+  "part": "∂",
+  "exist": "∃",
+  "empty": "∅",
+  "nabla": "∇",
+  "isin": "∈",
+  "notin": "∉",
+  "ni": "∋",
+  "prod": "∏",
+  "sum": "∑",
+  "minus": "−",
+  "lowast": "∗",
+  "radic": "√",
+  "prop": "∝",
+  "infin": "∞",
+  "ang": "∠",
+  "and": "∧",
+  "or": "∨",
+  "cap": "∩",
+  "cup": "∪",
+  "int": "∫",
+  "there4": "∴",
+  "sim": "∼",
+  "cong": "≅",
+  "asymp": "≈",
+  "ne": "≠",
+  "equiv": "≡",
+  "le": "≤",
+  "ge": "≥",
+  "sub": "⊂",
+  "sup": "⊃",
+  "nsub": "⊄",
+  "sube": "⊆",
+  "supe": "⊇",
+  "oplus": "⊕",
+  "otimes": "⊗",
+  "perp": "⊥",
+  "sdot": "⋅",
+  "lceil": "⌈",
+  "rceil": "⌉",
+  "lfloor": "⌊",
+  "rfloor": "⌋",
+  "lang": "〈",
+  "rang": "〉",
+  "loz": "◊",
+  "spades": "♠",
+  "clubs": "♣",
+  "hearts": "♥",
+  "diams": "♦",
+  "quot": "\"",
+  "amp": "&",
+  "lt": "<",
+  "gt": ">",
+  "OElig": "Œ",
+  "oelig": "œ",
+  "Scaron": "Š",
+  "scaron": "š",
+  "Yuml": "Ÿ",
+  "circ": "ˆ",
+  "tilde": "˜",
+  "ensp": " ",
+  "emsp": " ",
+  "thinsp": " ",
+  "zwnj": "‌",
+  "zwj": "‍",
+  "lrm": "‎",
+  "rlm": "‏",
+  "ndash": "–",
+  "mdash": "—",
+  "lsquo": "‘",
+  "rsquo": "’",
+  "sbquo": "‚",
+  "ldquo": "“",
+  "rdquo": "”",
+  "bdquo": "„",
+  "dagger": "†",
+  "Dagger": "‡",
+  "permil": "‰",
+  "lsaquo": "‹",
+  "rsaquo": "›",
+  "euro": "€"
+}
+
+},{}],20:[function(require,module,exports){
+module.exports={
+  "AElig": "Æ",
+  "AMP": "&",
+  "Aacute": "Á",
+  "Acirc": "Â",
+  "Agrave": "À",
+  "Aring": "Å",
+  "Atilde": "Ã",
+  "Auml": "Ä",
+  "COPY": "©",
+  "Ccedil": "Ç",
+  "ETH": "Ð",
+  "Eacute": "É",
+  "Ecirc": "Ê",
+  "Egrave": "È",
+  "Euml": "Ë",
+  "GT": ">",
+  "Iacute": "Í",
+  "Icirc": "Î",
+  "Igrave": "Ì",
+  "Iuml": "Ï",
+  "LT": "<",
+  "Ntilde": "Ñ",
+  "Oacute": "Ó",
+  "Ocirc": "Ô",
+  "Ograve": "Ò",
+  "Oslash": "Ø",
+  "Otilde": "Õ",
+  "Ouml": "Ö",
+  "QUOT": "\"",
+  "REG": "®",
+  "THORN": "Þ",
+  "Uacute": "Ú",
+  "Ucirc": "Û",
+  "Ugrave": "Ù",
+  "Uuml": "Ü",
+  "Yacute": "Ý",
+  "aacute": "á",
+  "acirc": "â",
+  "acute": "´",
+  "aelig": "æ",
+  "agrave": "à",
+  "amp": "&",
+  "aring": "å",
+  "atilde": "ã",
+  "auml": "ä",
+  "brvbar": "¦",
+  "ccedil": "ç",
+  "cedil": "¸",
+  "cent": "¢",
+  "copy": "©",
+  "curren": "¤",
+  "deg": "°",
+  "divide": "÷",
+  "eacute": "é",
+  "ecirc": "ê",
+  "egrave": "è",
+  "eth": "ð",
+  "euml": "ë",
+  "frac12": "½",
+  "frac14": "¼",
+  "frac34": "¾",
+  "gt": ">",
+  "iacute": "í",
+  "icirc": "î",
+  "iexcl": "¡",
+  "igrave": "ì",
+  "iquest": "¿",
+  "iuml": "ï",
+  "laquo": "«",
+  "lt": "<",
+  "macr": "¯",
+  "micro": "µ",
+  "middot": "·",
+  "nbsp": " ",
+  "not": "¬",
+  "ntilde": "ñ",
+  "oacute": "ó",
+  "ocirc": "ô",
+  "ograve": "ò",
+  "ordf": "ª",
+  "ordm": "º",
+  "oslash": "ø",
+  "otilde": "õ",
+  "ouml": "ö",
+  "para": "¶",
+  "plusmn": "±",
+  "pound": "£",
+  "quot": "\"",
+  "raquo": "»",
+  "reg": "®",
+  "sect": "§",
+  "shy": "­",
+  "sup1": "¹",
+  "sup2": "²",
+  "sup3": "³",
+  "szlig": "ß",
+  "thorn": "þ",
+  "times": "×",
+  "uacute": "ú",
+  "ucirc": "û",
+  "ugrave": "ù",
+  "uml": "¨",
+  "uuml": "ü",
+  "yacute": "ý",
+  "yen": "¥",
+  "yuml": "ÿ"
+}
+
+},{}],21:[function(require,module,exports){
+module.exports={
+  "AEli": "Æ",
+  "AElig": "Æ",
+  "AM": "&",
+  "AMP": "&",
+  "Aacut": "Á",
+  "Aacute": "Á",
+  "Abreve": "Ă",
+  "Acir": "Â",
+  "Acirc": "Â",
+  "Acy": "А",
+  "Afr": "𝔄",
+  "Agrav": "À",
+  "Agrave": "À",
+  "Alpha": "Α",
+  "Amacr": "Ā",
+  "And": "⩓",
+  "Aogon": "Ą",
+  "Aopf": "𝔸",
+  "ApplyFunction": "⁡",
+  "Arin": "Å",
+  "Aring": "Å",
+  "Ascr": "𝒜",
+  "Assign": "≔",
+  "Atild": "Ã",
+  "Atilde": "Ã",
+  "Aum": "Ä",
+  "Auml": "Ä",
+  "Backslash": "∖",
+  "Barv": "⫧",
+  "Barwed": "⌆",
+  "Bcy": "Б",
+  "Because": "∵",
+  "Bernoullis": "ℬ",
+  "Beta": "Β",
+  "Bfr": "𝔅",
+  "Bopf": "𝔹",
+  "Breve": "˘",
+  "Bscr": "ℬ",
+  "Bumpeq": "≎",
+  "CHcy": "Ч",
+  "COP": "©",
+  "COPY": "©",
+  "Cacute": "Ć",
+  "Cap": "⋒",
+  "CapitalDifferentialD": "ⅅ",
+  "Cayleys": "ℭ",
+  "Ccaron": "Č",
+  "Ccedi": "Ç",
+  "Ccedil": "Ç",
+  "Ccirc": "Ĉ",
+  "Cconint": "∰",
+  "Cdot": "Ċ",
+  "Cedilla": "¸",
+  "CenterDot": "·",
+  "Cfr": "ℭ",
+  "Chi": "Χ",
+  "CircleDot": "⊙",
+  "CircleMinus": "⊖",
+  "CirclePlus": "⊕",
+  "CircleTimes": "⊗",
+  "ClockwiseContourIntegral": "∲",
+  "CloseCurlyDoubleQuote": "”",
+  "CloseCurlyQuote": "’",
+  "Colon": "∷",
+  "Colone": "⩴",
+  "Congruent": "≡",
+  "Conint": "∯",
+  "ContourIntegral": "∮",
+  "Copf": "ℂ",
+  "Coproduct": "∐",
+  "CounterClockwiseContourIntegral": "∳",
+  "Cross": "⨯",
+  "Cscr": "𝒞",
+  "Cup": "⋓",
+  "CupCap": "≍",
+  "DD": "ⅅ",
+  "DDotrahd": "⤑",
+  "DJcy": "Ђ",
+  "DScy": "Ѕ",
+  "DZcy": "Џ",
+  "Dagger": "‡",
+  "Darr": "↡",
+  "Dashv": "⫤",
+  "Dcaron": "Ď",
+  "Dcy": "Д",
+  "Del": "∇",
+  "Delta": "Δ",
+  "Dfr": "𝔇",
+  "DiacriticalAcute": "´",
+  "DiacriticalDot": "˙",
+  "DiacriticalDoubleAcute": "˝",
+  "DiacriticalGrave": "`",
+  "DiacriticalTilde": "˜",
+  "Diamond": "⋄",
+  "DifferentialD": "ⅆ",
+  "Dopf": "𝔻",
+  "Dot": "¨",
+  "DotDot": "⃜",
+  "DotEqual": "≐",
+  "DoubleContourIntegral": "∯",
+  "DoubleDot": "¨",
+  "DoubleDownArrow": "⇓",
+  "DoubleLeftArrow": "⇐",
+  "DoubleLeftRightArrow": "⇔",
+  "DoubleLeftTee": "⫤",
+  "DoubleLongLeftArrow": "⟸",
+  "DoubleLongLeftRightArrow": "⟺",
+  "DoubleLongRightArrow": "⟹",
+  "DoubleRightArrow": "⇒",
+  "DoubleRightTee": "⊨",
+  "DoubleUpArrow": "⇑",
+  "DoubleUpDownArrow": "⇕",
+  "DoubleVerticalBar": "∥",
+  "DownArrow": "↓",
+  "DownArrowBar": "⤓",
+  "DownArrowUpArrow": "⇵",
+  "DownBreve": "̑",
+  "DownLeftRightVector": "⥐",
+  "DownLeftTeeVector": "⥞",
+  "DownLeftVector": "↽",
+  "DownLeftVectorBar": "⥖",
+  "DownRightTeeVector": "⥟",
+  "DownRightVector": "⇁",
+  "DownRightVectorBar": "⥗",
+  "DownTee": "⊤",
+  "DownTeeArrow": "↧",
+  "Downarrow": "⇓",
+  "Dscr": "𝒟",
+  "Dstrok": "Đ",
+  "ENG": "Ŋ",
+  "ET": "Ð",
+  "ETH": "Ð",
+  "Eacut": "É",
+  "Eacute": "É",
+  "Ecaron": "Ě",
+  "Ecir": "Ê",
+  "Ecirc": "Ê",
+  "Ecy": "Э",
+  "Edot": "Ė",
+  "Efr": "𝔈",
+  "Egrav": "È",
+  "Egrave": "È",
+  "Element": "∈",
+  "Emacr": "Ē",
+  "EmptySmallSquare": "◻",
+  "EmptyVerySmallSquare": "▫",
+  "Eogon": "Ę",
+  "Eopf": "𝔼",
+  "Epsilon": "Ε",
+  "Equal": "⩵",
+  "EqualTilde": "≂",
+  "Equilibrium": "⇌",
+  "Escr": "ℰ",
+  "Esim": "⩳",
+  "Eta": "Η",
+  "Eum": "Ë",
+  "Euml": "Ë",
+  "Exists": "∃",
+  "ExponentialE": "ⅇ",
+  "Fcy": "Ф",
+  "Ffr": "𝔉",
+  "FilledSmallSquare": "◼",
+  "FilledVerySmallSquare": "▪",
+  "Fopf": "𝔽",
+  "ForAll": "∀",
+  "Fouriertrf": "ℱ",
+  "Fscr": "ℱ",
+  "GJcy": "Ѓ",
+  "G": ">",
+  "GT": ">",
+  "Gamma": "Γ",
+  "Gammad": "Ϝ",
+  "Gbreve": "Ğ",
+  "Gcedil": "Ģ",
+  "Gcirc": "Ĝ",
+  "Gcy": "Г",
+  "Gdot": "Ġ",
+  "Gfr": "𝔊",
+  "Gg": "⋙",
+  "Gopf": "𝔾",
+  "GreaterEqual": "≥",
+  "GreaterEqualLess": "⋛",
+  "GreaterFullEqual": "≧",
+  "GreaterGreater": "⪢",
+  "GreaterLess": "≷",
+  "GreaterSlantEqual": "⩾",
+  "GreaterTilde": "≳",
+  "Gscr": "𝒢",
+  "Gt": "≫",
+  "HARDcy": "Ъ",
+  "Hacek": "ˇ",
+  "Hat": "^",
+  "Hcirc": "Ĥ",
+  "Hfr": "ℌ",
+  "HilbertSpace": "ℋ",
+  "Hopf": "ℍ",
+  "HorizontalLine": "─",
+  "Hscr": "ℋ",
+  "Hstrok": "Ħ",
+  "HumpDownHump": "≎",
+  "HumpEqual": "≏",
+  "IEcy": "Е",
+  "IJlig": "Ĳ",
+  "IOcy": "Ё",
+  "Iacut": "Í",
+  "Iacute": "Í",
+  "Icir": "Î",
+  "Icirc": "Î",
+  "Icy": "И",
+  "Idot": "İ",
+  "Ifr": "ℑ",
+  "Igrav": "Ì",
+  "Igrave": "Ì",
+  "Im": "ℑ",
+  "Imacr": "Ī",
+  "ImaginaryI": "ⅈ",
+  "Implies": "⇒",
+  "Int": "∬",
+  "Integral": "∫",
+  "Intersection": "⋂",
+  "InvisibleComma": "⁣",
+  "InvisibleTimes": "⁢",
+  "Iogon": "Į",
+  "Iopf": "𝕀",
+  "Iota": "Ι",
+  "Iscr": "ℐ",
+  "Itilde": "Ĩ",
+  "Iukcy": "І",
+  "Ium": "Ï",
+  "Iuml": "Ï",
+  "Jcirc": "Ĵ",
+  "Jcy": "Й",
+  "Jfr": "𝔍",
+  "Jopf": "𝕁",
+  "Jscr": "𝒥",
+  "Jsercy": "Ј",
+  "Jukcy": "Є",
+  "KHcy": "Х",
+  "KJcy": "Ќ",
+  "Kappa": "Κ",
+  "Kcedil": "Ķ",
+  "Kcy": "К",
+  "Kfr": "𝔎",
+  "Kopf": "𝕂",
+  "Kscr": "𝒦",
+  "LJcy": "Љ",
+  "L": "<",
+  "LT": "<",
+  "Lacute": "Ĺ",
+  "Lambda": "Λ",
+  "Lang": "⟪",
+  "Laplacetrf": "ℒ",
+  "Larr": "↞",
+  "Lcaron": "Ľ",
+  "Lcedil": "Ļ",
+  "Lcy": "Л",
+  "LeftAngleBracket": "⟨",
+  "LeftArrow": "←",
+  "LeftArrowBar": "⇤",
+  "LeftArrowRightArrow": "⇆",
+  "LeftCeiling": "⌈",
+  "LeftDoubleBracket": "⟦",
+  "LeftDownTeeVector": "⥡",
+  "LeftDownVector": "⇃",
+  "LeftDownVectorBar": "⥙",
+  "LeftFloor": "⌊",
+  "LeftRightArrow": "↔",
+  "LeftRightVector": "⥎",
+  "LeftTee": "⊣",
+  "LeftTeeArrow": "↤",
+  "LeftTeeVector": "⥚",
+  "LeftTriangle": "⊲",
+  "LeftTriangleBar": "⧏",
+  "LeftTriangleEqual": "⊴",
+  "LeftUpDownVector": "⥑",
+  "LeftUpTeeVector": "⥠",
+  "LeftUpVector": "↿",
+  "LeftUpVectorBar": "⥘",
+  "LeftVector": "↼",
+  "LeftVectorBar": "⥒",
+  "Leftarrow": "⇐",
+  "Leftrightarrow": "⇔",
+  "LessEqualGreater": "⋚",
+  "LessFullEqual": "≦",
+  "LessGreater": "≶",
+  "LessLess": "⪡",
+  "LessSlantEqual": "⩽",
+  "LessTilde": "≲",
+  "Lfr": "𝔏",
+  "Ll": "⋘",
+  "Lleftarrow": "⇚",
+  "Lmidot": "Ŀ",
+  "LongLeftArrow": "⟵",
+  "LongLeftRightArrow": "⟷",
+  "LongRightArrow": "⟶",
+  "Longleftarrow": "⟸",
+  "Longleftrightarrow": "⟺",
+  "Longrightarrow": "⟹",
+  "Lopf": "𝕃",
+  "LowerLeftArrow": "↙",
+  "LowerRightArrow": "↘",
+  "Lscr": "ℒ",
+  "Lsh": "↰",
+  "Lstrok": "Ł",
+  "Lt": "≪",
+  "Map": "⤅",
+  "Mcy": "М",
+  "MediumSpace": " ",
+  "Mellintrf": "ℳ",
+  "Mfr": "𝔐",
+  "MinusPlus": "∓",
+  "Mopf": "𝕄",
+  "Mscr": "ℳ",
+  "Mu": "Μ",
+  "NJcy": "Њ",
+  "Nacute": "Ń",
+  "Ncaron": "Ň",
+  "Ncedil": "Ņ",
+  "Ncy": "Н",
+  "NegativeMediumSpace": "​",
+  "NegativeThickSpace": "​",
+  "NegativeThinSpace": "​",
+  "NegativeVeryThinSpace": "​",
+  "NestedGreaterGreater": "≫",
+  "NestedLessLess": "≪",
+  "NewLine": "\n",
+  "Nfr": "𝔑",
+  "NoBreak": "⁠",
+  "NonBreakingSpace": " ",
+  "Nopf": "ℕ",
+  "Not": "⫬",
+  "NotCongruent": "≢",
+  "NotCupCap": "≭",
+  "NotDoubleVerticalBar": "∦",
+  "NotElement": "∉",
+  "NotEqual": "≠",
+  "NotEqualTilde": "≂̸",
+  "NotExists": "∄",
+  "NotGreater": "≯",
+  "NotGreaterEqual": "≱",
+  "NotGreaterFullEqual": "≧̸",
+  "NotGreaterGreater": "≫̸",
+  "NotGreaterLess": "≹",
+  "NotGreaterSlantEqual": "⩾̸",
+  "NotGreaterTilde": "≵",
+  "NotHumpDownHump": "≎̸",
+  "NotHumpEqual": "≏̸",
+  "NotLeftTriangle": "⋪",
+  "NotLeftTriangleBar": "⧏̸",
+  "NotLeftTriangleEqual": "⋬",
+  "NotLess": "≮",
+  "NotLessEqual": "≰",
+  "NotLessGreater": "≸",
+  "NotLessLess": "≪̸",
+  "NotLessSlantEqual": "⩽̸",
+  "NotLessTilde": "≴",
+  "NotNestedGreaterGreater": "⪢̸",
+  "NotNestedLessLess": "⪡̸",
+  "NotPrecedes": "⊀",
+  "NotPrecedesEqual": "⪯̸",
+  "NotPrecedesSlantEqual": "⋠",
+  "NotReverseElement": "∌",
+  "NotRightTriangle": "⋫",
+  "NotRightTriangleBar": "⧐̸",
+  "NotRightTriangleEqual": "⋭",
+  "NotSquareSubset": "⊏̸",
+  "NotSquareSubsetEqual": "⋢",
+  "NotSquareSuperset": "⊐̸",
+  "NotSquareSupersetEqual": "⋣",
+  "NotSubset": "⊂⃒",
+  "NotSubsetEqual": "⊈",
+  "NotSucceeds": "⊁",
+  "NotSucceedsEqual": "⪰̸",
+  "NotSucceedsSlantEqual": "⋡",
+  "NotSucceedsTilde": "≿̸",
+  "NotSuperset": "⊃⃒",
+  "NotSupersetEqual": "⊉",
+  "NotTilde": "≁",
+  "NotTildeEqual": "≄",
+  "NotTildeFullEqual": "≇",
+  "NotTildeTilde": "≉",
+  "NotVerticalBar": "∤",
+  "Nscr": "𝒩",
+  "Ntild": "Ñ",
+  "Ntilde": "Ñ",
+  "Nu": "Ν",
+  "OElig": "Œ",
+  "Oacut": "Ó",
+  "Oacute": "Ó",
+  "Ocir": "Ô",
+  "Ocirc": "Ô",
+  "Ocy": "О",
+  "Odblac": "Ő",
+  "Ofr": "𝔒",
+  "Ograv": "Ò",
+  "Ograve": "Ò",
+  "Omacr": "Ō",
+  "Omega": "Ω",
+  "Omicron": "Ο",
+  "Oopf": "𝕆",
+  "OpenCurlyDoubleQuote": "“",
+  "OpenCurlyQuote": "‘",
+  "Or": "⩔",
+  "Oscr": "𝒪",
+  "Oslas": "Ø",
+  "Oslash": "Ø",
+  "Otild": "Õ",
+  "Otilde": "Õ",
+  "Otimes": "⨷",
+  "Oum": "Ö",
+  "Ouml": "Ö",
+  "OverBar": "‾",
+  "OverBrace": "⏞",
+  "OverBracket": "⎴",
+  "OverParenthesis": "⏜",
+  "PartialD": "∂",
+  "Pcy": "П",
+  "Pfr": "𝔓",
+  "Phi": "Φ",
+  "Pi": "Π",
+  "PlusMinus": "±",
+  "Poincareplane": "ℌ",
+  "Popf": "ℙ",
+  "Pr": "⪻",
+  "Precedes": "≺",
+  "PrecedesEqual": "⪯",
+  "PrecedesSlantEqual": "≼",
+  "PrecedesTilde": "≾",
+  "Prime": "″",
+  "Product": "∏",
+  "Proportion": "∷",
+  "Proportional": "∝",
+  "Pscr": "𝒫",
+  "Psi": "Ψ",
+  "QUO": "\"",
+  "QUOT": "\"",
+  "Qfr": "𝔔",
+  "Qopf": "ℚ",
+  "Qscr": "𝒬",
+  "RBarr": "⤐",
+  "RE": "®",
+  "REG": "®",
+  "Racute": "Ŕ",
+  "Rang": "⟫",
+  "Rarr": "↠",
+  "Rarrtl": "⤖",
+  "Rcaron": "Ř",
+  "Rcedil": "Ŗ",
+  "Rcy": "Р",
+  "Re": "ℜ",
+  "ReverseElement": "∋",
+  "ReverseEquilibrium": "⇋",
+  "ReverseUpEquilibrium": "⥯",
+  "Rfr": "ℜ",
+  "Rho": "Ρ",
+  "RightAngleBracket": "⟩",
+  "RightArrow": "→",
+  "RightArrowBar": "⇥",
+  "RightArrowLeftArrow": "⇄",
+  "RightCeiling": "⌉",
+  "RightDoubleBracket": "⟧",
+  "RightDownTeeVector": "⥝",
+  "RightDownVector": "⇂",
+  "RightDownVectorBar": "⥕",
+  "RightFloor": "⌋",
+  "RightTee": "⊢",
+  "RightTeeArrow": "↦",
+  "RightTeeVector": "⥛",
+  "RightTriangle": "⊳",
+  "RightTriangleBar": "⧐",
+  "RightTriangleEqual": "⊵",
+  "RightUpDownVector": "⥏",
+  "RightUpTeeVector": "⥜",
+  "RightUpVector": "↾",
+  "RightUpVectorBar": "⥔",
+  "RightVector": "⇀",
+  "RightVectorBar": "⥓",
+  "Rightarrow": "⇒",
+  "Ropf": "ℝ",
+  "RoundImplies": "⥰",
+  "Rrightarrow": "⇛",
+  "Rscr": "ℛ",
+  "Rsh": "↱",
+  "RuleDelayed": "⧴",
+  "SHCHcy": "Щ",
+  "SHcy": "Ш",
+  "SOFTcy": "Ь",
+  "Sacute": "Ś",
+  "Sc": "⪼",
+  "Scaron": "Š",
+  "Scedil": "Ş",
+  "Scirc": "Ŝ",
+  "Scy": "С",
+  "Sfr": "𝔖",
+  "ShortDownArrow": "↓",
+  "ShortLeftArrow": "←",
+  "ShortRightArrow": "→",
+  "ShortUpArrow": "↑",
+  "Sigma": "Σ",
+  "SmallCircle": "∘",
+  "Sopf": "𝕊",
+  "Sqrt": "√",
+  "Square": "□",
+  "SquareIntersection": "⊓",
+  "SquareSubset": "⊏",
+  "SquareSubsetEqual": "⊑",
+  "SquareSuperset": "⊐",
+  "SquareSupersetEqual": "⊒",
+  "SquareUnion": "⊔",
+  "Sscr": "𝒮",
+  "Star": "⋆",
+  "Sub": "⋐",
+  "Subset": "⋐",
+  "SubsetEqual": "⊆",
+  "Succeeds": "≻",
+  "SucceedsEqual": "⪰",
+  "SucceedsSlantEqual": "≽",
+  "SucceedsTilde": "≿",
+  "SuchThat": "∋",
+  "Sum": "∑",
+  "Sup": "⋑",
+  "Superset": "⊃",
+  "SupersetEqual": "⊇",
+  "Supset": "⋑",
+  "THOR": "Þ",
+  "THORN": "Þ",
+  "TRADE": "™",
+  "TSHcy": "Ћ",
+  "TScy": "Ц",
+  "Tab": "\t",
+  "Tau": "Τ",
+  "Tcaron": "Ť",
+  "Tcedil": "Ţ",
+  "Tcy": "Т",
+  "Tfr": "𝔗",
+  "Therefore": "∴",
+  "Theta": "Θ",
+  "ThickSpace": "  ",
+  "ThinSpace": " ",
+  "Tilde": "∼",
+  "TildeEqual": "≃",
+  "TildeFullEqual": "≅",
+  "TildeTilde": "≈",
+  "Topf": "𝕋",
+  "TripleDot": "⃛",
+  "Tscr": "𝒯",
+  "Tstrok": "Ŧ",
+  "Uacut": "Ú",
+  "Uacute": "Ú",
+  "Uarr": "↟",
+  "Uarrocir": "⥉",
+  "Ubrcy": "Ў",
+  "Ubreve": "Ŭ",
+  "Ucir": "Û",
+  "Ucirc": "Û",
+  "Ucy": "У",
+  "Udblac": "Ű",
+  "Ufr": "𝔘",
+  "Ugrav": "Ù",
+  "Ugrave": "Ù",
+  "Umacr": "Ū",
+  "UnderBar": "_",
+  "UnderBrace": "⏟",
+  "UnderBracket": "⎵",
+  "UnderParenthesis": "⏝",
+  "Union": "⋃",
+  "UnionPlus": "⊎",
+  "Uogon": "Ų",
+  "Uopf": "𝕌",
+  "UpArrow": "↑",
+  "UpArrowBar": "⤒",
+  "UpArrowDownArrow": "⇅",
+  "UpDownArrow": "↕",
+  "UpEquilibrium": "⥮",
+  "UpTee": "⊥",
+  "UpTeeArrow": "↥",
+  "Uparrow": "⇑",
+  "Updownarrow": "⇕",
+  "UpperLeftArrow": "↖",
+  "UpperRightArrow": "↗",
+  "Upsi": "ϒ",
+  "Upsilon": "Υ",
+  "Uring": "Ů",
+  "Uscr": "𝒰",
+  "Utilde": "Ũ",
+  "Uum": "Ü",
+  "Uuml": "Ü",
+  "VDash": "⊫",
+  "Vbar": "⫫",
+  "Vcy": "В",
+  "Vdash": "⊩",
+  "Vdashl": "⫦",
+  "Vee": "⋁",
+  "Verbar": "‖",
+  "Vert": "‖",
+  "VerticalBar": "∣",
+  "VerticalLine": "|",
+  "VerticalSeparator": "❘",
+  "VerticalTilde": "≀",
+  "VeryThinSpace": " ",
+  "Vfr": "𝔙",
+  "Vopf": "𝕍",
+  "Vscr": "𝒱",
+  "Vvdash": "⊪",
+  "Wcirc": "Ŵ",
+  "Wedge": "⋀",
+  "Wfr": "𝔚",
+  "Wopf": "𝕎",
+  "Wscr": "𝒲",
+  "Xfr": "𝔛",
+  "Xi": "Ξ",
+  "Xopf": "𝕏",
+  "Xscr": "𝒳",
+  "YAcy": "Я",
+  "YIcy": "Ї",
+  "YUcy": "Ю",
+  "Yacut": "Ý",
+  "Yacute": "Ý",
+  "Ycirc": "Ŷ",
+  "Ycy": "Ы",
+  "Yfr": "𝔜",
+  "Yopf": "𝕐",
+  "Yscr": "𝒴",
+  "Yuml": "Ÿ",
+  "ZHcy": "Ж",
+  "Zacute": "Ź",
+  "Zcaron": "Ž",
+  "Zcy": "З",
+  "Zdot": "Ż",
+  "ZeroWidthSpace": "​",
+  "Zeta": "Ζ",
+  "Zfr": "ℨ",
+  "Zopf": "ℤ",
+  "Zscr": "𝒵",
+  "aacut": "á",
+  "aacute": "á",
+  "abreve": "ă",
+  "ac": "∾",
+  "acE": "∾̳",
+  "acd": "∿",
+  "acir": "â",
+  "acirc": "â",
+  "acut": "´",
+  "acute": "´",
+  "acy": "а",
+  "aeli": "æ",
+  "aelig": "æ",
+  "af": "⁡",
+  "afr": "𝔞",
+  "agrav": "à",
+  "agrave": "à",
+  "alefsym": "ℵ",
+  "aleph": "ℵ",
+  "alpha": "α",
+  "amacr": "ā",
+  "amalg": "⨿",
+  "am": "&",
+  "amp": "&",
+  "and": "∧",
+  "andand": "⩕",
+  "andd": "⩜",
+  "andslope": "⩘",
+  "andv": "⩚",
+  "ang": "∠",
+  "ange": "⦤",
+  "angle": "∠",
+  "angmsd": "∡",
+  "angmsdaa": "⦨",
+  "angmsdab": "⦩",
+  "angmsdac": "⦪",
+  "angmsdad": "⦫",
+  "angmsdae": "⦬",
+  "angmsdaf": "⦭",
+  "angmsdag": "⦮",
+  "angmsdah": "⦯",
+  "angrt": "∟",
+  "angrtvb": "⊾",
+  "angrtvbd": "⦝",
+  "angsph": "∢",
+  "angst": "Å",
+  "angzarr": "⍼",
+  "aogon": "ą",
+  "aopf": "𝕒",
+  "ap": "≈",
+  "apE": "⩰",
+  "apacir": "⩯",
+  "ape": "≊",
+  "apid": "≋",
+  "apos": "'",
+  "approx": "≈",
+  "approxeq": "≊",
+  "arin": "å",
+  "aring": "å",
+  "ascr": "𝒶",
+  "ast": "*",
+  "asymp": "≈",
+  "asympeq": "≍",
+  "atild": "ã",
+  "atilde": "ã",
+  "aum": "ä",
+  "auml": "ä",
+  "awconint": "∳",
+  "awint": "⨑",
+  "bNot": "⫭",
+  "backcong": "≌",
+  "backepsilon": "϶",
+  "backprime": "‵",
+  "backsim": "∽",
+  "backsimeq": "⋍",
+  "barvee": "⊽",
+  "barwed": "⌅",
+  "barwedge": "⌅",
+  "bbrk": "⎵",
+  "bbrktbrk": "⎶",
+  "bcong": "≌",
+  "bcy": "б",
+  "bdquo": "„",
+  "becaus": "∵",
+  "because": "∵",
+  "bemptyv": "⦰",
+  "bepsi": "϶",
+  "bernou": "ℬ",
+  "beta": "β",
+  "beth": "ℶ",
+  "between": "≬",
+  "bfr": "𝔟",
+  "bigcap": "⋂",
+  "bigcirc": "◯",
+  "bigcup": "⋃",
+  "bigodot": "⨀",
+  "bigoplus": "⨁",
+  "bigotimes": "⨂",
+  "bigsqcup": "⨆",
+  "bigstar": "★",
+  "bigtriangledown": "▽",
+  "bigtriangleup": "△",
+  "biguplus": "⨄",
+  "bigvee": "⋁",
+  "bigwedge": "⋀",
+  "bkarow": "⤍",
+  "blacklozenge": "⧫",
+  "blacksquare": "▪",
+  "blacktriangle": "▴",
+  "blacktriangledown": "▾",
+  "blacktriangleleft": "◂",
+  "blacktriangleright": "▸",
+  "blank": "␣",
+  "blk12": "▒",
+  "blk14": "░",
+  "blk34": "▓",
+  "block": "█",
+  "bne": "=⃥",
+  "bnequiv": "≡⃥",
+  "bnot": "⌐",
+  "bopf": "𝕓",
+  "bot": "⊥",
+  "bottom": "⊥",
+  "bowtie": "⋈",
+  "boxDL": "╗",
+  "boxDR": "╔",
+  "boxDl": "╖",
+  "boxDr": "╓",
+  "boxH": "═",
+  "boxHD": "╦",
+  "boxHU": "╩",
+  "boxHd": "╤",
+  "boxHu": "╧",
+  "boxUL": "╝",
+  "boxUR": "╚",
+  "boxUl": "╜",
+  "boxUr": "╙",
+  "boxV": "║",
+  "boxVH": "╬",
+  "boxVL": "╣",
+  "boxVR": "╠",
+  "boxVh": "╫",
+  "boxVl": "╢",
+  "boxVr": "╟",
+  "boxbox": "⧉",
+  "boxdL": "╕",
+  "boxdR": "╒",
+  "boxdl": "┐",
+  "boxdr": "┌",
+  "boxh": "─",
+  "boxhD": "╥",
+  "boxhU": "╨",
+  "boxhd": "┬",
+  "boxhu": "┴",
+  "boxminus": "⊟",
+  "boxplus": "⊞",
+  "boxtimes": "⊠",
+  "boxuL": "╛",
+  "boxuR": "╘",
+  "boxul": "┘",
+  "boxur": "└",
+  "boxv": "│",
+  "boxvH": "╪",
+  "boxvL": "╡",
+  "boxvR": "╞",
+  "boxvh": "┼",
+  "boxvl": "┤",
+  "boxvr": "├",
+  "bprime": "‵",
+  "breve": "˘",
+  "brvba": "¦",
+  "brvbar": "¦",
+  "bscr": "𝒷",
+  "bsemi": "⁏",
+  "bsim": "∽",
+  "bsime": "⋍",
+  "bsol": "\\",
+  "bsolb": "⧅",
+  "bsolhsub": "⟈",
+  "bull": "•",
+  "bullet": "•",
+  "bump": "≎",
+  "bumpE": "⪮",
+  "bumpe": "≏",
+  "bumpeq": "≏",
+  "cacute": "ć",
+  "cap": "∩",
+  "capand": "⩄",
+  "capbrcup": "⩉",
+  "capcap": "⩋",
+  "capcup": "⩇",
+  "capdot": "⩀",
+  "caps": "∩︀",
+  "caret": "⁁",
+  "caron": "ˇ",
+  "ccaps": "⩍",
+  "ccaron": "č",
+  "ccedi": "ç",
+  "ccedil": "ç",
+  "ccirc": "ĉ",
+  "ccups": "⩌",
+  "ccupssm": "⩐",
+  "cdot": "ċ",
+  "cedi": "¸",
+  "cedil": "¸",
+  "cemptyv": "⦲",
+  "cen": "¢",
+  "cent": "¢",
+  "centerdot": "·",
+  "cfr": "𝔠",
+  "chcy": "ч",
+  "check": "✓",
+  "checkmark": "✓",
+  "chi": "χ",
+  "cir": "○",
+  "cirE": "⧃",
+  "circ": "ˆ",
+  "circeq": "≗",
+  "circlearrowleft": "↺",
+  "circlearrowright": "↻",
+  "circledR": "®",
+  "circledS": "Ⓢ",
+  "circledast": "⊛",
+  "circledcirc": "⊚",
+  "circleddash": "⊝",
+  "cire": "≗",
+  "cirfnint": "⨐",
+  "cirmid": "⫯",
+  "cirscir": "⧂",
+  "clubs": "♣",
+  "clubsuit": "♣",
+  "colon": ":",
+  "colone": "≔",
+  "coloneq": "≔",
+  "comma": ",",
+  "commat": "@",
+  "comp": "∁",
+  "compfn": "∘",
+  "complement": "∁",
+  "complexes": "ℂ",
+  "cong": "≅",
+  "congdot": "⩭",
+  "conint": "∮",
+  "copf": "𝕔",
+  "coprod": "∐",
+  "cop": "©",
+  "copy": "©",
+  "copysr": "℗",
+  "crarr": "↵",
+  "cross": "✗",
+  "cscr": "𝒸",
+  "csub": "⫏",
+  "csube": "⫑",
+  "csup": "⫐",
+  "csupe": "⫒",
+  "ctdot": "⋯",
+  "cudarrl": "⤸",
+  "cudarrr": "⤵",
+  "cuepr": "⋞",
+  "cuesc": "⋟",
+  "cularr": "↶",
+  "cularrp": "⤽",
+  "cup": "∪",
+  "cupbrcap": "⩈",
+  "cupcap": "⩆",
+  "cupcup": "⩊",
+  "cupdot": "⊍",
+  "cupor": "⩅",
+  "cups": "∪︀",
+  "curarr": "↷",
+  "curarrm": "⤼",
+  "curlyeqprec": "⋞",
+  "curlyeqsucc": "⋟",
+  "curlyvee": "⋎",
+  "curlywedge": "⋏",
+  "curre": "¤",
+  "curren": "¤",
+  "curvearrowleft": "↶",
+  "curvearrowright": "↷",
+  "cuvee": "⋎",
+  "cuwed": "⋏",
+  "cwconint": "∲",
+  "cwint": "∱",
+  "cylcty": "⌭",
+  "dArr": "⇓",
+  "dHar": "⥥",
+  "dagger": "†",
+  "daleth": "ℸ",
+  "darr": "↓",
+  "dash": "‐",
+  "dashv": "⊣",
+  "dbkarow": "⤏",
+  "dblac": "˝",
+  "dcaron": "ď",
+  "dcy": "д",
+  "dd": "ⅆ",
+  "ddagger": "‡",
+  "ddarr": "⇊",
+  "ddotseq": "⩷",
+  "de": "°",
+  "deg": "°",
+  "delta": "δ",
+  "demptyv": "⦱",
+  "dfisht": "⥿",
+  "dfr": "𝔡",
+  "dharl": "⇃",
+  "dharr": "⇂",
+  "diam": "⋄",
+  "diamond": "⋄",
+  "diamondsuit": "♦",
+  "diams": "♦",
+  "die": "¨",
+  "digamma": "ϝ",
+  "disin": "⋲",
+  "div": "÷",
+  "divid": "÷",
+  "divide": "÷",
+  "divideontimes": "⋇",
+  "divonx": "⋇",
+  "djcy": "ђ",
+  "dlcorn": "⌞",
+  "dlcrop": "⌍",
+  "dollar": "$",
+  "dopf": "𝕕",
+  "dot": "˙",
+  "doteq": "≐",
+  "doteqdot": "≑",
+  "dotminus": "∸",
+  "dotplus": "∔",
+  "dotsquare": "⊡",
+  "doublebarwedge": "⌆",
+  "downarrow": "↓",
+  "downdownarrows": "⇊",
+  "downharpoonleft": "⇃",
+  "downharpoonright": "⇂",
+  "drbkarow": "⤐",
+  "drcorn": "⌟",
+  "drcrop": "⌌",
+  "dscr": "𝒹",
+  "dscy": "ѕ",
+  "dsol": "⧶",
+  "dstrok": "đ",
+  "dtdot": "⋱",
+  "dtri": "▿",
+  "dtrif": "▾",
+  "duarr": "⇵",
+  "duhar": "⥯",
+  "dwangle": "⦦",
+  "dzcy": "џ",
+  "dzigrarr": "⟿",
+  "eDDot": "⩷",
+  "eDot": "≑",
+  "eacut": "é",
+  "eacute": "é",
+  "easter": "⩮",
+  "ecaron": "ě",
+  "ecir": "ê",
+  "ecirc": "ê",
+  "ecolon": "≕",
+  "ecy": "э",
+  "edot": "ė",
+  "ee": "ⅇ",
+  "efDot": "≒",
+  "efr": "𝔢",
+  "eg": "⪚",
+  "egrav": "è",
+  "egrave": "è",
+  "egs": "⪖",
+  "egsdot": "⪘",
+  "el": "⪙",
+  "elinters": "⏧",
+  "ell": "ℓ",
+  "els": "⪕",
+  "elsdot": "⪗",
+  "emacr": "ē",
+  "empty": "∅",
+  "emptyset": "∅",
+  "emptyv": "∅",
+  "emsp13": " ",
+  "emsp14": " ",
+  "emsp": " ",
+  "eng": "ŋ",
+  "ensp": " ",
+  "eogon": "ę",
+  "eopf": "𝕖",
+  "epar": "⋕",
+  "eparsl": "⧣",
+  "eplus": "⩱",
+  "epsi": "ε",
+  "epsilon": "ε",
+  "epsiv": "ϵ",
+  "eqcirc": "≖",
+  "eqcolon": "≕",
+  "eqsim": "≂",
+  "eqslantgtr": "⪖",
+  "eqslantless": "⪕",
+  "equals": "=",
+  "equest": "≟",
+  "equiv": "≡",
+  "equivDD": "⩸",
+  "eqvparsl": "⧥",
+  "erDot": "≓",
+  "erarr": "⥱",
+  "escr": "ℯ",
+  "esdot": "≐",
+  "esim": "≂",
+  "eta": "η",
+  "et": "ð",
+  "eth": "ð",
+  "eum": "ë",
+  "euml": "ë",
+  "euro": "€",
+  "excl": "!",
+  "exist": "∃",
+  "expectation": "ℰ",
+  "exponentiale": "ⅇ",
+  "fallingdotseq": "≒",
+  "fcy": "ф",
+  "female": "♀",
+  "ffilig": "ﬃ",
+  "fflig": "ﬀ",
+  "ffllig": "ﬄ",
+  "ffr": "𝔣",
+  "filig": "ﬁ",
+  "fjlig": "fj",
+  "flat": "♭",
+  "fllig": "ﬂ",
+  "fltns": "▱",
+  "fnof": "ƒ",
+  "fopf": "𝕗",
+  "forall": "∀",
+  "fork": "⋔",
+  "forkv": "⫙",
+  "fpartint": "⨍",
+  "frac1": "¼",
+  "frac12": "½",
+  "frac13": "⅓",
+  "frac14": "¼",
+  "frac15": "⅕",
+  "frac16": "⅙",
+  "frac18": "⅛",
+  "frac23": "⅔",
+  "frac25": "⅖",
+  "frac3": "¾",
+  "frac34": "¾",
+  "frac35": "⅗",
+  "frac38": "⅜",
+  "frac45": "⅘",
+  "frac56": "⅚",
+  "frac58": "⅝",
+  "frac78": "⅞",
+  "frasl": "⁄",
+  "frown": "⌢",
+  "fscr": "𝒻",
+  "gE": "≧",
+  "gEl": "⪌",
+  "gacute": "ǵ",
+  "gamma": "γ",
+  "gammad": "ϝ",
+  "gap": "⪆",
+  "gbreve": "ğ",
+  "gcirc": "ĝ",
+  "gcy": "г",
+  "gdot": "ġ",
+  "ge": "≥",
+  "gel": "⋛",
+  "geq": "≥",
+  "geqq": "≧",
+  "geqslant": "⩾",
+  "ges": "⩾",
+  "gescc": "⪩",
+  "gesdot": "⪀",
+  "gesdoto": "⪂",
+  "gesdotol": "⪄",
+  "gesl": "⋛︀",
+  "gesles": "⪔",
+  "gfr": "𝔤",
+  "gg": "≫",
+  "ggg": "⋙",
+  "gimel": "ℷ",
+  "gjcy": "ѓ",
+  "gl": "≷",
+  "glE": "⪒",
+  "gla": "⪥",
+  "glj": "⪤",
+  "gnE": "≩",
+  "gnap": "⪊",
+  "gnapprox": "⪊",
+  "gne": "⪈",
+  "gneq": "⪈",
+  "gneqq": "≩",
+  "gnsim": "⋧",
+  "gopf": "𝕘",
+  "grave": "`",
+  "gscr": "ℊ",
+  "gsim": "≳",
+  "gsime": "⪎",
+  "gsiml": "⪐",
+  "g": ">",
+  "gt": ">",
+  "gtcc": "⪧",
+  "gtcir": "⩺",
+  "gtdot": "⋗",
+  "gtlPar": "⦕",
+  "gtquest": "⩼",
+  "gtrapprox": "⪆",
+  "gtrarr": "⥸",
+  "gtrdot": "⋗",
+  "gtreqless": "⋛",
+  "gtreqqless": "⪌",
+  "gtrless": "≷",
+  "gtrsim": "≳",
+  "gvertneqq": "≩︀",
+  "gvnE": "≩︀",
+  "hArr": "⇔",
+  "hairsp": " ",
+  "half": "½",
+  "hamilt": "ℋ",
+  "hardcy": "ъ",
+  "harr": "↔",
+  "harrcir": "⥈",
+  "harrw": "↭",
+  "hbar": "ℏ",
+  "hcirc": "ĥ",
+  "hearts": "♥",
+  "heartsuit": "♥",
+  "hellip": "…",
+  "hercon": "⊹",
+  "hfr": "𝔥",
+  "hksearow": "⤥",
+  "hkswarow": "⤦",
+  "hoarr": "⇿",
+  "homtht": "∻",
+  "hookleftarrow": "↩",
+  "hookrightarrow": "↪",
+  "hopf": "𝕙",
+  "horbar": "―",
+  "hscr": "𝒽",
+  "hslash": "ℏ",
+  "hstrok": "ħ",
+  "hybull": "⁃",
+  "hyphen": "‐",
+  "iacut": "í",
+  "iacute": "í",
+  "ic": "⁣",
+  "icir": "î",
+  "icirc": "î",
+  "icy": "и",
+  "iecy": "е",
+  "iexc": "¡",
+  "iexcl": "¡",
+  "iff": "⇔",
+  "ifr": "𝔦",
+  "igrav": "ì",
+  "igrave": "ì",
+  "ii": "ⅈ",
+  "iiiint": "⨌",
+  "iiint": "∭",
+  "iinfin": "⧜",
+  "iiota": "℩",
+  "ijlig": "ĳ",
+  "imacr": "ī",
+  "image": "ℑ",
+  "imagline": "ℐ",
+  "imagpart": "ℑ",
+  "imath": "ı",
+  "imof": "⊷",
+  "imped": "Ƶ",
+  "in": "∈",
+  "incare": "℅",
+  "infin": "∞",
+  "infintie": "⧝",
+  "inodot": "ı",
+  "int": "∫",
+  "intcal": "⊺",
+  "integers": "ℤ",
+  "intercal": "⊺",
+  "intlarhk": "⨗",
+  "intprod": "⨼",
+  "iocy": "ё",
+  "iogon": "į",
+  "iopf": "𝕚",
+  "iota": "ι",
+  "iprod": "⨼",
+  "iques": "¿",
+  "iquest": "¿",
+  "iscr": "𝒾",
+  "isin": "∈",
+  "isinE": "⋹",
+  "isindot": "⋵",
+  "isins": "⋴",
+  "isinsv": "⋳",
+  "isinv": "∈",
+  "it": "⁢",
+  "itilde": "ĩ",
+  "iukcy": "і",
+  "ium": "ï",
+  "iuml": "ï",
+  "jcirc": "ĵ",
+  "jcy": "й",
+  "jfr": "𝔧",
+  "jmath": "ȷ",
+  "jopf": "𝕛",
+  "jscr": "𝒿",
+  "jsercy": "ј",
+  "jukcy": "є",
+  "kappa": "κ",
+  "kappav": "ϰ",
+  "kcedil": "ķ",
+  "kcy": "к",
+  "kfr": "𝔨",
+  "kgreen": "ĸ",
+  "khcy": "х",
+  "kjcy": "ќ",
+  "kopf": "𝕜",
+  "kscr": "𝓀",
+  "lAarr": "⇚",
+  "lArr": "⇐",
+  "lAtail": "⤛",
+  "lBarr": "⤎",
+  "lE": "≦",
+  "lEg": "⪋",
+  "lHar": "⥢",
+  "lacute": "ĺ",
+  "laemptyv": "⦴",
+  "lagran": "ℒ",
+  "lambda": "λ",
+  "lang": "⟨",
+  "langd": "⦑",
+  "langle": "⟨",
+  "lap": "⪅",
+  "laqu": "«",
+  "laquo": "«",
+  "larr": "←",
+  "larrb": "⇤",
+  "larrbfs": "⤟",
+  "larrfs": "⤝",
+  "larrhk": "↩",
+  "larrlp": "↫",
+  "larrpl": "⤹",
+  "larrsim": "⥳",
+  "larrtl": "↢",
+  "lat": "⪫",
+  "latail": "⤙",
+  "late": "⪭",
+  "lates": "⪭︀",
+  "lbarr": "⤌",
+  "lbbrk": "❲",
+  "lbrace": "{",
+  "lbrack": "[",
+  "lbrke": "⦋",
+  "lbrksld": "⦏",
+  "lbrkslu": "⦍",
+  "lcaron": "ľ",
+  "lcedil": "ļ",
+  "lceil": "⌈",
+  "lcub": "{",
+  "lcy": "л",
+  "ldca": "⤶",
+  "ldquo": "“",
+  "ldquor": "„",
+  "ldrdhar": "⥧",
+  "ldrushar": "⥋",
+  "ldsh": "↲",
+  "le": "≤",
+  "leftarrow": "←",
+  "leftarrowtail": "↢",
+  "leftharpoondown": "↽",
+  "leftharpoonup": "↼",
+  "leftleftarrows": "⇇",
+  "leftrightarrow": "↔",
+  "leftrightarrows": "⇆",
+  "leftrightharpoons": "⇋",
+  "leftrightsquigarrow": "↭",
+  "leftthreetimes": "⋋",
+  "leg": "⋚",
+  "leq": "≤",
+  "leqq": "≦",
+  "leqslant": "⩽",
+  "les": "⩽",
+  "lescc": "⪨",
+  "lesdot": "⩿",
+  "lesdoto": "⪁",
+  "lesdotor": "⪃",
+  "lesg": "⋚︀",
+  "lesges": "⪓",
+  "lessapprox": "⪅",
+  "lessdot": "⋖",
+  "lesseqgtr": "⋚",
+  "lesseqqgtr": "⪋",
+  "lessgtr": "≶",
+  "lesssim": "≲",
+  "lfisht": "⥼",
+  "lfloor": "⌊",
+  "lfr": "𝔩",
+  "lg": "≶",
+  "lgE": "⪑",
+  "lhard": "↽",
+  "lharu": "↼",
+  "lharul": "⥪",
+  "lhblk": "▄",
+  "ljcy": "љ",
+  "ll": "≪",
+  "llarr": "⇇",
+  "llcorner": "⌞",
+  "llhard": "⥫",
+  "lltri": "◺",
+  "lmidot": "ŀ",
+  "lmoust": "⎰",
+  "lmoustache": "⎰",
+  "lnE": "≨",
+  "lnap": "⪉",
+  "lnapprox": "⪉",
+  "lne": "⪇",
+  "lneq": "⪇",
+  "lneqq": "≨",
+  "lnsim": "⋦",
+  "loang": "⟬",
+  "loarr": "⇽",
+  "lobrk": "⟦",
+  "longleftarrow": "⟵",
+  "longleftrightarrow": "⟷",
+  "longmapsto": "⟼",
+  "longrightarrow": "⟶",
+  "looparrowleft": "↫",
+  "looparrowright": "↬",
+  "lopar": "⦅",
+  "lopf": "𝕝",
+  "loplus": "⨭",
+  "lotimes": "⨴",
+  "lowast": "∗",
+  "lowbar": "_",
+  "loz": "◊",
+  "lozenge": "◊",
+  "lozf": "⧫",
+  "lpar": "(",
+  "lparlt": "⦓",
+  "lrarr": "⇆",
+  "lrcorner": "⌟",
+  "lrhar": "⇋",
+  "lrhard": "⥭",
+  "lrm": "‎",
+  "lrtri": "⊿",
+  "lsaquo": "‹",
+  "lscr": "𝓁",
+  "lsh": "↰",
+  "lsim": "≲",
+  "lsime": "⪍",
+  "lsimg": "⪏",
+  "lsqb": "[",
+  "lsquo": "‘",
+  "lsquor": "‚",
+  "lstrok": "ł",
+  "l": "<",
+  "lt": "<",
+  "ltcc": "⪦",
+  "ltcir": "⩹",
+  "ltdot": "⋖",
+  "lthree": "⋋",
+  "ltimes": "⋉",
+  "ltlarr": "⥶",
+  "ltquest": "⩻",
+  "ltrPar": "⦖",
+  "ltri": "◃",
+  "ltrie": "⊴",
+  "ltrif": "◂",
+  "lurdshar": "⥊",
+  "luruhar": "⥦",
+  "lvertneqq": "≨︀",
+  "lvnE": "≨︀",
+  "mDDot": "∺",
+  "mac": "¯",
+  "macr": "¯",
+  "male": "♂",
+  "malt": "✠",
+  "maltese": "✠",
+  "map": "↦",
+  "mapsto": "↦",
+  "mapstodown": "↧",
+  "mapstoleft": "↤",
+  "mapstoup": "↥",
+  "marker": "▮",
+  "mcomma": "⨩",
+  "mcy": "м",
+  "mdash": "—",
+  "measuredangle": "∡",
+  "mfr": "𝔪",
+  "mho": "℧",
+  "micr": "µ",
+  "micro": "µ",
+  "mid": "∣",
+  "midast": "*",
+  "midcir": "⫰",
+  "middo": "·",
+  "middot": "·",
+  "minus": "−",
+  "minusb": "⊟",
+  "minusd": "∸",
+  "minusdu": "⨪",
+  "mlcp": "⫛",
+  "mldr": "…",
+  "mnplus": "∓",
+  "models": "⊧",
+  "mopf": "𝕞",
+  "mp": "∓",
+  "mscr": "𝓂",
+  "mstpos": "∾",
+  "mu": "μ",
+  "multimap": "⊸",
+  "mumap": "⊸",
+  "nGg": "⋙̸",
+  "nGt": "≫⃒",
+  "nGtv": "≫̸",
+  "nLeftarrow": "⇍",
+  "nLeftrightarrow": "⇎",
+  "nLl": "⋘̸",
+  "nLt": "≪⃒",
+  "nLtv": "≪̸",
+  "nRightarrow": "⇏",
+  "nVDash": "⊯",
+  "nVdash": "⊮",
+  "nabla": "∇",
+  "nacute": "ń",
+  "nang": "∠⃒",
+  "nap": "≉",
+  "napE": "⩰̸",
+  "napid": "≋̸",
+  "napos": "ŉ",
+  "napprox": "≉",
+  "natur": "♮",
+  "natural": "♮",
+  "naturals": "ℕ",
+  "nbs": " ",
+  "nbsp": " ",
+  "nbump": "≎̸",
+  "nbumpe": "≏̸",
+  "ncap": "⩃",
+  "ncaron": "ň",
+  "ncedil": "ņ",
+  "ncong": "≇",
+  "ncongdot": "⩭̸",
+  "ncup": "⩂",
+  "ncy": "н",
+  "ndash": "–",
+  "ne": "≠",
+  "neArr": "⇗",
+  "nearhk": "⤤",
+  "nearr": "↗",
+  "nearrow": "↗",
+  "nedot": "≐̸",
+  "nequiv": "≢",
+  "nesear": "⤨",
+  "nesim": "≂̸",
+  "nexist": "∄",
+  "nexists": "∄",
+  "nfr": "𝔫",
+  "ngE": "≧̸",
+  "nge": "≱",
+  "ngeq": "≱",
+  "ngeqq": "≧̸",
+  "ngeqslant": "⩾̸",
+  "nges": "⩾̸",
+  "ngsim": "≵",
+  "ngt": "≯",
+  "ngtr": "≯",
+  "nhArr": "⇎",
+  "nharr": "↮",
+  "nhpar": "⫲",
+  "ni": "∋",
+  "nis": "⋼",
+  "nisd": "⋺",
+  "niv": "∋",
+  "njcy": "њ",
+  "nlArr": "⇍",
+  "nlE": "≦̸",
+  "nlarr": "↚",
+  "nldr": "‥",
+  "nle": "≰",
+  "nleftarrow": "↚",
+  "nleftrightarrow": "↮",
+  "nleq": "≰",
+  "nleqq": "≦̸",
+  "nleqslant": "⩽̸",
+  "nles": "⩽̸",
+  "nless": "≮",
+  "nlsim": "≴",
+  "nlt": "≮",
+  "nltri": "⋪",
+  "nltrie": "⋬",
+  "nmid": "∤",
+  "nopf": "𝕟",
+  "no": "¬",
+  "not": "¬",
+  "notin": "∉",
+  "notinE": "⋹̸",
+  "notindot": "⋵̸",
+  "notinva": "∉",
+  "notinvb": "⋷",
+  "notinvc": "⋶",
+  "notni": "∌",
+  "notniva": "∌",
+  "notnivb": "⋾",
+  "notnivc": "⋽",
+  "npar": "∦",
+  "nparallel": "∦",
+  "nparsl": "⫽⃥",
+  "npart": "∂̸",
+  "npolint": "⨔",
+  "npr": "⊀",
+  "nprcue": "⋠",
+  "npre": "⪯̸",
+  "nprec": "⊀",
+  "npreceq": "⪯̸",
+  "nrArr": "⇏",
+  "nrarr": "↛",
+  "nrarrc": "⤳̸",
+  "nrarrw": "↝̸",
+  "nrightarrow": "↛",
+  "nrtri": "⋫",
+  "nrtrie": "⋭",
+  "nsc": "⊁",
+  "nsccue": "⋡",
+  "nsce": "⪰̸",
+  "nscr": "𝓃",
+  "nshortmid": "∤",
+  "nshortparallel": "∦",
+  "nsim": "≁",
+  "nsime": "≄",
+  "nsimeq": "≄",
+  "nsmid": "∤",
+  "nspar": "∦",
+  "nsqsube": "⋢",
+  "nsqsupe": "⋣",
+  "nsub": "⊄",
+  "nsubE": "⫅̸",
+  "nsube": "⊈",
+  "nsubset": "⊂⃒",
+  "nsubseteq": "⊈",
+  "nsubseteqq": "⫅̸",
+  "nsucc": "⊁",
+  "nsucceq": "⪰̸",
+  "nsup": "⊅",
+  "nsupE": "⫆̸",
+  "nsupe": "⊉",
+  "nsupset": "⊃⃒",
+  "nsupseteq": "⊉",
+  "nsupseteqq": "⫆̸",
+  "ntgl": "≹",
+  "ntild": "ñ",
+  "ntilde": "ñ",
+  "ntlg": "≸",
+  "ntriangleleft": "⋪",
+  "ntrianglelefteq": "⋬",
+  "ntriangleright": "⋫",
+  "ntrianglerighteq": "⋭",
+  "nu": "ν",
+  "num": "#",
+  "numero": "№",
+  "numsp": " ",
+  "nvDash": "⊭",
+  "nvHarr": "⤄",
+  "nvap": "≍⃒",
+  "nvdash": "⊬",
+  "nvge": "≥⃒",
+  "nvgt": ">⃒",
+  "nvinfin": "⧞",
+  "nvlArr": "⤂",
+  "nvle": "≤⃒",
+  "nvlt": "<⃒",
+  "nvltrie": "⊴⃒",
+  "nvrArr": "⤃",
+  "nvrtrie": "⊵⃒",
+  "nvsim": "∼⃒",
+  "nwArr": "⇖",
+  "nwarhk": "⤣",
+  "nwarr": "↖",
+  "nwarrow": "↖",
+  "nwnear": "⤧",
+  "oS": "Ⓢ",
+  "oacut": "ó",
+  "oacute": "ó",
+  "oast": "⊛",
+  "ocir": "ô",
+  "ocirc": "ô",
+  "ocy": "о",
+  "odash": "⊝",
+  "odblac": "ő",
+  "odiv": "⨸",
+  "odot": "⊙",
+  "odsold": "⦼",
+  "oelig": "œ",
+  "ofcir": "⦿",
+  "ofr": "𝔬",
+  "ogon": "˛",
+  "ograv": "ò",
+  "ograve": "ò",
+  "ogt": "⧁",
+  "ohbar": "⦵",
+  "ohm": "Ω",
+  "oint": "∮",
+  "olarr": "↺",
+  "olcir": "⦾",
+  "olcross": "⦻",
+  "oline": "‾",
+  "olt": "⧀",
+  "omacr": "ō",
+  "omega": "ω",
+  "omicron": "ο",
+  "omid": "⦶",
+  "ominus": "⊖",
+  "oopf": "𝕠",
+  "opar": "⦷",
+  "operp": "⦹",
+  "oplus": "⊕",
+  "or": "∨",
+  "orarr": "↻",
+  "ord": "º",
+  "order": "ℴ",
+  "orderof": "ℴ",
+  "ordf": "ª",
+  "ordm": "º",
+  "origof": "⊶",
+  "oror": "⩖",
+  "orslope": "⩗",
+  "orv": "⩛",
+  "oscr": "ℴ",
+  "oslas": "ø",
+  "oslash": "ø",
+  "osol": "⊘",
+  "otild": "õ",
+  "otilde": "õ",
+  "otimes": "⊗",
+  "otimesas": "⨶",
+  "oum": "ö",
+  "ouml": "ö",
+  "ovbar": "⌽",
+  "par": "¶",
+  "para": "¶",
+  "parallel": "∥",
+  "parsim": "⫳",
+  "parsl": "⫽",
+  "part": "∂",
+  "pcy": "п",
+  "percnt": "%",
+  "period": ".",
+  "permil": "‰",
+  "perp": "⊥",
+  "pertenk": "‱",
+  "pfr": "𝔭",
+  "phi": "φ",
+  "phiv": "ϕ",
+  "phmmat": "ℳ",
+  "phone": "☎",
+  "pi": "π",
+  "pitchfork": "⋔",
+  "piv": "ϖ",
+  "planck": "ℏ",
+  "planckh": "ℎ",
+  "plankv": "ℏ",
+  "plus": "+",
+  "plusacir": "⨣",
+  "plusb": "⊞",
+  "pluscir": "⨢",
+  "plusdo": "∔",
+  "plusdu": "⨥",
+  "pluse": "⩲",
+  "plusm": "±",
+  "plusmn": "±",
+  "plussim": "⨦",
+  "plustwo": "⨧",
+  "pm": "±",
+  "pointint": "⨕",
+  "popf": "𝕡",
+  "poun": "£",
+  "pound": "£",
+  "pr": "≺",
+  "prE": "⪳",
+  "prap": "⪷",
+  "prcue": "≼",
+  "pre": "⪯",
+  "prec": "≺",
+  "precapprox": "⪷",
+  "preccurlyeq": "≼",
+  "preceq": "⪯",
+  "precnapprox": "⪹",
+  "precneqq": "⪵",
+  "precnsim": "⋨",
+  "precsim": "≾",
+  "prime": "′",
+  "primes": "ℙ",
+  "prnE": "⪵",
+  "prnap": "⪹",
+  "prnsim": "⋨",
+  "prod": "∏",
+  "profalar": "⌮",
+  "profline": "⌒",
+  "profsurf": "⌓",
+  "prop": "∝",
+  "propto": "∝",
+  "prsim": "≾",
+  "prurel": "⊰",
+  "pscr": "𝓅",
+  "psi": "ψ",
+  "puncsp": " ",
+  "qfr": "𝔮",
+  "qint": "⨌",
+  "qopf": "𝕢",
+  "qprime": "⁗",
+  "qscr": "𝓆",
+  "quaternions": "ℍ",
+  "quatint": "⨖",
+  "quest": "?",
+  "questeq": "≟",
+  "quo": "\"",
+  "quot": "\"",
+  "rAarr": "⇛",
+  "rArr": "⇒",
+  "rAtail": "⤜",
+  "rBarr": "⤏",
+  "rHar": "⥤",
+  "race": "∽̱",
+  "racute": "ŕ",
+  "radic": "√",
+  "raemptyv": "⦳",
+  "rang": "⟩",
+  "rangd": "⦒",
+  "range": "⦥",
+  "rangle": "⟩",
+  "raqu": "»",
+  "raquo": "»",
+  "rarr": "→",
+  "rarrap": "⥵",
+  "rarrb": "⇥",
+  "rarrbfs": "⤠",
+  "rarrc": "⤳",
+  "rarrfs": "⤞",
+  "rarrhk": "↪",
+  "rarrlp": "↬",
+  "rarrpl": "⥅",
+  "rarrsim": "⥴",
+  "rarrtl": "↣",
+  "rarrw": "↝",
+  "ratail": "⤚",
+  "ratio": "∶",
+  "rationals": "ℚ",
+  "rbarr": "⤍",
+  "rbbrk": "❳",
+  "rbrace": "}",
+  "rbrack": "]",
+  "rbrke": "⦌",
+  "rbrksld": "⦎",
+  "rbrkslu": "⦐",
+  "rcaron": "ř",
+  "rcedil": "ŗ",
+  "rceil": "⌉",
+  "rcub": "}",
+  "rcy": "р",
+  "rdca": "⤷",
+  "rdldhar": "⥩",
+  "rdquo": "”",
+  "rdquor": "”",
+  "rdsh": "↳",
+  "real": "ℜ",
+  "realine": "ℛ",
+  "realpart": "ℜ",
+  "reals": "ℝ",
+  "rect": "▭",
+  "re": "®",
+  "reg": "®",
+  "rfisht": "⥽",
+  "rfloor": "⌋",
+  "rfr": "𝔯",
+  "rhard": "⇁",
+  "rharu": "⇀",
+  "rharul": "⥬",
+  "rho": "ρ",
+  "rhov": "ϱ",
+  "rightarrow": "→",
+  "rightarrowtail": "↣",
+  "rightharpoondown": "⇁",
+  "rightharpoonup": "⇀",
+  "rightleftarrows": "⇄",
+  "rightleftharpoons": "⇌",
+  "rightrightarrows": "⇉",
+  "rightsquigarrow": "↝",
+  "rightthreetimes": "⋌",
+  "ring": "˚",
+  "risingdotseq": "≓",
+  "rlarr": "⇄",
+  "rlhar": "⇌",
+  "rlm": "‏",
+  "rmoust": "⎱",
+  "rmoustache": "⎱",
+  "rnmid": "⫮",
+  "roang": "⟭",
+  "roarr": "⇾",
+  "robrk": "⟧",
+  "ropar": "⦆",
+  "ropf": "𝕣",
+  "roplus": "⨮",
+  "rotimes": "⨵",
+  "rpar": ")",
+  "rpargt": "⦔",
+  "rppolint": "⨒",
+  "rrarr": "⇉",
+  "rsaquo": "›",
+  "rscr": "𝓇",
+  "rsh": "↱",
+  "rsqb": "]",
+  "rsquo": "’",
+  "rsquor": "’",
+  "rthree": "⋌",
+  "rtimes": "⋊",
+  "rtri": "▹",
+  "rtrie": "⊵",
+  "rtrif": "▸",
+  "rtriltri": "⧎",
+  "ruluhar": "⥨",
+  "rx": "℞",
+  "sacute": "ś",
+  "sbquo": "‚",
+  "sc": "≻",
+  "scE": "⪴",
+  "scap": "⪸",
+  "scaron": "š",
+  "sccue": "≽",
+  "sce": "⪰",
+  "scedil": "ş",
+  "scirc": "ŝ",
+  "scnE": "⪶",
+  "scnap": "⪺",
+  "scnsim": "⋩",
+  "scpolint": "⨓",
+  "scsim": "≿",
+  "scy": "с",
+  "sdot": "⋅",
+  "sdotb": "⊡",
+  "sdote": "⩦",
+  "seArr": "⇘",
+  "searhk": "⤥",
+  "searr": "↘",
+  "searrow": "↘",
+  "sec": "§",
+  "sect": "§",
+  "semi": ";",
+  "seswar": "⤩",
+  "setminus": "∖",
+  "setmn": "∖",
+  "sext": "✶",
+  "sfr": "𝔰",
+  "sfrown": "⌢",
+  "sharp": "♯",
+  "shchcy": "щ",
+  "shcy": "ш",
+  "shortmid": "∣",
+  "shortparallel": "∥",
+  "sh": "­",
+  "shy": "­",
+  "sigma": "σ",
+  "sigmaf": "ς",
+  "sigmav": "ς",
+  "sim": "∼",
+  "simdot": "⩪",
+  "sime": "≃",
+  "simeq": "≃",
+  "simg": "⪞",
+  "simgE": "⪠",
+  "siml": "⪝",
+  "simlE": "⪟",
+  "simne": "≆",
+  "simplus": "⨤",
+  "simrarr": "⥲",
+  "slarr": "←",
+  "smallsetminus": "∖",
+  "smashp": "⨳",
+  "smeparsl": "⧤",
+  "smid": "∣",
+  "smile": "⌣",
+  "smt": "⪪",
+  "smte": "⪬",
+  "smtes": "⪬︀",
+  "softcy": "ь",
+  "sol": "/",
+  "solb": "⧄",
+  "solbar": "⌿",
+  "sopf": "𝕤",
+  "spades": "♠",
+  "spadesuit": "♠",
+  "spar": "∥",
+  "sqcap": "⊓",
+  "sqcaps": "⊓︀",
+  "sqcup": "⊔",
+  "sqcups": "⊔︀",
+  "sqsub": "⊏",
+  "sqsube": "⊑",
+  "sqsubset": "⊏",
+  "sqsubseteq": "⊑",
+  "sqsup": "⊐",
+  "sqsupe": "⊒",
+  "sqsupset": "⊐",
+  "sqsupseteq": "⊒",
+  "squ": "□",
+  "square": "□",
+  "squarf": "▪",
+  "squf": "▪",
+  "srarr": "→",
+  "sscr": "𝓈",
+  "ssetmn": "∖",
+  "ssmile": "⌣",
+  "sstarf": "⋆",
+  "star": "☆",
+  "starf": "★",
+  "straightepsilon": "ϵ",
+  "straightphi": "ϕ",
+  "strns": "¯",
+  "sub": "⊂",
+  "subE": "⫅",
+  "subdot": "⪽",
+  "sube": "⊆",
+  "subedot": "⫃",
+  "submult": "⫁",
+  "subnE": "⫋",
+  "subne": "⊊",
+  "subplus": "⪿",
+  "subrarr": "⥹",
+  "subset": "⊂",
+  "subseteq": "⊆",
+  "subseteqq": "⫅",
+  "subsetneq": "⊊",
+  "subsetneqq": "⫋",
+  "subsim": "⫇",
+  "subsub": "⫕",
+  "subsup": "⫓",
+  "succ": "≻",
+  "succapprox": "⪸",
+  "succcurlyeq": "≽",
+  "succeq": "⪰",
+  "succnapprox": "⪺",
+  "succneqq": "⪶",
+  "succnsim": "⋩",
+  "succsim": "≿",
+  "sum": "∑",
+  "sung": "♪",
+  "sup": "⊃",
+  "sup1": "¹",
+  "sup2": "²",
+  "sup3": "³",
+  "supE": "⫆",
+  "supdot": "⪾",
+  "supdsub": "⫘",
+  "supe": "⊇",
+  "supedot": "⫄",
+  "suphsol": "⟉",
+  "suphsub": "⫗",
+  "suplarr": "⥻",
+  "supmult": "⫂",
+  "supnE": "⫌",
+  "supne": "⊋",
+  "supplus": "⫀",
+  "supset": "⊃",
+  "supseteq": "⊇",
+  "supseteqq": "⫆",
+  "supsetneq": "⊋",
+  "supsetneqq": "⫌",
+  "supsim": "⫈",
+  "supsub": "⫔",
+  "supsup": "⫖",
+  "swArr": "⇙",
+  "swarhk": "⤦",
+  "swarr": "↙",
+  "swarrow": "↙",
+  "swnwar": "⤪",
+  "szli": "ß",
+  "szlig": "ß",
+  "target": "⌖",
+  "tau": "τ",
+  "tbrk": "⎴",
+  "tcaron": "ť",
+  "tcedil": "ţ",
+  "tcy": "т",
+  "tdot": "⃛",
+  "telrec": "⌕",
+  "tfr": "𝔱",
+  "there4": "∴",
+  "therefore": "∴",
+  "theta": "θ",
+  "thetasym": "ϑ",
+  "thetav": "ϑ",
+  "thickapprox": "≈",
+  "thicksim": "∼",
+  "thinsp": " ",
+  "thkap": "≈",
+  "thksim": "∼",
+  "thor": "þ",
+  "thorn": "þ",
+  "tilde": "˜",
+  "time": "×",
+  "times": "×",
+  "timesb": "⊠",
+  "timesbar": "⨱",
+  "timesd": "⨰",
+  "tint": "∭",
+  "toea": "⤨",
+  "top": "⊤",
+  "topbot": "⌶",
+  "topcir": "⫱",
+  "topf": "𝕥",
+  "topfork": "⫚",
+  "tosa": "⤩",
+  "tprime": "‴",
+  "trade": "™",
+  "triangle": "▵",
+  "triangledown": "▿",
+  "triangleleft": "◃",
+  "trianglelefteq": "⊴",
+  "triangleq": "≜",
+  "triangleright": "▹",
+  "trianglerighteq": "⊵",
+  "tridot": "◬",
+  "trie": "≜",
+  "triminus": "⨺",
+  "triplus": "⨹",
+  "trisb": "⧍",
+  "tritime": "⨻",
+  "trpezium": "⏢",
+  "tscr": "𝓉",
+  "tscy": "ц",
+  "tshcy": "ћ",
+  "tstrok": "ŧ",
+  "twixt": "≬",
+  "twoheadleftarrow": "↞",
+  "twoheadrightarrow": "↠",
+  "uArr": "⇑",
+  "uHar": "⥣",
+  "uacut": "ú",
+  "uacute": "ú",
+  "uarr": "↑",
+  "ubrcy": "ў",
+  "ubreve": "ŭ",
+  "ucir": "û",
+  "ucirc": "û",
+  "ucy": "у",
+  "udarr": "⇅",
+  "udblac": "ű",
+  "udhar": "⥮",
+  "ufisht": "⥾",
+  "ufr": "𝔲",
+  "ugrav": "ù",
+  "ugrave": "ù",
+  "uharl": "↿",
+  "uharr": "↾",
+  "uhblk": "▀",
+  "ulcorn": "⌜",
+  "ulcorner": "⌜",
+  "ulcrop": "⌏",
+  "ultri": "◸",
+  "umacr": "ū",
+  "um": "¨",
+  "uml": "¨",
+  "uogon": "ų",
+  "uopf": "𝕦",
+  "uparrow": "↑",
+  "updownarrow": "↕",
+  "upharpoonleft": "↿",
+  "upharpoonright": "↾",
+  "uplus": "⊎",
+  "upsi": "υ",
+  "upsih": "ϒ",
+  "upsilon": "υ",
+  "upuparrows": "⇈",
+  "urcorn": "⌝",
+  "urcorner": "⌝",
+  "urcrop": "⌎",
+  "uring": "ů",
+  "urtri": "◹",
+  "uscr": "𝓊",
+  "utdot": "⋰",
+  "utilde": "ũ",
+  "utri": "▵",
+  "utrif": "▴",
+  "uuarr": "⇈",
+  "uum": "ü",
+  "uuml": "ü",
+  "uwangle": "⦧",
+  "vArr": "⇕",
+  "vBar": "⫨",
+  "vBarv": "⫩",
+  "vDash": "⊨",
+  "vangrt": "⦜",
+  "varepsilon": "ϵ",
+  "varkappa": "ϰ",
+  "varnothing": "∅",
+  "varphi": "ϕ",
+  "varpi": "ϖ",
+  "varpropto": "∝",
+  "varr": "↕",
+  "varrho": "ϱ",
+  "varsigma": "ς",
+  "varsubsetneq": "⊊︀",
+  "varsubsetneqq": "⫋︀",
+  "varsupsetneq": "⊋︀",
+  "varsupsetneqq": "⫌︀",
+  "vartheta": "ϑ",
+  "vartriangleleft": "⊲",
+  "vartriangleright": "⊳",
+  "vcy": "в",
+  "vdash": "⊢",
+  "vee": "∨",
+  "veebar": "⊻",
+  "veeeq": "≚",
+  "vellip": "⋮",
+  "verbar": "|",
+  "vert": "|",
+  "vfr": "𝔳",
+  "vltri": "⊲",
+  "vnsub": "⊂⃒",
+  "vnsup": "⊃⃒",
+  "vopf": "𝕧",
+  "vprop": "∝",
+  "vrtri": "⊳",
+  "vscr": "𝓋",
+  "vsubnE": "⫋︀",
+  "vsubne": "⊊︀",
+  "vsupnE": "⫌︀",
+  "vsupne": "⊋︀",
+  "vzigzag": "⦚",
+  "wcirc": "ŵ",
+  "wedbar": "⩟",
+  "wedge": "∧",
+  "wedgeq": "≙",
+  "weierp": "℘",
+  "wfr": "𝔴",
+  "wopf": "𝕨",
+  "wp": "℘",
+  "wr": "≀",
+  "wreath": "≀",
+  "wscr": "𝓌",
+  "xcap": "⋂",
+  "xcirc": "◯",
+  "xcup": "⋃",
+  "xdtri": "▽",
+  "xfr": "𝔵",
+  "xhArr": "⟺",
+  "xharr": "⟷",
+  "xi": "ξ",
+  "xlArr": "⟸",
+  "xlarr": "⟵",
+  "xmap": "⟼",
+  "xnis": "⋻",
+  "xodot": "⨀",
+  "xopf": "𝕩",
+  "xoplus": "⨁",
+  "xotime": "⨂",
+  "xrArr": "⟹",
+  "xrarr": "⟶",
+  "xscr": "𝓍",
+  "xsqcup": "⨆",
+  "xuplus": "⨄",
+  "xutri": "△",
+  "xvee": "⋁",
+  "xwedge": "⋀",
+  "yacut": "ý",
+  "yacute": "ý",
+  "yacy": "я",
+  "ycirc": "ŷ",
+  "ycy": "ы",
+  "ye": "¥",
+  "yen": "¥",
+  "yfr": "𝔶",
+  "yicy": "ї",
+  "yopf": "𝕪",
+  "yscr": "𝓎",
+  "yucy": "ю",
+  "yum": "ÿ",
+  "yuml": "ÿ",
+  "zacute": "ź",
+  "zcaron": "ž",
+  "zcy": "з",
+  "zdot": "ż",
+  "zeetrf": "ℨ",
+  "zeta": "ζ",
+  "zfr": "𝔷",
+  "zhcy": "ж",
+  "zigrarr": "⇝",
+  "zopf": "𝕫",
+  "zscr": "𝓏",
+  "zwj": "‍",
+  "zwnj": "‌"
+}
+
+},{}],22:[function(require,module,exports){
+module.exports={
+  "0": "�",
+  "128": "€",
+  "130": "‚",
+  "131": "ƒ",
+  "132": "„",
+  "133": "…",
+  "134": "†",
+  "135": "‡",
+  "136": "ˆ",
+  "137": "‰",
+  "138": "Š",
+  "139": "‹",
+  "140": "Œ",
+  "142": "Ž",
+  "145": "‘",
+  "146": "’",
+  "147": "“",
+  "148": "”",
+  "149": "•",
+  "150": "–",
+  "151": "—",
+  "152": "˜",
+  "153": "™",
+  "154": "š",
+  "155": "›",
+  "156": "œ",
+  "158": "ž",
+  "159": "Ÿ"
+}
+
+},{}],23:[function(require,module,exports){
 /*!
 Copyright (C) 2013 by WebReflection
 
@@ -3385,7 +6090,7 @@ function parseRecursion(text, reviver) {
 }
 this.stringify = stringifyRecursion;
 this.parse = parseRecursion;
-},{}],17:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 var isRegexp = require('is-regexp');
 var isSupportedRegexpFlag = require('is-supported-regexp-flag');
@@ -3418,7 +6123,17 @@ module.exports = function (re, opts) {
 	return new RegExp(opts.source || re.source, flags);
 };
 
-},{"is-regexp":88,"is-supported-regexp-flag":89}],18:[function(require,module,exports){
+},{"is-regexp":133,"is-supported-regexp-flag":134}],25:[function(require,module,exports){
+'use strict';
+
+module.exports = collapse;
+
+/* collapse(' \t\nbar \nbaz\t'); // ' bar baz ' */
+function collapse(value) {
+  return String(value).replace(/\s+/g, ' ');
+}
+
+},{}],26:[function(require,module,exports){
 module.exports = function (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -3433,7 +6148,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],19:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports={
   "O_RDONLY": 0,
   "O_WRONLY": 1,
@@ -3644,7 +6359,7 @@ module.exports={
   "UV_UDP_REUSEADDR": 4
 }
 
-},{}],20:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3755,9 +6470,9 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":75}],21:[function(require,module,exports){
+},{"../../is-buffer/index.js":116}],29:[function(require,module,exports){
 (function (process){
-//
+//      
 'use strict';
 
 const path = require('path');
@@ -3768,18 +6483,18 @@ const loadDefinedFile = require('./loadDefinedFile');
 const funcRunner = require('./funcRunner');
 const getDirectory = require('./getDirectory');
 
-module.exports = function createExplorer(options
-
-
-
-
-
-
-
-
-
-
-
+module.exports = function createExplorer(options   
+                               
+                      
+                      
+                                  
+                         
+                         
+                   
+                  
+                 
+                                   
+                      
  ) {
   // When `options.sync` is `false` (default),
   // these cache Promises that resolve with results, not the results themselves.
@@ -3811,7 +6526,7 @@ module.exports = function createExplorer(options
 
   function load(
     searchPath        ,
-    configPath
+    configPath         
   )                                                     {
     if (!configPath && options.configPath) {
       configPath = options.configPath;
@@ -3865,7 +6580,7 @@ module.exports = function createExplorer(options
   }
 
   function searchDirectory(
-    directory
+    directory        
   )                                                     {
     if (directoryCache && directoryCache.has(directory)) {
       return directoryCache.get(directory);
@@ -3921,8 +6636,8 @@ function identity(x) {
 }
 
 }).call(this,require('_process'))
-},{"./funcRunner":22,"./getDirectory":23,"./loadDefinedFile":25,"./loadJs":26,"./loadPackageProp":27,"./loadRc":28,"_process":283,"path":146}],22:[function(require,module,exports){
-//
+},{"./funcRunner":30,"./getDirectory":31,"./loadDefinedFile":33,"./loadJs":34,"./loadPackageProp":35,"./loadRc":36,"_process":324,"path":198}],30:[function(require,module,exports){
+//      
 'use strict';
 
 const chainFuncsAsync = (result, func) => result.then(func);
@@ -3935,7 +6650,7 @@ const chainFuncsSync = (result, func) => func(result);
  */
 module.exports = function funcRunner(
   init                ,
-  funcs
+  funcs                 
 )                 {
   const isAsync = init instanceof Promise;
 
@@ -3945,8 +6660,8 @@ module.exports = function funcRunner(
   );
 };
 
-},{}],23:[function(require,module,exports){
-//
+},{}],31:[function(require,module,exports){
+//      
 'use strict';
 
 const path = require('path');
@@ -3954,7 +6669,7 @@ const isDirectory = require('is-directory');
 
 module.exports = function getDirectory(
   filepath        ,
-  sync
+  sync          
 )                           {
   if (sync === true) {
     return isDirectory.sync(filepath) ? filepath : path.dirname(filepath);
@@ -3970,8 +6685,8 @@ module.exports = function getDirectory(
   });
 };
 
-},{"is-directory":76,"path":146}],24:[function(require,module,exports){
-//
+},{"is-directory":118,"path":198}],32:[function(require,module,exports){
+//      
 'use strict';
 
 const os = require('os');
@@ -3981,19 +6696,19 @@ const homedir = os.homedir();
 
 module.exports = function cosmiconfig(
   moduleName        ,
-  options
-
-
-
-
-
-
-
-
-
-
-
-
+  options   
+                                 
+                        
+                        
+                                    
+                           
+                           
+                     
+                    
+                   
+                                     
+                        
+   
 ) {
   options = Object.assign(
     {},
@@ -4012,8 +6727,8 @@ module.exports = function cosmiconfig(
   return createExplorer(options);
 };
 
-},{"./createExplorer":21,"os":141}],25:[function(require,module,exports){
-//
+},{"./createExplorer":29,"os":192}],33:[function(require,module,exports){
+//      
 'use strict';
 
 const yaml = require('js-yaml');
@@ -4024,10 +6739,10 @@ const path = require('path');
 
 module.exports = function loadDefinedFile(
   filepath        ,
-  options
-
-
-
+  options   
+                   
+                                    
+   
 )                                                     {
   function parseContent(content         )                      {
     if (!content) {
@@ -4112,8 +6827,8 @@ function tryRequire(content        , filepath        , cb               ) {
   }
 }
 
-},{"./parseJson":29,"./readFile":30,"js-yaml":93,"path":146,"require-from-string":309}],26:[function(require,module,exports){
-//
+},{"./parseJson":37,"./readFile":38,"js-yaml":140,"path":198,"require-from-string":444}],34:[function(require,module,exports){
+//      
 'use strict';
 
 const requireFromString = require('require-from-string');
@@ -4121,7 +6836,7 @@ const readFile = require('./readFile');
 
 module.exports = function loadJs(
   filepath        ,
-  options
+  options                    
 )                                                     {
   function parseJsFile(content         )                      {
     if (!content) return null;
@@ -4137,8 +6852,8 @@ module.exports = function loadJs(
     : parseJsFile(readFile.sync(filepath));
 };
 
-},{"./readFile":30,"require-from-string":309}],27:[function(require,module,exports){
-//
+},{"./readFile":38,"require-from-string":444}],35:[function(require,module,exports){
+//      
 'use strict';
 
 const path = require('path');
@@ -4147,10 +6862,10 @@ const parseJson = require('./parseJson');
 
 module.exports = function loadPackageProp(
   packageDir        ,
-  options
-
-
-
+  options   
+                        
+                   
+   
 )                                                     {
   const packagePath = path.join(packageDir, 'package.json');
 
@@ -4171,8 +6886,8 @@ module.exports = function loadPackageProp(
     : parseContent(readFile.sync(packagePath));
 };
 
-},{"./parseJson":29,"./readFile":30,"path":146}],28:[function(require,module,exports){
-//
+},{"./parseJson":37,"./readFile":38,"path":198}],36:[function(require,module,exports){
+//      
 'use strict';
 
 const yaml = require('js-yaml');
@@ -4183,11 +6898,11 @@ const funcRunner = require('./funcRunner');
 
 module.exports = function loadRc(
   filepath        ,
-  options
-
-
-
-
+  options   
+                   
+                           
+                           
+   
 )                                                     {
   if (!options.sync) {
     return readFile(filepath)
@@ -4283,15 +6998,15 @@ module.exports = function loadRc(
   }
 };
 
-},{"./funcRunner":22,"./parseJson":29,"./readFile":30,"js-yaml":93,"require-from-string":309}],29:[function(require,module,exports){
-//
+},{"./funcRunner":30,"./parseJson":37,"./readFile":38,"js-yaml":140,"require-from-string":444}],37:[function(require,module,exports){
+//      
 'use strict';
 
 const parseJson = require('parse-json');
 
 module.exports = function parseJsonWrapper(
   json        ,
-  filepath
+  filepath        
 )         {
   try {
     return parseJson(json);
@@ -4301,15 +7016,15 @@ module.exports = function parseJsonWrapper(
   }
 };
 
-},{"parse-json":143}],30:[function(require,module,exports){
-//
+},{"parse-json":195}],38:[function(require,module,exports){
+//      
 'use strict';
 
 const fs = require('fs');
 
-
-
-
+                
+                          
+  
 
 function readFile(filepath        , options          )                   {
   options = options || {};
@@ -4328,7 +7043,7 @@ function readFile(filepath        , options          )                   {
 
 readFile.sync = function readFileSync(
   filepath        ,
-  options
+  options          
 )          {
   options = options || {};
   const throwNotFound = options.throwNotFound || false;
@@ -4345,7 +7060,7 @@ readFile.sync = function readFileSync(
 
 module.exports = readFile;
 
-},{"fs":14}],31:[function(require,module,exports){
+},{"fs":16}],39:[function(require,module,exports){
 (function (process){
 /**
  * This is the web browser implementation of `debug()`.
@@ -4544,7 +7259,7 @@ function localstorage() {
 }
 
 }).call(this,require('_process'))
-},{"./debug":32,"_process":283}],32:[function(require,module,exports){
+},{"./debug":40,"_process":324}],40:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -4771,7 +7486,1424 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":135}],33:[function(require,module,exports){
+},{"ms":186}],41:[function(require,module,exports){
+'use strict';
+const path = require('path');
+const arrify = require('arrify');
+const pathType = require('path-type');
+
+const getExtensions = extensions => extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
+const getPath = filepath => filepath[0] === '!' ? filepath.slice(1) : filepath;
+
+const addExtensions = (file, extensions) => {
+	if (path.extname(file)) {
+		return `**/${file}`;
+	}
+
+	return `**/${file}.${getExtensions(extensions)}`;
+};
+
+const getGlob = (dir, opts) => {
+	opts = Object.assign({}, opts);
+
+	if (opts.files && !Array.isArray(opts.files)) {
+		throw new TypeError(`\`options.files\` must be an \`Array\`, not \`${typeof opts.files}\``);
+	}
+
+	if (opts.extensions && !Array.isArray(opts.extensions)) {
+		throw new TypeError(`\`options.extensions\` must be an \`Array\`, not \`${typeof opts.extensions}\``);
+	}
+
+	if (opts.files && opts.extensions) {
+		return opts.files.map(x => path.join(dir, addExtensions(x, opts.extensions)));
+	} else if (opts.files) {
+		return opts.files.map(x => path.join(dir, `**/${x}`));
+	} else if (opts.extensions) {
+		return [path.join(dir, `**/*.${getExtensions(opts.extensions)}`)];
+	}
+
+	return [path.join(dir, '**')];
+};
+
+module.exports = (input, opts) => {
+	return Promise.all(arrify(input).map(x => pathType.dir(getPath(x))
+		.then(isDir => isDir ? getGlob(x, opts) : x)))
+		.then(globs => [].concat.apply([], globs));
+};
+
+module.exports.sync = (input, opts) => {
+	const globs = arrify(input).map(x => pathType.dirSync(getPath(x)) ? getGlob(x, opts) : x);
+	return [].concat.apply([], globs);
+};
+
+},{"arrify":8,"path":198,"path-type":42}],42:[function(require,module,exports){
+'use strict';
+const fs = require('fs');
+const pify = require('pify');
+
+function type(fn, fn2, fp) {
+	if (typeof fp !== 'string') {
+		return Promise.reject(new TypeError(`Expected a string, got ${typeof fp}`));
+	}
+
+	return pify(fs[fn])(fp)
+		.then(stats => stats[fn2]())
+		.catch(err => {
+			if (err.code === 'ENOENT') {
+				return false;
+			}
+
+			throw err;
+		});
+}
+
+function typeSync(fn, fn2, fp) {
+	if (typeof fp !== 'string') {
+		throw new TypeError(`Expected a string, got ${typeof fp}`);
+	}
+
+	try {
+		return fs[fn](fp)[fn2]();
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			return false;
+		}
+
+		throw err;
+	}
+}
+
+exports.file = type.bind(null, 'stat', 'isFile');
+exports.dir = type.bind(null, 'stat', 'isDirectory');
+exports.symlink = type.bind(null, 'lstat', 'isSymbolicLink');
+exports.fileSync = typeSync.bind(null, 'statSync', 'isFile');
+exports.dirSync = typeSync.bind(null, 'statSync', 'isDirectory');
+exports.symlinkSync = typeSync.bind(null, 'lstatSync', 'isSymbolicLink');
+
+},{"fs":16,"pify":201}],43:[function(require,module,exports){
+/*
+  Module dependencies
+*/
+var ElementType = require('domelementtype');
+var entities = require('entities');
+
+/*
+  Boolean Attributes
+*/
+var booleanAttributes = {
+  __proto__: null,
+  allowfullscreen: true,
+  async: true,
+  autofocus: true,
+  autoplay: true,
+  checked: true,
+  controls: true,
+  default: true,
+  defer: true,
+  disabled: true,
+  hidden: true,
+  ismap: true,
+  loop: true,
+  multiple: true,
+  muted: true,
+  open: true,
+  readonly: true,
+  required: true,
+  reversed: true,
+  scoped: true,
+  seamless: true,
+  selected: true,
+  typemustmatch: true
+};
+
+var unencodedElements = {
+  __proto__: null,
+  style: true,
+  script: true,
+  xmp: true,
+  iframe: true,
+  noembed: true,
+  noframes: true,
+  plaintext: true,
+  noscript: true
+};
+
+/*
+  Format attributes
+*/
+function formatAttrs(attributes, opts) {
+  if (!attributes) return;
+
+  var output = '',
+      value;
+
+  // Loop through the attributes
+  for (var key in attributes) {
+    value = attributes[key];
+    if (output) {
+      output += ' ';
+    }
+
+    if (!value && booleanAttributes[key]) {
+      output += key;
+    } else {
+      output += key + '="' + (opts.decodeEntities ? entities.encodeXML(value) : value) + '"';
+    }
+  }
+
+  return output;
+}
+
+/*
+  Self-enclosing tags (stolen from node-htmlparser)
+*/
+var singleTag = {
+  __proto__: null,
+  area: true,
+  base: true,
+  basefont: true,
+  br: true,
+  col: true,
+  command: true,
+  embed: true,
+  frame: true,
+  hr: true,
+  img: true,
+  input: true,
+  isindex: true,
+  keygen: true,
+  link: true,
+  meta: true,
+  param: true,
+  source: true,
+  track: true,
+  wbr: true,
+};
+
+
+var render = module.exports = function(dom, opts) {
+  if (!Array.isArray(dom) && !dom.cheerio) dom = [dom];
+  opts = opts || {};
+
+  var output = '';
+
+  for(var i = 0; i < dom.length; i++){
+    var elem = dom[i];
+
+    if (elem.type === 'root')
+      output += render(elem.children, opts);
+    else if (ElementType.isTag(elem))
+      output += renderTag(elem, opts);
+    else if (elem.type === ElementType.Directive)
+      output += renderDirective(elem);
+    else if (elem.type === ElementType.Comment)
+      output += renderComment(elem);
+    else if (elem.type === ElementType.CDATA)
+      output += renderCdata(elem);
+    else
+      output += renderText(elem, opts);
+  }
+
+  return output;
+};
+
+function renderTag(elem, opts) {
+  // Handle SVG
+  if (elem.name === "svg") opts = {decodeEntities: opts.decodeEntities, xmlMode: true};
+
+  var tag = '<' + elem.name,
+      attribs = formatAttrs(elem.attribs, opts);
+
+  if (attribs) {
+    tag += ' ' + attribs;
+  }
+
+  if (
+    opts.xmlMode
+    && (!elem.children || elem.children.length === 0)
+  ) {
+    tag += '/>';
+  } else {
+    tag += '>';
+    if (elem.children) {
+      tag += render(elem.children, opts);
+    }
+
+    if (!singleTag[elem.name] || opts.xmlMode) {
+      tag += '</' + elem.name + '>';
+    }
+  }
+
+  return tag;
+}
+
+function renderDirective(elem) {
+  return '<' + elem.data + '>';
+}
+
+function renderText(elem, opts) {
+  var data = elem.data || '';
+
+  // if entities weren't decoded, no need to encode them back
+  if (opts.decodeEntities && !(elem.parent && elem.parent.name in unencodedElements)) {
+    data = entities.encodeXML(data);
+  }
+
+  return data;
+}
+
+function renderCdata(elem) {
+  return '<![CDATA[' + elem.children[0].data + ']]>';
+}
+
+function renderComment(elem) {
+  return '<!--' + elem.data + '-->';
+}
+
+},{"domelementtype":44,"entities":57}],44:[function(require,module,exports){
+//Types of elements found in the DOM
+module.exports = {
+	Text: "text", //Text
+	Directive: "directive", //<? ... ?>
+	Comment: "comment", //<!-- ... -->
+	Script: "script", //<script> tags
+	Style: "style", //<style> tags
+	Tag: "tag", //Any tag
+	CDATA: "cdata", //<![CDATA[ ... ]]>
+
+	isTag: function(elem){
+		return elem.type === "tag" || elem.type === "script" || elem.type === "style";
+	}
+};
+},{}],45:[function(require,module,exports){
+//Types of elements found in the DOM
+module.exports = {
+	Text: "text", //Text
+	Directive: "directive", //<? ... ?>
+	Comment: "comment", //<!-- ... -->
+	Script: "script", //<script> tags
+	Style: "style", //<style> tags
+	Tag: "tag", //Any tag
+	CDATA: "cdata", //<![CDATA[ ... ]]>
+	Doctype: "doctype",
+
+	isTag: function(elem){
+		return elem.type === "tag" || elem.type === "script" || elem.type === "style";
+	}
+};
+
+},{}],46:[function(require,module,exports){
+var ElementType = require("domelementtype");
+
+var re_whitespace = /\s+/g;
+var NodePrototype = require("./lib/node");
+var ElementPrototype = require("./lib/element");
+
+function DomHandler(callback, options, elementCB){
+	if(typeof callback === "object"){
+		elementCB = options;
+		options = callback;
+		callback = null;
+	} else if(typeof options === "function"){
+		elementCB = options;
+		options = defaultOpts;
+	}
+	this._callback = callback;
+	this._options = options || defaultOpts;
+	this._elementCB = elementCB;
+	this.dom = [];
+	this._done = false;
+	this._tagStack = [];
+	this._parser = this._parser || null;
+}
+
+//default options
+var defaultOpts = {
+	normalizeWhitespace: false, //Replace all whitespace with single spaces
+	withStartIndices: false, //Add startIndex properties to nodes
+	withEndIndices: false, //Add endIndex properties to nodes
+};
+
+DomHandler.prototype.onparserinit = function(parser){
+	this._parser = parser;
+};
+
+//Resets the handler back to starting state
+DomHandler.prototype.onreset = function(){
+	DomHandler.call(this, this._callback, this._options, this._elementCB);
+};
+
+//Signals the handler that parsing is done
+DomHandler.prototype.onend = function(){
+	if(this._done) return;
+	this._done = true;
+	this._parser = null;
+	this._handleCallback(null);
+};
+
+DomHandler.prototype._handleCallback =
+DomHandler.prototype.onerror = function(error){
+	if(typeof this._callback === "function"){
+		this._callback(error, this.dom);
+	} else {
+		if(error) throw error;
+	}
+};
+
+DomHandler.prototype.onclosetag = function(){
+	//if(this._tagStack.pop().name !== name) this._handleCallback(Error("Tagname didn't match!"));
+	
+	var elem = this._tagStack.pop();
+
+	if(this._options.withEndIndices){
+		elem.endIndex = this._parser.endIndex;
+	}
+
+	if(this._elementCB) this._elementCB(elem);
+};
+
+DomHandler.prototype._createDomElement = function(properties){
+	if (!this._options.withDomLvl1) return properties;
+
+	var element;
+	if (properties.type === "tag") {
+		element = Object.create(ElementPrototype);
+	} else {
+		element = Object.create(NodePrototype);
+	}
+
+	for (var key in properties) {
+		if (properties.hasOwnProperty(key)) {
+			element[key] = properties[key];
+		}
+	}
+
+	return element;
+};
+
+DomHandler.prototype._addDomElement = function(element){
+	var parent = this._tagStack[this._tagStack.length - 1];
+	var siblings = parent ? parent.children : this.dom;
+	var previousSibling = siblings[siblings.length - 1];
+
+	element.next = null;
+
+	if(this._options.withStartIndices){
+		element.startIndex = this._parser.startIndex;
+	}
+	if(this._options.withEndIndices){
+		element.endIndex = this._parser.endIndex;
+	}
+
+	if(previousSibling){
+		element.prev = previousSibling;
+		previousSibling.next = element;
+	} else {
+		element.prev = null;
+	}
+
+	siblings.push(element);
+	element.parent = parent || null;
+};
+
+DomHandler.prototype.onopentag = function(name, attribs){
+	var properties = {
+		type: name === "script" ? ElementType.Script : name === "style" ? ElementType.Style : ElementType.Tag,
+		name: name,
+		attribs: attribs,
+		children: []
+	};
+
+	var element = this._createDomElement(properties);
+
+	this._addDomElement(element);
+
+	this._tagStack.push(element);
+};
+
+DomHandler.prototype.ontext = function(data){
+	//the ignoreWhitespace is officially dropped, but for now,
+	//it's an alias for normalizeWhitespace
+	var normalize = this._options.normalizeWhitespace || this._options.ignoreWhitespace;
+
+	var lastTag;
+
+	if(!this._tagStack.length && this.dom.length && (lastTag = this.dom[this.dom.length-1]).type === ElementType.Text){
+		if(normalize){
+			lastTag.data = (lastTag.data + data).replace(re_whitespace, " ");
+		} else {
+			lastTag.data += data;
+		}
+	} else {
+		if(
+			this._tagStack.length &&
+			(lastTag = this._tagStack[this._tagStack.length - 1]) &&
+			(lastTag = lastTag.children[lastTag.children.length - 1]) &&
+			lastTag.type === ElementType.Text
+		){
+			if(normalize){
+				lastTag.data = (lastTag.data + data).replace(re_whitespace, " ");
+			} else {
+				lastTag.data += data;
+			}
+		} else {
+			if(normalize){
+				data = data.replace(re_whitespace, " ");
+			}
+
+			var element = this._createDomElement({
+				data: data,
+				type: ElementType.Text
+			});
+
+			this._addDomElement(element);
+		}
+	}
+};
+
+DomHandler.prototype.oncomment = function(data){
+	var lastTag = this._tagStack[this._tagStack.length - 1];
+
+	if(lastTag && lastTag.type === ElementType.Comment){
+		lastTag.data += data;
+		return;
+	}
+
+	var properties = {
+		data: data,
+		type: ElementType.Comment
+	};
+
+	var element = this._createDomElement(properties);
+
+	this._addDomElement(element);
+	this._tagStack.push(element);
+};
+
+DomHandler.prototype.oncdatastart = function(){
+	var properties = {
+		children: [{
+			data: "",
+			type: ElementType.Text
+		}],
+		type: ElementType.CDATA
+	};
+
+	var element = this._createDomElement(properties);
+
+	this._addDomElement(element);
+	this._tagStack.push(element);
+};
+
+DomHandler.prototype.oncommentend = DomHandler.prototype.oncdataend = function(){
+	this._tagStack.pop();
+};
+
+DomHandler.prototype.onprocessinginstruction = function(name, data){
+	var element = this._createDomElement({
+		name: name,
+		data: data,
+		type: ElementType.Directive
+	});
+
+	this._addDomElement(element);
+};
+
+module.exports = DomHandler;
+
+},{"./lib/element":47,"./lib/node":48,"domelementtype":45}],47:[function(require,module,exports){
+// DOM-Level-1-compliant structure
+var NodePrototype = require('./node');
+var ElementPrototype = module.exports = Object.create(NodePrototype);
+
+var domLvl1 = {
+	tagName: "name"
+};
+
+Object.keys(domLvl1).forEach(function(key) {
+	var shorthand = domLvl1[key];
+	Object.defineProperty(ElementPrototype, key, {
+		get: function() {
+			return this[shorthand] || null;
+		},
+		set: function(val) {
+			this[shorthand] = val;
+			return val;
+		}
+	});
+});
+
+},{"./node":48}],48:[function(require,module,exports){
+// This object will be used as the prototype for Nodes when creating a
+// DOM-Level-1-compliant structure.
+var NodePrototype = module.exports = {
+	get firstChild() {
+		var children = this.children;
+		return children && children[0] || null;
+	},
+	get lastChild() {
+		var children = this.children;
+		return children && children[children.length - 1] || null;
+	},
+	get nodeType() {
+		return nodeTypes[this.type] || nodeTypes.element;
+	}
+};
+
+var domLvl1 = {
+	tagName: "name",
+	childNodes: "children",
+	parentNode: "parent",
+	previousSibling: "prev",
+	nextSibling: "next",
+	nodeValue: "data"
+};
+
+var nodeTypes = {
+	element: 1,
+	text: 3,
+	cdata: 4,
+	comment: 8
+};
+
+Object.keys(domLvl1).forEach(function(key) {
+	var shorthand = domLvl1[key];
+	Object.defineProperty(NodePrototype, key, {
+		get: function() {
+			return this[shorthand] || null;
+		},
+		set: function(val) {
+			this[shorthand] = val;
+			return val;
+		}
+	});
+});
+
+},{}],49:[function(require,module,exports){
+var DomUtils = module.exports;
+
+[
+	require("./lib/stringify"),
+	require("./lib/traversal"),
+	require("./lib/manipulation"),
+	require("./lib/querying"),
+	require("./lib/legacy"),
+	require("./lib/helpers")
+].forEach(function(ext){
+	Object.keys(ext).forEach(function(key){
+		DomUtils[key] = ext[key].bind(DomUtils);
+	});
+});
+
+},{"./lib/helpers":50,"./lib/legacy":51,"./lib/manipulation":52,"./lib/querying":53,"./lib/stringify":54,"./lib/traversal":55}],50:[function(require,module,exports){
+// removeSubsets
+// Given an array of nodes, remove any member that is contained by another.
+exports.removeSubsets = function(nodes) {
+	var idx = nodes.length, node, ancestor, replace;
+
+	// Check if each node (or one of its ancestors) is already contained in the
+	// array.
+	while (--idx > -1) {
+		node = ancestor = nodes[idx];
+
+		// Temporarily remove the node under consideration
+		nodes[idx] = null;
+		replace = true;
+
+		while (ancestor) {
+			if (nodes.indexOf(ancestor) > -1) {
+				replace = false;
+				nodes.splice(idx, 1);
+				break;
+			}
+			ancestor = ancestor.parent;
+		}
+
+		// If the node has been found to be unique, re-insert it.
+		if (replace) {
+			nodes[idx] = node;
+		}
+	}
+
+	return nodes;
+};
+
+// Source: http://dom.spec.whatwg.org/#dom-node-comparedocumentposition
+var POSITION = {
+	DISCONNECTED: 1,
+	PRECEDING: 2,
+	FOLLOWING: 4,
+	CONTAINS: 8,
+	CONTAINED_BY: 16
+};
+
+// Compare the position of one node against another node in any other document.
+// The return value is a bitmask with the following values:
+//
+// document order:
+// > There is an ordering, document order, defined on all the nodes in the
+// > document corresponding to the order in which the first character of the
+// > XML representation of each node occurs in the XML representation of the
+// > document after expansion of general entities. Thus, the document element
+// > node will be the first node. Element nodes occur before their children.
+// > Thus, document order orders element nodes in order of the occurrence of
+// > their start-tag in the XML (after expansion of entities). The attribute
+// > nodes of an element occur after the element and before its children. The
+// > relative order of attribute nodes is implementation-dependent./
+// Source:
+// http://www.w3.org/TR/DOM-Level-3-Core/glossary.html#dt-document-order
+//
+// @argument {Node} nodaA The first node to use in the comparison
+// @argument {Node} nodeB The second node to use in the comparison
+//
+// @return {Number} A bitmask describing the input nodes' relative position.
+//         See http://dom.spec.whatwg.org/#dom-node-comparedocumentposition for
+//         a description of these values.
+var comparePos = exports.compareDocumentPosition = function(nodeA, nodeB) {
+	var aParents = [];
+	var bParents = [];
+	var current, sharedParent, siblings, aSibling, bSibling, idx;
+
+	if (nodeA === nodeB) {
+		return 0;
+	}
+
+	current = nodeA;
+	while (current) {
+		aParents.unshift(current);
+		current = current.parent;
+	}
+	current = nodeB;
+	while (current) {
+		bParents.unshift(current);
+		current = current.parent;
+	}
+
+	idx = 0;
+	while (aParents[idx] === bParents[idx]) {
+		idx++;
+	}
+
+	if (idx === 0) {
+		return POSITION.DISCONNECTED;
+	}
+
+	sharedParent = aParents[idx - 1];
+	siblings = sharedParent.children;
+	aSibling = aParents[idx];
+	bSibling = bParents[idx];
+
+	if (siblings.indexOf(aSibling) > siblings.indexOf(bSibling)) {
+		if (sharedParent === nodeB) {
+			return POSITION.FOLLOWING | POSITION.CONTAINED_BY;
+		}
+		return POSITION.FOLLOWING;
+	} else {
+		if (sharedParent === nodeA) {
+			return POSITION.PRECEDING | POSITION.CONTAINS;
+		}
+		return POSITION.PRECEDING;
+	}
+};
+
+// Sort an array of nodes based on their relative position in the document and
+// remove any duplicate nodes. If the array contains nodes that do not belong
+// to the same document, sort order is unspecified.
+//
+// @argument {Array} nodes Array of DOM nodes
+//
+// @returns {Array} collection of unique nodes, sorted in document order
+exports.uniqueSort = function(nodes) {
+	var idx = nodes.length, node, position;
+
+	nodes = nodes.slice();
+
+	while (--idx > -1) {
+		node = nodes[idx];
+		position = nodes.indexOf(node);
+		if (position > -1 && position < idx) {
+			nodes.splice(idx, 1);
+		}
+	}
+	nodes.sort(function(a, b) {
+		var relative = comparePos(a, b);
+		if (relative & POSITION.PRECEDING) {
+			return -1;
+		} else if (relative & POSITION.FOLLOWING) {
+			return 1;
+		}
+		return 0;
+	});
+
+	return nodes;
+};
+
+},{}],51:[function(require,module,exports){
+var ElementType = require("domelementtype");
+var isTag = exports.isTag = ElementType.isTag;
+
+exports.testElement = function(options, element){
+	for(var key in options){
+		if(!options.hasOwnProperty(key));
+		else if(key === "tag_name"){
+			if(!isTag(element) || !options.tag_name(element.name)){
+				return false;
+			}
+		} else if(key === "tag_type"){
+			if(!options.tag_type(element.type)) return false;
+		} else if(key === "tag_contains"){
+			if(isTag(element) || !options.tag_contains(element.data)){
+				return false;
+			}
+		} else if(!element.attribs || !options[key](element.attribs[key])){
+			return false;
+		}
+	}
+	return true;
+};
+
+var Checks = {
+	tag_name: function(name){
+		if(typeof name === "function"){
+			return function(elem){ return isTag(elem) && name(elem.name); };
+		} else if(name === "*"){
+			return isTag;
+		} else {
+			return function(elem){ return isTag(elem) && elem.name === name; };
+		}
+	},
+	tag_type: function(type){
+		if(typeof type === "function"){
+			return function(elem){ return type(elem.type); };
+		} else {
+			return function(elem){ return elem.type === type; };
+		}
+	},
+	tag_contains: function(data){
+		if(typeof data === "function"){
+			return function(elem){ return !isTag(elem) && data(elem.data); };
+		} else {
+			return function(elem){ return !isTag(elem) && elem.data === data; };
+		}
+	}
+};
+
+function getAttribCheck(attrib, value){
+	if(typeof value === "function"){
+		return function(elem){ return elem.attribs && value(elem.attribs[attrib]); };
+	} else {
+		return function(elem){ return elem.attribs && elem.attribs[attrib] === value; };
+	}
+}
+
+function combineFuncs(a, b){
+	return function(elem){
+		return a(elem) || b(elem);
+	};
+}
+
+exports.getElements = function(options, element, recurse, limit){
+	var funcs = Object.keys(options).map(function(key){
+		var value = options[key];
+		return key in Checks ? Checks[key](value) : getAttribCheck(key, value);
+	});
+
+	return funcs.length === 0 ? [] : this.filter(
+		funcs.reduce(combineFuncs),
+		element, recurse, limit
+	);
+};
+
+exports.getElementById = function(id, element, recurse){
+	if(!Array.isArray(element)) element = [element];
+	return this.findOne(getAttribCheck("id", id), element, recurse !== false);
+};
+
+exports.getElementsByTagName = function(name, element, recurse, limit){
+	return this.filter(Checks.tag_name(name), element, recurse, limit);
+};
+
+exports.getElementsByTagType = function(type, element, recurse, limit){
+	return this.filter(Checks.tag_type(type), element, recurse, limit);
+};
+
+},{"domelementtype":45}],52:[function(require,module,exports){
+exports.removeElement = function(elem){
+	if(elem.prev) elem.prev.next = elem.next;
+	if(elem.next) elem.next.prev = elem.prev;
+
+	if(elem.parent){
+		var childs = elem.parent.children;
+		childs.splice(childs.lastIndexOf(elem), 1);
+	}
+};
+
+exports.replaceElement = function(elem, replacement){
+	var prev = replacement.prev = elem.prev;
+	if(prev){
+		prev.next = replacement;
+	}
+
+	var next = replacement.next = elem.next;
+	if(next){
+		next.prev = replacement;
+	}
+
+	var parent = replacement.parent = elem.parent;
+	if(parent){
+		var childs = parent.children;
+		childs[childs.lastIndexOf(elem)] = replacement;
+	}
+};
+
+exports.appendChild = function(elem, child){
+	child.parent = elem;
+
+	if(elem.children.push(child) !== 1){
+		var sibling = elem.children[elem.children.length - 2];
+		sibling.next = child;
+		child.prev = sibling;
+		child.next = null;
+	}
+};
+
+exports.append = function(elem, next){
+	var parent = elem.parent,
+		currNext = elem.next;
+
+	next.next = currNext;
+	next.prev = elem;
+	elem.next = next;
+	next.parent = parent;
+
+	if(currNext){
+		currNext.prev = next;
+		if(parent){
+			var childs = parent.children;
+			childs.splice(childs.lastIndexOf(currNext), 0, next);
+		}
+	} else if(parent){
+		parent.children.push(next);
+	}
+};
+
+exports.prepend = function(elem, prev){
+	var parent = elem.parent;
+	if(parent){
+		var childs = parent.children;
+		childs.splice(childs.lastIndexOf(elem), 0, prev);
+	}
+
+	if(elem.prev){
+		elem.prev.next = prev;
+	}
+	
+	prev.parent = parent;
+	prev.prev = elem.prev;
+	prev.next = elem;
+	elem.prev = prev;
+};
+
+
+
+},{}],53:[function(require,module,exports){
+var isTag = require("domelementtype").isTag;
+
+module.exports = {
+	filter: filter,
+	find: find,
+	findOneChild: findOneChild,
+	findOne: findOne,
+	existsOne: existsOne,
+	findAll: findAll
+};
+
+function filter(test, element, recurse, limit){
+	if(!Array.isArray(element)) element = [element];
+
+	if(typeof limit !== "number" || !isFinite(limit)){
+		limit = Infinity;
+	}
+	return find(test, element, recurse !== false, limit);
+}
+
+function find(test, elems, recurse, limit){
+	var result = [], childs;
+
+	for(var i = 0, j = elems.length; i < j; i++){
+		if(test(elems[i])){
+			result.push(elems[i]);
+			if(--limit <= 0) break;
+		}
+
+		childs = elems[i].children;
+		if(recurse && childs && childs.length > 0){
+			childs = find(test, childs, recurse, limit);
+			result = result.concat(childs);
+			limit -= childs.length;
+			if(limit <= 0) break;
+		}
+	}
+
+	return result;
+}
+
+function findOneChild(test, elems){
+	for(var i = 0, l = elems.length; i < l; i++){
+		if(test(elems[i])) return elems[i];
+	}
+
+	return null;
+}
+
+function findOne(test, elems){
+	var elem = null;
+
+	for(var i = 0, l = elems.length; i < l && !elem; i++){
+		if(!isTag(elems[i])){
+			continue;
+		} else if(test(elems[i])){
+			elem = elems[i];
+		} else if(elems[i].children.length > 0){
+			elem = findOne(test, elems[i].children);
+		}
+	}
+
+	return elem;
+}
+
+function existsOne(test, elems){
+	for(var i = 0, l = elems.length; i < l; i++){
+		if(
+			isTag(elems[i]) && (
+				test(elems[i]) || (
+					elems[i].children.length > 0 &&
+					existsOne(test, elems[i].children)
+				)
+			)
+		){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function findAll(test, rootElems){
+	var result = [];
+	var stack = [rootElems];
+	while(stack.length){
+		var elems = stack.pop();
+		for(var i = 0, j = elems.length; i < j; i++){
+			if(!isTag(elems[i])) continue;
+			if(test(elems[i])) result.push(elems[i]);
+		}
+		while(j-- > 0){
+			if(elems[j].children && elems[j].children.length > 0){
+				stack.push(elems[j].children);
+			}
+		}
+	}
+	return result;
+}
+
+},{"domelementtype":45}],54:[function(require,module,exports){
+var ElementType = require("domelementtype"),
+    getOuterHTML = require("dom-serializer"),
+    isTag = ElementType.isTag;
+
+module.exports = {
+	getInnerHTML: getInnerHTML,
+	getOuterHTML: getOuterHTML,
+	getText: getText
+};
+
+function getInnerHTML(elem, opts){
+	return elem.children ? elem.children.map(function(elem){
+		return getOuterHTML(elem, opts);
+	}).join("") : "";
+}
+
+function getText(elem){
+	if(Array.isArray(elem)) return elem.map(getText).join("");
+	if(isTag(elem)) return elem.name === "br" ? "\n" : getText(elem.children);
+	if(elem.type === ElementType.CDATA) return getText(elem.children);
+	if(elem.type === ElementType.Text) return elem.data;
+	return "";
+}
+
+},{"dom-serializer":43,"domelementtype":45}],55:[function(require,module,exports){
+var getChildren = exports.getChildren = function(elem){
+	return elem.children;
+};
+
+var getParent = exports.getParent = function(elem){
+	return elem.parent;
+};
+
+exports.getSiblings = function(elem){
+	var parent = getParent(elem);
+	return parent ? getChildren(parent) : [elem];
+};
+
+exports.getAttributeValue = function(elem, name){
+	return elem.attribs && elem.attribs[name];
+};
+
+exports.hasAttrib = function(elem, name){
+	return !!elem.attribs && hasOwnProperty.call(elem.attribs, name);
+};
+
+exports.getName = function(elem){
+	return elem.name;
+};
+
+},{}],56:[function(require,module,exports){
+'use strict';
+const isObj = require('is-obj');
+
+function getPathSegments(path) {
+	const pathArr = path.split('.');
+	const parts = [];
+
+	for (let i = 0; i < pathArr.length; i++) {
+		let p = pathArr[i];
+
+		while (p[p.length - 1] === '\\' && pathArr[i + 1] !== undefined) {
+			p = p.slice(0, -1) + '.';
+			p += pathArr[++i];
+		}
+
+		parts.push(p);
+	}
+
+	return parts;
+}
+
+module.exports = {
+	get(obj, path, value) {
+		if (!isObj(obj) || typeof path !== 'string') {
+			return value === undefined ? obj : value;
+		}
+
+		const pathArr = getPathSegments(path);
+
+		for (let i = 0; i < pathArr.length; i++) {
+			if (!Object.prototype.propertyIsEnumerable.call(obj, pathArr[i])) {
+				return value;
+			}
+
+			obj = obj[pathArr[i]];
+
+			if (obj === undefined || obj === null) {
+				// `obj` is either `undefined` or `null` so we want to stop the loop, and
+				// if this is not the last bit of the path, and
+				// if it did't return `undefined`
+				// it would return `null` if `obj` is `null`
+				// but we want `get({foo: null}, 'foo.bar')` to equal `undefined`, or the supplied value, not `null`
+				if (i !== pathArr.length - 1) {
+					return value;
+				}
+
+				break;
+			}
+		}
+
+		return obj;
+	},
+
+	set(obj, path, value) {
+		if (!isObj(obj) || typeof path !== 'string') {
+			return obj;
+		}
+
+		const root = obj;
+		const pathArr = getPathSegments(path);
+
+		for (let i = 0; i < pathArr.length; i++) {
+			const p = pathArr[i];
+
+			if (!isObj(obj[p])) {
+				obj[p] = {};
+			}
+
+			if (i === pathArr.length - 1) {
+				obj[p] = value;
+			}
+
+			obj = obj[p];
+		}
+
+		return root;
+	},
+
+	delete(obj, path) {
+		if (!isObj(obj) || typeof path !== 'string') {
+			return;
+		}
+
+		const pathArr = getPathSegments(path);
+
+		for (let i = 0; i < pathArr.length; i++) {
+			const p = pathArr[i];
+
+			if (i === pathArr.length - 1) {
+				delete obj[p];
+				return;
+			}
+
+			obj = obj[p];
+
+			if (!isObj(obj)) {
+				return;
+			}
+		}
+	},
+
+	has(obj, path) {
+		if (!isObj(obj) || typeof path !== 'string') {
+			return false;
+		}
+
+		const pathArr = getPathSegments(path);
+
+		for (let i = 0; i < pathArr.length; i++) {
+			if (isObj(obj)) {
+				if (!(pathArr[i] in obj)) {
+					return false;
+				}
+
+				obj = obj[pathArr[i]];
+			} else {
+				return false;
+			}
+		}
+
+		return true;
+	}
+};
+
+},{"is-obj":126}],57:[function(require,module,exports){
+var encode = require("./lib/encode.js"),
+    decode = require("./lib/decode.js");
+
+exports.decode = function(data, level){
+	return (!level || level <= 0 ? decode.XML : decode.HTML)(data);
+};
+
+exports.decodeStrict = function(data, level){
+	return (!level || level <= 0 ? decode.XML : decode.HTMLStrict)(data);
+};
+
+exports.encode = function(data, level){
+	return (!level || level <= 0 ? encode.XML : encode.HTML)(data);
+};
+
+exports.encodeXML = encode.XML;
+
+exports.encodeHTML4 =
+exports.encodeHTML5 =
+exports.encodeHTML  = encode.HTML;
+
+exports.decodeXML =
+exports.decodeXMLStrict = decode.XML;
+
+exports.decodeHTML4 =
+exports.decodeHTML5 =
+exports.decodeHTML = decode.HTML;
+
+exports.decodeHTML4Strict =
+exports.decodeHTML5Strict =
+exports.decodeHTMLStrict = decode.HTMLStrict;
+
+exports.escape = encode.escape;
+
+},{"./lib/decode.js":58,"./lib/encode.js":60}],58:[function(require,module,exports){
+var entityMap = require("../maps/entities.json"),
+    legacyMap = require("../maps/legacy.json"),
+    xmlMap    = require("../maps/xml.json"),
+    decodeCodePoint = require("./decode_codepoint.js");
+
+var decodeXMLStrict  = getStrictDecoder(xmlMap),
+    decodeHTMLStrict = getStrictDecoder(entityMap);
+
+function getStrictDecoder(map){
+	var keys = Object.keys(map).join("|"),
+	    replace = getReplacer(map);
+
+	keys += "|#[xX][\\da-fA-F]+|#\\d+";
+
+	var re = new RegExp("&(?:" + keys + ");", "g");
+
+	return function(str){
+		return String(str).replace(re, replace);
+	};
+}
+
+var decodeHTML = (function(){
+	var legacy = Object.keys(legacyMap)
+		.sort(sorter);
+
+	var keys = Object.keys(entityMap)
+		.sort(sorter);
+
+	for(var i = 0, j = 0; i < keys.length; i++){
+		if(legacy[j] === keys[i]){
+			keys[i] += ";?";
+			j++;
+		} else {
+			keys[i] += ";";
+		}
+	}
+
+	var re = new RegExp("&(?:" + keys.join("|") + "|#[xX][\\da-fA-F]+;?|#\\d+;?)", "g"),
+	    replace = getReplacer(entityMap);
+
+	function replacer(str){
+		if(str.substr(-1) !== ";") str += ";";
+		return replace(str);
+	}
+
+	//TODO consider creating a merged map
+	return function(str){
+		return String(str).replace(re, replacer);
+	};
+}());
+
+function sorter(a, b){
+	return a < b ? 1 : -1;
+}
+
+function getReplacer(map){
+	return function replace(str){
+		if(str.charAt(1) === "#"){
+			if(str.charAt(2) === "X" || str.charAt(2) === "x"){
+				return decodeCodePoint(parseInt(str.substr(3), 16));
+			}
+			return decodeCodePoint(parseInt(str.substr(2), 10));
+		}
+		return map[str.slice(1, -1)];
+	};
+}
+
+module.exports = {
+	XML: decodeXMLStrict,
+	HTML: decodeHTML,
+	HTMLStrict: decodeHTMLStrict
+};
+},{"../maps/entities.json":62,"../maps/legacy.json":63,"../maps/xml.json":64,"./decode_codepoint.js":59}],59:[function(require,module,exports){
+var decodeMap = require("../maps/decode.json");
+
+module.exports = decodeCodePoint;
+
+// modified version of https://github.com/mathiasbynens/he/blob/master/src/he.js#L94-L119
+function decodeCodePoint(codePoint){
+
+	if((codePoint >= 0xD800 && codePoint <= 0xDFFF) || codePoint > 0x10FFFF){
+		return "\uFFFD";
+	}
+
+	if(codePoint in decodeMap){
+		codePoint = decodeMap[codePoint];
+	}
+
+	var output = "";
+
+	if(codePoint > 0xFFFF){
+		codePoint -= 0x10000;
+		output += String.fromCharCode(codePoint >>> 10 & 0x3FF | 0xD800);
+		codePoint = 0xDC00 | codePoint & 0x3FF;
+	}
+
+	output += String.fromCharCode(codePoint);
+	return output;
+}
+
+},{"../maps/decode.json":61}],60:[function(require,module,exports){
+var inverseXML = getInverseObj(require("../maps/xml.json")),
+    xmlReplacer = getInverseReplacer(inverseXML);
+
+exports.XML = getInverse(inverseXML, xmlReplacer);
+
+var inverseHTML = getInverseObj(require("../maps/entities.json")),
+    htmlReplacer = getInverseReplacer(inverseHTML);
+
+exports.HTML = getInverse(inverseHTML, htmlReplacer);
+
+function getInverseObj(obj){
+	return Object.keys(obj).sort().reduce(function(inverse, name){
+		inverse[obj[name]] = "&" + name + ";";
+		return inverse;
+	}, {});
+}
+
+function getInverseReplacer(inverse){
+	var single = [],
+	    multiple = [];
+
+	Object.keys(inverse).forEach(function(k){
+		if(k.length === 1){
+			single.push("\\" + k);
+		} else {
+			multiple.push(k);
+		}
+	});
+
+	//TODO add ranges
+	multiple.unshift("[" + single.join("") + "]");
+
+	return new RegExp(multiple.join("|"), "g");
+}
+
+var re_nonASCII = /[^\0-\x7F]/g,
+    re_astralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+
+function singleCharReplacer(c){
+	return "&#x" + c.charCodeAt(0).toString(16).toUpperCase() + ";";
+}
+
+function astralReplacer(c){
+	// http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+	var high = c.charCodeAt(0);
+	var low  = c.charCodeAt(1);
+	var codePoint = (high - 0xD800) * 0x400 + low - 0xDC00 + 0x10000;
+	return "&#x" + codePoint.toString(16).toUpperCase() + ";";
+}
+
+function getInverse(inverse, re){
+	function func(name){
+		return inverse[name];
+	}
+
+	return function(data){
+		return data
+				.replace(re, func)
+				.replace(re_astralSymbols, astralReplacer)
+				.replace(re_nonASCII, singleCharReplacer);
+	};
+}
+
+var re_xmlChars = getInverseReplacer(inverseXML);
+
+function escapeXML(data){
+	return data
+			.replace(re_xmlChars, singleCharReplacer)
+			.replace(re_astralSymbols, astralReplacer)
+			.replace(re_nonASCII, singleCharReplacer);
+}
+
+exports.escape = escapeXML;
+
+},{"../maps/entities.json":62,"../maps/xml.json":64}],61:[function(require,module,exports){
+module.exports={"0":65533,"128":8364,"130":8218,"131":402,"132":8222,"133":8230,"134":8224,"135":8225,"136":710,"137":8240,"138":352,"139":8249,"140":338,"142":381,"145":8216,"146":8217,"147":8220,"148":8221,"149":8226,"150":8211,"151":8212,"152":732,"153":8482,"154":353,"155":8250,"156":339,"158":382,"159":376}
+},{}],62:[function(require,module,exports){
+module.exports={"Aacute":"\u00C1","aacute":"\u00E1","Abreve":"\u0102","abreve":"\u0103","ac":"\u223E","acd":"\u223F","acE":"\u223E\u0333","Acirc":"\u00C2","acirc":"\u00E2","acute":"\u00B4","Acy":"\u0410","acy":"\u0430","AElig":"\u00C6","aelig":"\u00E6","af":"\u2061","Afr":"\uD835\uDD04","afr":"\uD835\uDD1E","Agrave":"\u00C0","agrave":"\u00E0","alefsym":"\u2135","aleph":"\u2135","Alpha":"\u0391","alpha":"\u03B1","Amacr":"\u0100","amacr":"\u0101","amalg":"\u2A3F","amp":"&","AMP":"&","andand":"\u2A55","And":"\u2A53","and":"\u2227","andd":"\u2A5C","andslope":"\u2A58","andv":"\u2A5A","ang":"\u2220","ange":"\u29A4","angle":"\u2220","angmsdaa":"\u29A8","angmsdab":"\u29A9","angmsdac":"\u29AA","angmsdad":"\u29AB","angmsdae":"\u29AC","angmsdaf":"\u29AD","angmsdag":"\u29AE","angmsdah":"\u29AF","angmsd":"\u2221","angrt":"\u221F","angrtvb":"\u22BE","angrtvbd":"\u299D","angsph":"\u2222","angst":"\u00C5","angzarr":"\u237C","Aogon":"\u0104","aogon":"\u0105","Aopf":"\uD835\uDD38","aopf":"\uD835\uDD52","apacir":"\u2A6F","ap":"\u2248","apE":"\u2A70","ape":"\u224A","apid":"\u224B","apos":"'","ApplyFunction":"\u2061","approx":"\u2248","approxeq":"\u224A","Aring":"\u00C5","aring":"\u00E5","Ascr":"\uD835\uDC9C","ascr":"\uD835\uDCB6","Assign":"\u2254","ast":"*","asymp":"\u2248","asympeq":"\u224D","Atilde":"\u00C3","atilde":"\u00E3","Auml":"\u00C4","auml":"\u00E4","awconint":"\u2233","awint":"\u2A11","backcong":"\u224C","backepsilon":"\u03F6","backprime":"\u2035","backsim":"\u223D","backsimeq":"\u22CD","Backslash":"\u2216","Barv":"\u2AE7","barvee":"\u22BD","barwed":"\u2305","Barwed":"\u2306","barwedge":"\u2305","bbrk":"\u23B5","bbrktbrk":"\u23B6","bcong":"\u224C","Bcy":"\u0411","bcy":"\u0431","bdquo":"\u201E","becaus":"\u2235","because":"\u2235","Because":"\u2235","bemptyv":"\u29B0","bepsi":"\u03F6","bernou":"\u212C","Bernoullis":"\u212C","Beta":"\u0392","beta":"\u03B2","beth":"\u2136","between":"\u226C","Bfr":"\uD835\uDD05","bfr":"\uD835\uDD1F","bigcap":"\u22C2","bigcirc":"\u25EF","bigcup":"\u22C3","bigodot":"\u2A00","bigoplus":"\u2A01","bigotimes":"\u2A02","bigsqcup":"\u2A06","bigstar":"\u2605","bigtriangledown":"\u25BD","bigtriangleup":"\u25B3","biguplus":"\u2A04","bigvee":"\u22C1","bigwedge":"\u22C0","bkarow":"\u290D","blacklozenge":"\u29EB","blacksquare":"\u25AA","blacktriangle":"\u25B4","blacktriangledown":"\u25BE","blacktriangleleft":"\u25C2","blacktriangleright":"\u25B8","blank":"\u2423","blk12":"\u2592","blk14":"\u2591","blk34":"\u2593","block":"\u2588","bne":"=\u20E5","bnequiv":"\u2261\u20E5","bNot":"\u2AED","bnot":"\u2310","Bopf":"\uD835\uDD39","bopf":"\uD835\uDD53","bot":"\u22A5","bottom":"\u22A5","bowtie":"\u22C8","boxbox":"\u29C9","boxdl":"\u2510","boxdL":"\u2555","boxDl":"\u2556","boxDL":"\u2557","boxdr":"\u250C","boxdR":"\u2552","boxDr":"\u2553","boxDR":"\u2554","boxh":"\u2500","boxH":"\u2550","boxhd":"\u252C","boxHd":"\u2564","boxhD":"\u2565","boxHD":"\u2566","boxhu":"\u2534","boxHu":"\u2567","boxhU":"\u2568","boxHU":"\u2569","boxminus":"\u229F","boxplus":"\u229E","boxtimes":"\u22A0","boxul":"\u2518","boxuL":"\u255B","boxUl":"\u255C","boxUL":"\u255D","boxur":"\u2514","boxuR":"\u2558","boxUr":"\u2559","boxUR":"\u255A","boxv":"\u2502","boxV":"\u2551","boxvh":"\u253C","boxvH":"\u256A","boxVh":"\u256B","boxVH":"\u256C","boxvl":"\u2524","boxvL":"\u2561","boxVl":"\u2562","boxVL":"\u2563","boxvr":"\u251C","boxvR":"\u255E","boxVr":"\u255F","boxVR":"\u2560","bprime":"\u2035","breve":"\u02D8","Breve":"\u02D8","brvbar":"\u00A6","bscr":"\uD835\uDCB7","Bscr":"\u212C","bsemi":"\u204F","bsim":"\u223D","bsime":"\u22CD","bsolb":"\u29C5","bsol":"\\","bsolhsub":"\u27C8","bull":"\u2022","bullet":"\u2022","bump":"\u224E","bumpE":"\u2AAE","bumpe":"\u224F","Bumpeq":"\u224E","bumpeq":"\u224F","Cacute":"\u0106","cacute":"\u0107","capand":"\u2A44","capbrcup":"\u2A49","capcap":"\u2A4B","cap":"\u2229","Cap":"\u22D2","capcup":"\u2A47","capdot":"\u2A40","CapitalDifferentialD":"\u2145","caps":"\u2229\uFE00","caret":"\u2041","caron":"\u02C7","Cayleys":"\u212D","ccaps":"\u2A4D","Ccaron":"\u010C","ccaron":"\u010D","Ccedil":"\u00C7","ccedil":"\u00E7","Ccirc":"\u0108","ccirc":"\u0109","Cconint":"\u2230","ccups":"\u2A4C","ccupssm":"\u2A50","Cdot":"\u010A","cdot":"\u010B","cedil":"\u00B8","Cedilla":"\u00B8","cemptyv":"\u29B2","cent":"\u00A2","centerdot":"\u00B7","CenterDot":"\u00B7","cfr":"\uD835\uDD20","Cfr":"\u212D","CHcy":"\u0427","chcy":"\u0447","check":"\u2713","checkmark":"\u2713","Chi":"\u03A7","chi":"\u03C7","circ":"\u02C6","circeq":"\u2257","circlearrowleft":"\u21BA","circlearrowright":"\u21BB","circledast":"\u229B","circledcirc":"\u229A","circleddash":"\u229D","CircleDot":"\u2299","circledR":"\u00AE","circledS":"\u24C8","CircleMinus":"\u2296","CirclePlus":"\u2295","CircleTimes":"\u2297","cir":"\u25CB","cirE":"\u29C3","cire":"\u2257","cirfnint":"\u2A10","cirmid":"\u2AEF","cirscir":"\u29C2","ClockwiseContourIntegral":"\u2232","CloseCurlyDoubleQuote":"\u201D","CloseCurlyQuote":"\u2019","clubs":"\u2663","clubsuit":"\u2663","colon":":","Colon":"\u2237","Colone":"\u2A74","colone":"\u2254","coloneq":"\u2254","comma":",","commat":"@","comp":"\u2201","compfn":"\u2218","complement":"\u2201","complexes":"\u2102","cong":"\u2245","congdot":"\u2A6D","Congruent":"\u2261","conint":"\u222E","Conint":"\u222F","ContourIntegral":"\u222E","copf":"\uD835\uDD54","Copf":"\u2102","coprod":"\u2210","Coproduct":"\u2210","copy":"\u00A9","COPY":"\u00A9","copysr":"\u2117","CounterClockwiseContourIntegral":"\u2233","crarr":"\u21B5","cross":"\u2717","Cross":"\u2A2F","Cscr":"\uD835\uDC9E","cscr":"\uD835\uDCB8","csub":"\u2ACF","csube":"\u2AD1","csup":"\u2AD0","csupe":"\u2AD2","ctdot":"\u22EF","cudarrl":"\u2938","cudarrr":"\u2935","cuepr":"\u22DE","cuesc":"\u22DF","cularr":"\u21B6","cularrp":"\u293D","cupbrcap":"\u2A48","cupcap":"\u2A46","CupCap":"\u224D","cup":"\u222A","Cup":"\u22D3","cupcup":"\u2A4A","cupdot":"\u228D","cupor":"\u2A45","cups":"\u222A\uFE00","curarr":"\u21B7","curarrm":"\u293C","curlyeqprec":"\u22DE","curlyeqsucc":"\u22DF","curlyvee":"\u22CE","curlywedge":"\u22CF","curren":"\u00A4","curvearrowleft":"\u21B6","curvearrowright":"\u21B7","cuvee":"\u22CE","cuwed":"\u22CF","cwconint":"\u2232","cwint":"\u2231","cylcty":"\u232D","dagger":"\u2020","Dagger":"\u2021","daleth":"\u2138","darr":"\u2193","Darr":"\u21A1","dArr":"\u21D3","dash":"\u2010","Dashv":"\u2AE4","dashv":"\u22A3","dbkarow":"\u290F","dblac":"\u02DD","Dcaron":"\u010E","dcaron":"\u010F","Dcy":"\u0414","dcy":"\u0434","ddagger":"\u2021","ddarr":"\u21CA","DD":"\u2145","dd":"\u2146","DDotrahd":"\u2911","ddotseq":"\u2A77","deg":"\u00B0","Del":"\u2207","Delta":"\u0394","delta":"\u03B4","demptyv":"\u29B1","dfisht":"\u297F","Dfr":"\uD835\uDD07","dfr":"\uD835\uDD21","dHar":"\u2965","dharl":"\u21C3","dharr":"\u21C2","DiacriticalAcute":"\u00B4","DiacriticalDot":"\u02D9","DiacriticalDoubleAcute":"\u02DD","DiacriticalGrave":"`","DiacriticalTilde":"\u02DC","diam":"\u22C4","diamond":"\u22C4","Diamond":"\u22C4","diamondsuit":"\u2666","diams":"\u2666","die":"\u00A8","DifferentialD":"\u2146","digamma":"\u03DD","disin":"\u22F2","div":"\u00F7","divide":"\u00F7","divideontimes":"\u22C7","divonx":"\u22C7","DJcy":"\u0402","djcy":"\u0452","dlcorn":"\u231E","dlcrop":"\u230D","dollar":"$","Dopf":"\uD835\uDD3B","dopf":"\uD835\uDD55","Dot":"\u00A8","dot":"\u02D9","DotDot":"\u20DC","doteq":"\u2250","doteqdot":"\u2251","DotEqual":"\u2250","dotminus":"\u2238","dotplus":"\u2214","dotsquare":"\u22A1","doublebarwedge":"\u2306","DoubleContourIntegral":"\u222F","DoubleDot":"\u00A8","DoubleDownArrow":"\u21D3","DoubleLeftArrow":"\u21D0","DoubleLeftRightArrow":"\u21D4","DoubleLeftTee":"\u2AE4","DoubleLongLeftArrow":"\u27F8","DoubleLongLeftRightArrow":"\u27FA","DoubleLongRightArrow":"\u27F9","DoubleRightArrow":"\u21D2","DoubleRightTee":"\u22A8","DoubleUpArrow":"\u21D1","DoubleUpDownArrow":"\u21D5","DoubleVerticalBar":"\u2225","DownArrowBar":"\u2913","downarrow":"\u2193","DownArrow":"\u2193","Downarrow":"\u21D3","DownArrowUpArrow":"\u21F5","DownBreve":"\u0311","downdownarrows":"\u21CA","downharpoonleft":"\u21C3","downharpoonright":"\u21C2","DownLeftRightVector":"\u2950","DownLeftTeeVector":"\u295E","DownLeftVectorBar":"\u2956","DownLeftVector":"\u21BD","DownRightTeeVector":"\u295F","DownRightVectorBar":"\u2957","DownRightVector":"\u21C1","DownTeeArrow":"\u21A7","DownTee":"\u22A4","drbkarow":"\u2910","drcorn":"\u231F","drcrop":"\u230C","Dscr":"\uD835\uDC9F","dscr":"\uD835\uDCB9","DScy":"\u0405","dscy":"\u0455","dsol":"\u29F6","Dstrok":"\u0110","dstrok":"\u0111","dtdot":"\u22F1","dtri":"\u25BF","dtrif":"\u25BE","duarr":"\u21F5","duhar":"\u296F","dwangle":"\u29A6","DZcy":"\u040F","dzcy":"\u045F","dzigrarr":"\u27FF","Eacute":"\u00C9","eacute":"\u00E9","easter":"\u2A6E","Ecaron":"\u011A","ecaron":"\u011B","Ecirc":"\u00CA","ecirc":"\u00EA","ecir":"\u2256","ecolon":"\u2255","Ecy":"\u042D","ecy":"\u044D","eDDot":"\u2A77","Edot":"\u0116","edot":"\u0117","eDot":"\u2251","ee":"\u2147","efDot":"\u2252","Efr":"\uD835\uDD08","efr":"\uD835\uDD22","eg":"\u2A9A","Egrave":"\u00C8","egrave":"\u00E8","egs":"\u2A96","egsdot":"\u2A98","el":"\u2A99","Element":"\u2208","elinters":"\u23E7","ell":"\u2113","els":"\u2A95","elsdot":"\u2A97","Emacr":"\u0112","emacr":"\u0113","empty":"\u2205","emptyset":"\u2205","EmptySmallSquare":"\u25FB","emptyv":"\u2205","EmptyVerySmallSquare":"\u25AB","emsp13":"\u2004","emsp14":"\u2005","emsp":"\u2003","ENG":"\u014A","eng":"\u014B","ensp":"\u2002","Eogon":"\u0118","eogon":"\u0119","Eopf":"\uD835\uDD3C","eopf":"\uD835\uDD56","epar":"\u22D5","eparsl":"\u29E3","eplus":"\u2A71","epsi":"\u03B5","Epsilon":"\u0395","epsilon":"\u03B5","epsiv":"\u03F5","eqcirc":"\u2256","eqcolon":"\u2255","eqsim":"\u2242","eqslantgtr":"\u2A96","eqslantless":"\u2A95","Equal":"\u2A75","equals":"=","EqualTilde":"\u2242","equest":"\u225F","Equilibrium":"\u21CC","equiv":"\u2261","equivDD":"\u2A78","eqvparsl":"\u29E5","erarr":"\u2971","erDot":"\u2253","escr":"\u212F","Escr":"\u2130","esdot":"\u2250","Esim":"\u2A73","esim":"\u2242","Eta":"\u0397","eta":"\u03B7","ETH":"\u00D0","eth":"\u00F0","Euml":"\u00CB","euml":"\u00EB","euro":"\u20AC","excl":"!","exist":"\u2203","Exists":"\u2203","expectation":"\u2130","exponentiale":"\u2147","ExponentialE":"\u2147","fallingdotseq":"\u2252","Fcy":"\u0424","fcy":"\u0444","female":"\u2640","ffilig":"\uFB03","fflig":"\uFB00","ffllig":"\uFB04","Ffr":"\uD835\uDD09","ffr":"\uD835\uDD23","filig":"\uFB01","FilledSmallSquare":"\u25FC","FilledVerySmallSquare":"\u25AA","fjlig":"fj","flat":"\u266D","fllig":"\uFB02","fltns":"\u25B1","fnof":"\u0192","Fopf":"\uD835\uDD3D","fopf":"\uD835\uDD57","forall":"\u2200","ForAll":"\u2200","fork":"\u22D4","forkv":"\u2AD9","Fouriertrf":"\u2131","fpartint":"\u2A0D","frac12":"\u00BD","frac13":"\u2153","frac14":"\u00BC","frac15":"\u2155","frac16":"\u2159","frac18":"\u215B","frac23":"\u2154","frac25":"\u2156","frac34":"\u00BE","frac35":"\u2157","frac38":"\u215C","frac45":"\u2158","frac56":"\u215A","frac58":"\u215D","frac78":"\u215E","frasl":"\u2044","frown":"\u2322","fscr":"\uD835\uDCBB","Fscr":"\u2131","gacute":"\u01F5","Gamma":"\u0393","gamma":"\u03B3","Gammad":"\u03DC","gammad":"\u03DD","gap":"\u2A86","Gbreve":"\u011E","gbreve":"\u011F","Gcedil":"\u0122","Gcirc":"\u011C","gcirc":"\u011D","Gcy":"\u0413","gcy":"\u0433","Gdot":"\u0120","gdot":"\u0121","ge":"\u2265","gE":"\u2267","gEl":"\u2A8C","gel":"\u22DB","geq":"\u2265","geqq":"\u2267","geqslant":"\u2A7E","gescc":"\u2AA9","ges":"\u2A7E","gesdot":"\u2A80","gesdoto":"\u2A82","gesdotol":"\u2A84","gesl":"\u22DB\uFE00","gesles":"\u2A94","Gfr":"\uD835\uDD0A","gfr":"\uD835\uDD24","gg":"\u226B","Gg":"\u22D9","ggg":"\u22D9","gimel":"\u2137","GJcy":"\u0403","gjcy":"\u0453","gla":"\u2AA5","gl":"\u2277","glE":"\u2A92","glj":"\u2AA4","gnap":"\u2A8A","gnapprox":"\u2A8A","gne":"\u2A88","gnE":"\u2269","gneq":"\u2A88","gneqq":"\u2269","gnsim":"\u22E7","Gopf":"\uD835\uDD3E","gopf":"\uD835\uDD58","grave":"`","GreaterEqual":"\u2265","GreaterEqualLess":"\u22DB","GreaterFullEqual":"\u2267","GreaterGreater":"\u2AA2","GreaterLess":"\u2277","GreaterSlantEqual":"\u2A7E","GreaterTilde":"\u2273","Gscr":"\uD835\uDCA2","gscr":"\u210A","gsim":"\u2273","gsime":"\u2A8E","gsiml":"\u2A90","gtcc":"\u2AA7","gtcir":"\u2A7A","gt":">","GT":">","Gt":"\u226B","gtdot":"\u22D7","gtlPar":"\u2995","gtquest":"\u2A7C","gtrapprox":"\u2A86","gtrarr":"\u2978","gtrdot":"\u22D7","gtreqless":"\u22DB","gtreqqless":"\u2A8C","gtrless":"\u2277","gtrsim":"\u2273","gvertneqq":"\u2269\uFE00","gvnE":"\u2269\uFE00","Hacek":"\u02C7","hairsp":"\u200A","half":"\u00BD","hamilt":"\u210B","HARDcy":"\u042A","hardcy":"\u044A","harrcir":"\u2948","harr":"\u2194","hArr":"\u21D4","harrw":"\u21AD","Hat":"^","hbar":"\u210F","Hcirc":"\u0124","hcirc":"\u0125","hearts":"\u2665","heartsuit":"\u2665","hellip":"\u2026","hercon":"\u22B9","hfr":"\uD835\uDD25","Hfr":"\u210C","HilbertSpace":"\u210B","hksearow":"\u2925","hkswarow":"\u2926","hoarr":"\u21FF","homtht":"\u223B","hookleftarrow":"\u21A9","hookrightarrow":"\u21AA","hopf":"\uD835\uDD59","Hopf":"\u210D","horbar":"\u2015","HorizontalLine":"\u2500","hscr":"\uD835\uDCBD","Hscr":"\u210B","hslash":"\u210F","Hstrok":"\u0126","hstrok":"\u0127","HumpDownHump":"\u224E","HumpEqual":"\u224F","hybull":"\u2043","hyphen":"\u2010","Iacute":"\u00CD","iacute":"\u00ED","ic":"\u2063","Icirc":"\u00CE","icirc":"\u00EE","Icy":"\u0418","icy":"\u0438","Idot":"\u0130","IEcy":"\u0415","iecy":"\u0435","iexcl":"\u00A1","iff":"\u21D4","ifr":"\uD835\uDD26","Ifr":"\u2111","Igrave":"\u00CC","igrave":"\u00EC","ii":"\u2148","iiiint":"\u2A0C","iiint":"\u222D","iinfin":"\u29DC","iiota":"\u2129","IJlig":"\u0132","ijlig":"\u0133","Imacr":"\u012A","imacr":"\u012B","image":"\u2111","ImaginaryI":"\u2148","imagline":"\u2110","imagpart":"\u2111","imath":"\u0131","Im":"\u2111","imof":"\u22B7","imped":"\u01B5","Implies":"\u21D2","incare":"\u2105","in":"\u2208","infin":"\u221E","infintie":"\u29DD","inodot":"\u0131","intcal":"\u22BA","int":"\u222B","Int":"\u222C","integers":"\u2124","Integral":"\u222B","intercal":"\u22BA","Intersection":"\u22C2","intlarhk":"\u2A17","intprod":"\u2A3C","InvisibleComma":"\u2063","InvisibleTimes":"\u2062","IOcy":"\u0401","iocy":"\u0451","Iogon":"\u012E","iogon":"\u012F","Iopf":"\uD835\uDD40","iopf":"\uD835\uDD5A","Iota":"\u0399","iota":"\u03B9","iprod":"\u2A3C","iquest":"\u00BF","iscr":"\uD835\uDCBE","Iscr":"\u2110","isin":"\u2208","isindot":"\u22F5","isinE":"\u22F9","isins":"\u22F4","isinsv":"\u22F3","isinv":"\u2208","it":"\u2062","Itilde":"\u0128","itilde":"\u0129","Iukcy":"\u0406","iukcy":"\u0456","Iuml":"\u00CF","iuml":"\u00EF","Jcirc":"\u0134","jcirc":"\u0135","Jcy":"\u0419","jcy":"\u0439","Jfr":"\uD835\uDD0D","jfr":"\uD835\uDD27","jmath":"\u0237","Jopf":"\uD835\uDD41","jopf":"\uD835\uDD5B","Jscr":"\uD835\uDCA5","jscr":"\uD835\uDCBF","Jsercy":"\u0408","jsercy":"\u0458","Jukcy":"\u0404","jukcy":"\u0454","Kappa":"\u039A","kappa":"\u03BA","kappav":"\u03F0","Kcedil":"\u0136","kcedil":"\u0137","Kcy":"\u041A","kcy":"\u043A","Kfr":"\uD835\uDD0E","kfr":"\uD835\uDD28","kgreen":"\u0138","KHcy":"\u0425","khcy":"\u0445","KJcy":"\u040C","kjcy":"\u045C","Kopf":"\uD835\uDD42","kopf":"\uD835\uDD5C","Kscr":"\uD835\uDCA6","kscr":"\uD835\uDCC0","lAarr":"\u21DA","Lacute":"\u0139","lacute":"\u013A","laemptyv":"\u29B4","lagran":"\u2112","Lambda":"\u039B","lambda":"\u03BB","lang":"\u27E8","Lang":"\u27EA","langd":"\u2991","langle":"\u27E8","lap":"\u2A85","Laplacetrf":"\u2112","laquo":"\u00AB","larrb":"\u21E4","larrbfs":"\u291F","larr":"\u2190","Larr":"\u219E","lArr":"\u21D0","larrfs":"\u291D","larrhk":"\u21A9","larrlp":"\u21AB","larrpl":"\u2939","larrsim":"\u2973","larrtl":"\u21A2","latail":"\u2919","lAtail":"\u291B","lat":"\u2AAB","late":"\u2AAD","lates":"\u2AAD\uFE00","lbarr":"\u290C","lBarr":"\u290E","lbbrk":"\u2772","lbrace":"{","lbrack":"[","lbrke":"\u298B","lbrksld":"\u298F","lbrkslu":"\u298D","Lcaron":"\u013D","lcaron":"\u013E","Lcedil":"\u013B","lcedil":"\u013C","lceil":"\u2308","lcub":"{","Lcy":"\u041B","lcy":"\u043B","ldca":"\u2936","ldquo":"\u201C","ldquor":"\u201E","ldrdhar":"\u2967","ldrushar":"\u294B","ldsh":"\u21B2","le":"\u2264","lE":"\u2266","LeftAngleBracket":"\u27E8","LeftArrowBar":"\u21E4","leftarrow":"\u2190","LeftArrow":"\u2190","Leftarrow":"\u21D0","LeftArrowRightArrow":"\u21C6","leftarrowtail":"\u21A2","LeftCeiling":"\u2308","LeftDoubleBracket":"\u27E6","LeftDownTeeVector":"\u2961","LeftDownVectorBar":"\u2959","LeftDownVector":"\u21C3","LeftFloor":"\u230A","leftharpoondown":"\u21BD","leftharpoonup":"\u21BC","leftleftarrows":"\u21C7","leftrightarrow":"\u2194","LeftRightArrow":"\u2194","Leftrightarrow":"\u21D4","leftrightarrows":"\u21C6","leftrightharpoons":"\u21CB","leftrightsquigarrow":"\u21AD","LeftRightVector":"\u294E","LeftTeeArrow":"\u21A4","LeftTee":"\u22A3","LeftTeeVector":"\u295A","leftthreetimes":"\u22CB","LeftTriangleBar":"\u29CF","LeftTriangle":"\u22B2","LeftTriangleEqual":"\u22B4","LeftUpDownVector":"\u2951","LeftUpTeeVector":"\u2960","LeftUpVectorBar":"\u2958","LeftUpVector":"\u21BF","LeftVectorBar":"\u2952","LeftVector":"\u21BC","lEg":"\u2A8B","leg":"\u22DA","leq":"\u2264","leqq":"\u2266","leqslant":"\u2A7D","lescc":"\u2AA8","les":"\u2A7D","lesdot":"\u2A7F","lesdoto":"\u2A81","lesdotor":"\u2A83","lesg":"\u22DA\uFE00","lesges":"\u2A93","lessapprox":"\u2A85","lessdot":"\u22D6","lesseqgtr":"\u22DA","lesseqqgtr":"\u2A8B","LessEqualGreater":"\u22DA","LessFullEqual":"\u2266","LessGreater":"\u2276","lessgtr":"\u2276","LessLess":"\u2AA1","lesssim":"\u2272","LessSlantEqual":"\u2A7D","LessTilde":"\u2272","lfisht":"\u297C","lfloor":"\u230A","Lfr":"\uD835\uDD0F","lfr":"\uD835\uDD29","lg":"\u2276","lgE":"\u2A91","lHar":"\u2962","lhard":"\u21BD","lharu":"\u21BC","lharul":"\u296A","lhblk":"\u2584","LJcy":"\u0409","ljcy":"\u0459","llarr":"\u21C7","ll":"\u226A","Ll":"\u22D8","llcorner":"\u231E","Lleftarrow":"\u21DA","llhard":"\u296B","lltri":"\u25FA","Lmidot":"\u013F","lmidot":"\u0140","lmoustache":"\u23B0","lmoust":"\u23B0","lnap":"\u2A89","lnapprox":"\u2A89","lne":"\u2A87","lnE":"\u2268","lneq":"\u2A87","lneqq":"\u2268","lnsim":"\u22E6","loang":"\u27EC","loarr":"\u21FD","lobrk":"\u27E6","longleftarrow":"\u27F5","LongLeftArrow":"\u27F5","Longleftarrow":"\u27F8","longleftrightarrow":"\u27F7","LongLeftRightArrow":"\u27F7","Longleftrightarrow":"\u27FA","longmapsto":"\u27FC","longrightarrow":"\u27F6","LongRightArrow":"\u27F6","Longrightarrow":"\u27F9","looparrowleft":"\u21AB","looparrowright":"\u21AC","lopar":"\u2985","Lopf":"\uD835\uDD43","lopf":"\uD835\uDD5D","loplus":"\u2A2D","lotimes":"\u2A34","lowast":"\u2217","lowbar":"_","LowerLeftArrow":"\u2199","LowerRightArrow":"\u2198","loz":"\u25CA","lozenge":"\u25CA","lozf":"\u29EB","lpar":"(","lparlt":"\u2993","lrarr":"\u21C6","lrcorner":"\u231F","lrhar":"\u21CB","lrhard":"\u296D","lrm":"\u200E","lrtri":"\u22BF","lsaquo":"\u2039","lscr":"\uD835\uDCC1","Lscr":"\u2112","lsh":"\u21B0","Lsh":"\u21B0","lsim":"\u2272","lsime":"\u2A8D","lsimg":"\u2A8F","lsqb":"[","lsquo":"\u2018","lsquor":"\u201A","Lstrok":"\u0141","lstrok":"\u0142","ltcc":"\u2AA6","ltcir":"\u2A79","lt":"<","LT":"<","Lt":"\u226A","ltdot":"\u22D6","lthree":"\u22CB","ltimes":"\u22C9","ltlarr":"\u2976","ltquest":"\u2A7B","ltri":"\u25C3","ltrie":"\u22B4","ltrif":"\u25C2","ltrPar":"\u2996","lurdshar":"\u294A","luruhar":"\u2966","lvertneqq":"\u2268\uFE00","lvnE":"\u2268\uFE00","macr":"\u00AF","male":"\u2642","malt":"\u2720","maltese":"\u2720","Map":"\u2905","map":"\u21A6","mapsto":"\u21A6","mapstodown":"\u21A7","mapstoleft":"\u21A4","mapstoup":"\u21A5","marker":"\u25AE","mcomma":"\u2A29","Mcy":"\u041C","mcy":"\u043C","mdash":"\u2014","mDDot":"\u223A","measuredangle":"\u2221","MediumSpace":"\u205F","Mellintrf":"\u2133","Mfr":"\uD835\uDD10","mfr":"\uD835\uDD2A","mho":"\u2127","micro":"\u00B5","midast":"*","midcir":"\u2AF0","mid":"\u2223","middot":"\u00B7","minusb":"\u229F","minus":"\u2212","minusd":"\u2238","minusdu":"\u2A2A","MinusPlus":"\u2213","mlcp":"\u2ADB","mldr":"\u2026","mnplus":"\u2213","models":"\u22A7","Mopf":"\uD835\uDD44","mopf":"\uD835\uDD5E","mp":"\u2213","mscr":"\uD835\uDCC2","Mscr":"\u2133","mstpos":"\u223E","Mu":"\u039C","mu":"\u03BC","multimap":"\u22B8","mumap":"\u22B8","nabla":"\u2207","Nacute":"\u0143","nacute":"\u0144","nang":"\u2220\u20D2","nap":"\u2249","napE":"\u2A70\u0338","napid":"\u224B\u0338","napos":"\u0149","napprox":"\u2249","natural":"\u266E","naturals":"\u2115","natur":"\u266E","nbsp":"\u00A0","nbump":"\u224E\u0338","nbumpe":"\u224F\u0338","ncap":"\u2A43","Ncaron":"\u0147","ncaron":"\u0148","Ncedil":"\u0145","ncedil":"\u0146","ncong":"\u2247","ncongdot":"\u2A6D\u0338","ncup":"\u2A42","Ncy":"\u041D","ncy":"\u043D","ndash":"\u2013","nearhk":"\u2924","nearr":"\u2197","neArr":"\u21D7","nearrow":"\u2197","ne":"\u2260","nedot":"\u2250\u0338","NegativeMediumSpace":"\u200B","NegativeThickSpace":"\u200B","NegativeThinSpace":"\u200B","NegativeVeryThinSpace":"\u200B","nequiv":"\u2262","nesear":"\u2928","nesim":"\u2242\u0338","NestedGreaterGreater":"\u226B","NestedLessLess":"\u226A","NewLine":"\n","nexist":"\u2204","nexists":"\u2204","Nfr":"\uD835\uDD11","nfr":"\uD835\uDD2B","ngE":"\u2267\u0338","nge":"\u2271","ngeq":"\u2271","ngeqq":"\u2267\u0338","ngeqslant":"\u2A7E\u0338","nges":"\u2A7E\u0338","nGg":"\u22D9\u0338","ngsim":"\u2275","nGt":"\u226B\u20D2","ngt":"\u226F","ngtr":"\u226F","nGtv":"\u226B\u0338","nharr":"\u21AE","nhArr":"\u21CE","nhpar":"\u2AF2","ni":"\u220B","nis":"\u22FC","nisd":"\u22FA","niv":"\u220B","NJcy":"\u040A","njcy":"\u045A","nlarr":"\u219A","nlArr":"\u21CD","nldr":"\u2025","nlE":"\u2266\u0338","nle":"\u2270","nleftarrow":"\u219A","nLeftarrow":"\u21CD","nleftrightarrow":"\u21AE","nLeftrightarrow":"\u21CE","nleq":"\u2270","nleqq":"\u2266\u0338","nleqslant":"\u2A7D\u0338","nles":"\u2A7D\u0338","nless":"\u226E","nLl":"\u22D8\u0338","nlsim":"\u2274","nLt":"\u226A\u20D2","nlt":"\u226E","nltri":"\u22EA","nltrie":"\u22EC","nLtv":"\u226A\u0338","nmid":"\u2224","NoBreak":"\u2060","NonBreakingSpace":"\u00A0","nopf":"\uD835\uDD5F","Nopf":"\u2115","Not":"\u2AEC","not":"\u00AC","NotCongruent":"\u2262","NotCupCap":"\u226D","NotDoubleVerticalBar":"\u2226","NotElement":"\u2209","NotEqual":"\u2260","NotEqualTilde":"\u2242\u0338","NotExists":"\u2204","NotGreater":"\u226F","NotGreaterEqual":"\u2271","NotGreaterFullEqual":"\u2267\u0338","NotGreaterGreater":"\u226B\u0338","NotGreaterLess":"\u2279","NotGreaterSlantEqual":"\u2A7E\u0338","NotGreaterTilde":"\u2275","NotHumpDownHump":"\u224E\u0338","NotHumpEqual":"\u224F\u0338","notin":"\u2209","notindot":"\u22F5\u0338","notinE":"\u22F9\u0338","notinva":"\u2209","notinvb":"\u22F7","notinvc":"\u22F6","NotLeftTriangleBar":"\u29CF\u0338","NotLeftTriangle":"\u22EA","NotLeftTriangleEqual":"\u22EC","NotLess":"\u226E","NotLessEqual":"\u2270","NotLessGreater":"\u2278","NotLessLess":"\u226A\u0338","NotLessSlantEqual":"\u2A7D\u0338","NotLessTilde":"\u2274","NotNestedGreaterGreater":"\u2AA2\u0338","NotNestedLessLess":"\u2AA1\u0338","notni":"\u220C","notniva":"\u220C","notnivb":"\u22FE","notnivc":"\u22FD","NotPrecedes":"\u2280","NotPrecedesEqual":"\u2AAF\u0338","NotPrecedesSlantEqual":"\u22E0","NotReverseElement":"\u220C","NotRightTriangleBar":"\u29D0\u0338","NotRightTriangle":"\u22EB","NotRightTriangleEqual":"\u22ED","NotSquareSubset":"\u228F\u0338","NotSquareSubsetEqual":"\u22E2","NotSquareSuperset":"\u2290\u0338","NotSquareSupersetEqual":"\u22E3","NotSubset":"\u2282\u20D2","NotSubsetEqual":"\u2288","NotSucceeds":"\u2281","NotSucceedsEqual":"\u2AB0\u0338","NotSucceedsSlantEqual":"\u22E1","NotSucceedsTilde":"\u227F\u0338","NotSuperset":"\u2283\u20D2","NotSupersetEqual":"\u2289","NotTilde":"\u2241","NotTildeEqual":"\u2244","NotTildeFullEqual":"\u2247","NotTildeTilde":"\u2249","NotVerticalBar":"\u2224","nparallel":"\u2226","npar":"\u2226","nparsl":"\u2AFD\u20E5","npart":"\u2202\u0338","npolint":"\u2A14","npr":"\u2280","nprcue":"\u22E0","nprec":"\u2280","npreceq":"\u2AAF\u0338","npre":"\u2AAF\u0338","nrarrc":"\u2933\u0338","nrarr":"\u219B","nrArr":"\u21CF","nrarrw":"\u219D\u0338","nrightarrow":"\u219B","nRightarrow":"\u21CF","nrtri":"\u22EB","nrtrie":"\u22ED","nsc":"\u2281","nsccue":"\u22E1","nsce":"\u2AB0\u0338","Nscr":"\uD835\uDCA9","nscr":"\uD835\uDCC3","nshortmid":"\u2224","nshortparallel":"\u2226","nsim":"\u2241","nsime":"\u2244","nsimeq":"\u2244","nsmid":"\u2224","nspar":"\u2226","nsqsube":"\u22E2","nsqsupe":"\u22E3","nsub":"\u2284","nsubE":"\u2AC5\u0338","nsube":"\u2288","nsubset":"\u2282\u20D2","nsubseteq":"\u2288","nsubseteqq":"\u2AC5\u0338","nsucc":"\u2281","nsucceq":"\u2AB0\u0338","nsup":"\u2285","nsupE":"\u2AC6\u0338","nsupe":"\u2289","nsupset":"\u2283\u20D2","nsupseteq":"\u2289","nsupseteqq":"\u2AC6\u0338","ntgl":"\u2279","Ntilde":"\u00D1","ntilde":"\u00F1","ntlg":"\u2278","ntriangleleft":"\u22EA","ntrianglelefteq":"\u22EC","ntriangleright":"\u22EB","ntrianglerighteq":"\u22ED","Nu":"\u039D","nu":"\u03BD","num":"#","numero":"\u2116","numsp":"\u2007","nvap":"\u224D\u20D2","nvdash":"\u22AC","nvDash":"\u22AD","nVdash":"\u22AE","nVDash":"\u22AF","nvge":"\u2265\u20D2","nvgt":">\u20D2","nvHarr":"\u2904","nvinfin":"\u29DE","nvlArr":"\u2902","nvle":"\u2264\u20D2","nvlt":"<\u20D2","nvltrie":"\u22B4\u20D2","nvrArr":"\u2903","nvrtrie":"\u22B5\u20D2","nvsim":"\u223C\u20D2","nwarhk":"\u2923","nwarr":"\u2196","nwArr":"\u21D6","nwarrow":"\u2196","nwnear":"\u2927","Oacute":"\u00D3","oacute":"\u00F3","oast":"\u229B","Ocirc":"\u00D4","ocirc":"\u00F4","ocir":"\u229A","Ocy":"\u041E","ocy":"\u043E","odash":"\u229D","Odblac":"\u0150","odblac":"\u0151","odiv":"\u2A38","odot":"\u2299","odsold":"\u29BC","OElig":"\u0152","oelig":"\u0153","ofcir":"\u29BF","Ofr":"\uD835\uDD12","ofr":"\uD835\uDD2C","ogon":"\u02DB","Ograve":"\u00D2","ograve":"\u00F2","ogt":"\u29C1","ohbar":"\u29B5","ohm":"\u03A9","oint":"\u222E","olarr":"\u21BA","olcir":"\u29BE","olcross":"\u29BB","oline":"\u203E","olt":"\u29C0","Omacr":"\u014C","omacr":"\u014D","Omega":"\u03A9","omega":"\u03C9","Omicron":"\u039F","omicron":"\u03BF","omid":"\u29B6","ominus":"\u2296","Oopf":"\uD835\uDD46","oopf":"\uD835\uDD60","opar":"\u29B7","OpenCurlyDoubleQuote":"\u201C","OpenCurlyQuote":"\u2018","operp":"\u29B9","oplus":"\u2295","orarr":"\u21BB","Or":"\u2A54","or":"\u2228","ord":"\u2A5D","order":"\u2134","orderof":"\u2134","ordf":"\u00AA","ordm":"\u00BA","origof":"\u22B6","oror":"\u2A56","orslope":"\u2A57","orv":"\u2A5B","oS":"\u24C8","Oscr":"\uD835\uDCAA","oscr":"\u2134","Oslash":"\u00D8","oslash":"\u00F8","osol":"\u2298","Otilde":"\u00D5","otilde":"\u00F5","otimesas":"\u2A36","Otimes":"\u2A37","otimes":"\u2297","Ouml":"\u00D6","ouml":"\u00F6","ovbar":"\u233D","OverBar":"\u203E","OverBrace":"\u23DE","OverBracket":"\u23B4","OverParenthesis":"\u23DC","para":"\u00B6","parallel":"\u2225","par":"\u2225","parsim":"\u2AF3","parsl":"\u2AFD","part":"\u2202","PartialD":"\u2202","Pcy":"\u041F","pcy":"\u043F","percnt":"%","period":".","permil":"\u2030","perp":"\u22A5","pertenk":"\u2031","Pfr":"\uD835\uDD13","pfr":"\uD835\uDD2D","Phi":"\u03A6","phi":"\u03C6","phiv":"\u03D5","phmmat":"\u2133","phone":"\u260E","Pi":"\u03A0","pi":"\u03C0","pitchfork":"\u22D4","piv":"\u03D6","planck":"\u210F","planckh":"\u210E","plankv":"\u210F","plusacir":"\u2A23","plusb":"\u229E","pluscir":"\u2A22","plus":"+","plusdo":"\u2214","plusdu":"\u2A25","pluse":"\u2A72","PlusMinus":"\u00B1","plusmn":"\u00B1","plussim":"\u2A26","plustwo":"\u2A27","pm":"\u00B1","Poincareplane":"\u210C","pointint":"\u2A15","popf":"\uD835\uDD61","Popf":"\u2119","pound":"\u00A3","prap":"\u2AB7","Pr":"\u2ABB","pr":"\u227A","prcue":"\u227C","precapprox":"\u2AB7","prec":"\u227A","preccurlyeq":"\u227C","Precedes":"\u227A","PrecedesEqual":"\u2AAF","PrecedesSlantEqual":"\u227C","PrecedesTilde":"\u227E","preceq":"\u2AAF","precnapprox":"\u2AB9","precneqq":"\u2AB5","precnsim":"\u22E8","pre":"\u2AAF","prE":"\u2AB3","precsim":"\u227E","prime":"\u2032","Prime":"\u2033","primes":"\u2119","prnap":"\u2AB9","prnE":"\u2AB5","prnsim":"\u22E8","prod":"\u220F","Product":"\u220F","profalar":"\u232E","profline":"\u2312","profsurf":"\u2313","prop":"\u221D","Proportional":"\u221D","Proportion":"\u2237","propto":"\u221D","prsim":"\u227E","prurel":"\u22B0","Pscr":"\uD835\uDCAB","pscr":"\uD835\uDCC5","Psi":"\u03A8","psi":"\u03C8","puncsp":"\u2008","Qfr":"\uD835\uDD14","qfr":"\uD835\uDD2E","qint":"\u2A0C","qopf":"\uD835\uDD62","Qopf":"\u211A","qprime":"\u2057","Qscr":"\uD835\uDCAC","qscr":"\uD835\uDCC6","quaternions":"\u210D","quatint":"\u2A16","quest":"?","questeq":"\u225F","quot":"\"","QUOT":"\"","rAarr":"\u21DB","race":"\u223D\u0331","Racute":"\u0154","racute":"\u0155","radic":"\u221A","raemptyv":"\u29B3","rang":"\u27E9","Rang":"\u27EB","rangd":"\u2992","range":"\u29A5","rangle":"\u27E9","raquo":"\u00BB","rarrap":"\u2975","rarrb":"\u21E5","rarrbfs":"\u2920","rarrc":"\u2933","rarr":"\u2192","Rarr":"\u21A0","rArr":"\u21D2","rarrfs":"\u291E","rarrhk":"\u21AA","rarrlp":"\u21AC","rarrpl":"\u2945","rarrsim":"\u2974","Rarrtl":"\u2916","rarrtl":"\u21A3","rarrw":"\u219D","ratail":"\u291A","rAtail":"\u291C","ratio":"\u2236","rationals":"\u211A","rbarr":"\u290D","rBarr":"\u290F","RBarr":"\u2910","rbbrk":"\u2773","rbrace":"}","rbrack":"]","rbrke":"\u298C","rbrksld":"\u298E","rbrkslu":"\u2990","Rcaron":"\u0158","rcaron":"\u0159","Rcedil":"\u0156","rcedil":"\u0157","rceil":"\u2309","rcub":"}","Rcy":"\u0420","rcy":"\u0440","rdca":"\u2937","rdldhar":"\u2969","rdquo":"\u201D","rdquor":"\u201D","rdsh":"\u21B3","real":"\u211C","realine":"\u211B","realpart":"\u211C","reals":"\u211D","Re":"\u211C","rect":"\u25AD","reg":"\u00AE","REG":"\u00AE","ReverseElement":"\u220B","ReverseEquilibrium":"\u21CB","ReverseUpEquilibrium":"\u296F","rfisht":"\u297D","rfloor":"\u230B","rfr":"\uD835\uDD2F","Rfr":"\u211C","rHar":"\u2964","rhard":"\u21C1","rharu":"\u21C0","rharul":"\u296C","Rho":"\u03A1","rho":"\u03C1","rhov":"\u03F1","RightAngleBracket":"\u27E9","RightArrowBar":"\u21E5","rightarrow":"\u2192","RightArrow":"\u2192","Rightarrow":"\u21D2","RightArrowLeftArrow":"\u21C4","rightarrowtail":"\u21A3","RightCeiling":"\u2309","RightDoubleBracket":"\u27E7","RightDownTeeVector":"\u295D","RightDownVectorBar":"\u2955","RightDownVector":"\u21C2","RightFloor":"\u230B","rightharpoondown":"\u21C1","rightharpoonup":"\u21C0","rightleftarrows":"\u21C4","rightleftharpoons":"\u21CC","rightrightarrows":"\u21C9","rightsquigarrow":"\u219D","RightTeeArrow":"\u21A6","RightTee":"\u22A2","RightTeeVector":"\u295B","rightthreetimes":"\u22CC","RightTriangleBar":"\u29D0","RightTriangle":"\u22B3","RightTriangleEqual":"\u22B5","RightUpDownVector":"\u294F","RightUpTeeVector":"\u295C","RightUpVectorBar":"\u2954","RightUpVector":"\u21BE","RightVectorBar":"\u2953","RightVector":"\u21C0","ring":"\u02DA","risingdotseq":"\u2253","rlarr":"\u21C4","rlhar":"\u21CC","rlm":"\u200F","rmoustache":"\u23B1","rmoust":"\u23B1","rnmid":"\u2AEE","roang":"\u27ED","roarr":"\u21FE","robrk":"\u27E7","ropar":"\u2986","ropf":"\uD835\uDD63","Ropf":"\u211D","roplus":"\u2A2E","rotimes":"\u2A35","RoundImplies":"\u2970","rpar":")","rpargt":"\u2994","rppolint":"\u2A12","rrarr":"\u21C9","Rrightarrow":"\u21DB","rsaquo":"\u203A","rscr":"\uD835\uDCC7","Rscr":"\u211B","rsh":"\u21B1","Rsh":"\u21B1","rsqb":"]","rsquo":"\u2019","rsquor":"\u2019","rthree":"\u22CC","rtimes":"\u22CA","rtri":"\u25B9","rtrie":"\u22B5","rtrif":"\u25B8","rtriltri":"\u29CE","RuleDelayed":"\u29F4","ruluhar":"\u2968","rx":"\u211E","Sacute":"\u015A","sacute":"\u015B","sbquo":"\u201A","scap":"\u2AB8","Scaron":"\u0160","scaron":"\u0161","Sc":"\u2ABC","sc":"\u227B","sccue":"\u227D","sce":"\u2AB0","scE":"\u2AB4","Scedil":"\u015E","scedil":"\u015F","Scirc":"\u015C","scirc":"\u015D","scnap":"\u2ABA","scnE":"\u2AB6","scnsim":"\u22E9","scpolint":"\u2A13","scsim":"\u227F","Scy":"\u0421","scy":"\u0441","sdotb":"\u22A1","sdot":"\u22C5","sdote":"\u2A66","searhk":"\u2925","searr":"\u2198","seArr":"\u21D8","searrow":"\u2198","sect":"\u00A7","semi":";","seswar":"\u2929","setminus":"\u2216","setmn":"\u2216","sext":"\u2736","Sfr":"\uD835\uDD16","sfr":"\uD835\uDD30","sfrown":"\u2322","sharp":"\u266F","SHCHcy":"\u0429","shchcy":"\u0449","SHcy":"\u0428","shcy":"\u0448","ShortDownArrow":"\u2193","ShortLeftArrow":"\u2190","shortmid":"\u2223","shortparallel":"\u2225","ShortRightArrow":"\u2192","ShortUpArrow":"\u2191","shy":"\u00AD","Sigma":"\u03A3","sigma":"\u03C3","sigmaf":"\u03C2","sigmav":"\u03C2","sim":"\u223C","simdot":"\u2A6A","sime":"\u2243","simeq":"\u2243","simg":"\u2A9E","simgE":"\u2AA0","siml":"\u2A9D","simlE":"\u2A9F","simne":"\u2246","simplus":"\u2A24","simrarr":"\u2972","slarr":"\u2190","SmallCircle":"\u2218","smallsetminus":"\u2216","smashp":"\u2A33","smeparsl":"\u29E4","smid":"\u2223","smile":"\u2323","smt":"\u2AAA","smte":"\u2AAC","smtes":"\u2AAC\uFE00","SOFTcy":"\u042C","softcy":"\u044C","solbar":"\u233F","solb":"\u29C4","sol":"/","Sopf":"\uD835\uDD4A","sopf":"\uD835\uDD64","spades":"\u2660","spadesuit":"\u2660","spar":"\u2225","sqcap":"\u2293","sqcaps":"\u2293\uFE00","sqcup":"\u2294","sqcups":"\u2294\uFE00","Sqrt":"\u221A","sqsub":"\u228F","sqsube":"\u2291","sqsubset":"\u228F","sqsubseteq":"\u2291","sqsup":"\u2290","sqsupe":"\u2292","sqsupset":"\u2290","sqsupseteq":"\u2292","square":"\u25A1","Square":"\u25A1","SquareIntersection":"\u2293","SquareSubset":"\u228F","SquareSubsetEqual":"\u2291","SquareSuperset":"\u2290","SquareSupersetEqual":"\u2292","SquareUnion":"\u2294","squarf":"\u25AA","squ":"\u25A1","squf":"\u25AA","srarr":"\u2192","Sscr":"\uD835\uDCAE","sscr":"\uD835\uDCC8","ssetmn":"\u2216","ssmile":"\u2323","sstarf":"\u22C6","Star":"\u22C6","star":"\u2606","starf":"\u2605","straightepsilon":"\u03F5","straightphi":"\u03D5","strns":"\u00AF","sub":"\u2282","Sub":"\u22D0","subdot":"\u2ABD","subE":"\u2AC5","sube":"\u2286","subedot":"\u2AC3","submult":"\u2AC1","subnE":"\u2ACB","subne":"\u228A","subplus":"\u2ABF","subrarr":"\u2979","subset":"\u2282","Subset":"\u22D0","subseteq":"\u2286","subseteqq":"\u2AC5","SubsetEqual":"\u2286","subsetneq":"\u228A","subsetneqq":"\u2ACB","subsim":"\u2AC7","subsub":"\u2AD5","subsup":"\u2AD3","succapprox":"\u2AB8","succ":"\u227B","succcurlyeq":"\u227D","Succeeds":"\u227B","SucceedsEqual":"\u2AB0","SucceedsSlantEqual":"\u227D","SucceedsTilde":"\u227F","succeq":"\u2AB0","succnapprox":"\u2ABA","succneqq":"\u2AB6","succnsim":"\u22E9","succsim":"\u227F","SuchThat":"\u220B","sum":"\u2211","Sum":"\u2211","sung":"\u266A","sup1":"\u00B9","sup2":"\u00B2","sup3":"\u00B3","sup":"\u2283","Sup":"\u22D1","supdot":"\u2ABE","supdsub":"\u2AD8","supE":"\u2AC6","supe":"\u2287","supedot":"\u2AC4","Superset":"\u2283","SupersetEqual":"\u2287","suphsol":"\u27C9","suphsub":"\u2AD7","suplarr":"\u297B","supmult":"\u2AC2","supnE":"\u2ACC","supne":"\u228B","supplus":"\u2AC0","supset":"\u2283","Supset":"\u22D1","supseteq":"\u2287","supseteqq":"\u2AC6","supsetneq":"\u228B","supsetneqq":"\u2ACC","supsim":"\u2AC8","supsub":"\u2AD4","supsup":"\u2AD6","swarhk":"\u2926","swarr":"\u2199","swArr":"\u21D9","swarrow":"\u2199","swnwar":"\u292A","szlig":"\u00DF","Tab":"\t","target":"\u2316","Tau":"\u03A4","tau":"\u03C4","tbrk":"\u23B4","Tcaron":"\u0164","tcaron":"\u0165","Tcedil":"\u0162","tcedil":"\u0163","Tcy":"\u0422","tcy":"\u0442","tdot":"\u20DB","telrec":"\u2315","Tfr":"\uD835\uDD17","tfr":"\uD835\uDD31","there4":"\u2234","therefore":"\u2234","Therefore":"\u2234","Theta":"\u0398","theta":"\u03B8","thetasym":"\u03D1","thetav":"\u03D1","thickapprox":"\u2248","thicksim":"\u223C","ThickSpace":"\u205F\u200A","ThinSpace":"\u2009","thinsp":"\u2009","thkap":"\u2248","thksim":"\u223C","THORN":"\u00DE","thorn":"\u00FE","tilde":"\u02DC","Tilde":"\u223C","TildeEqual":"\u2243","TildeFullEqual":"\u2245","TildeTilde":"\u2248","timesbar":"\u2A31","timesb":"\u22A0","times":"\u00D7","timesd":"\u2A30","tint":"\u222D","toea":"\u2928","topbot":"\u2336","topcir":"\u2AF1","top":"\u22A4","Topf":"\uD835\uDD4B","topf":"\uD835\uDD65","topfork":"\u2ADA","tosa":"\u2929","tprime":"\u2034","trade":"\u2122","TRADE":"\u2122","triangle":"\u25B5","triangledown":"\u25BF","triangleleft":"\u25C3","trianglelefteq":"\u22B4","triangleq":"\u225C","triangleright":"\u25B9","trianglerighteq":"\u22B5","tridot":"\u25EC","trie":"\u225C","triminus":"\u2A3A","TripleDot":"\u20DB","triplus":"\u2A39","trisb":"\u29CD","tritime":"\u2A3B","trpezium":"\u23E2","Tscr":"\uD835\uDCAF","tscr":"\uD835\uDCC9","TScy":"\u0426","tscy":"\u0446","TSHcy":"\u040B","tshcy":"\u045B","Tstrok":"\u0166","tstrok":"\u0167","twixt":"\u226C","twoheadleftarrow":"\u219E","twoheadrightarrow":"\u21A0","Uacute":"\u00DA","uacute":"\u00FA","uarr":"\u2191","Uarr":"\u219F","uArr":"\u21D1","Uarrocir":"\u2949","Ubrcy":"\u040E","ubrcy":"\u045E","Ubreve":"\u016C","ubreve":"\u016D","Ucirc":"\u00DB","ucirc":"\u00FB","Ucy":"\u0423","ucy":"\u0443","udarr":"\u21C5","Udblac":"\u0170","udblac":"\u0171","udhar":"\u296E","ufisht":"\u297E","Ufr":"\uD835\uDD18","ufr":"\uD835\uDD32","Ugrave":"\u00D9","ugrave":"\u00F9","uHar":"\u2963","uharl":"\u21BF","uharr":"\u21BE","uhblk":"\u2580","ulcorn":"\u231C","ulcorner":"\u231C","ulcrop":"\u230F","ultri":"\u25F8","Umacr":"\u016A","umacr":"\u016B","uml":"\u00A8","UnderBar":"_","UnderBrace":"\u23DF","UnderBracket":"\u23B5","UnderParenthesis":"\u23DD","Union":"\u22C3","UnionPlus":"\u228E","Uogon":"\u0172","uogon":"\u0173","Uopf":"\uD835\uDD4C","uopf":"\uD835\uDD66","UpArrowBar":"\u2912","uparrow":"\u2191","UpArrow":"\u2191","Uparrow":"\u21D1","UpArrowDownArrow":"\u21C5","updownarrow":"\u2195","UpDownArrow":"\u2195","Updownarrow":"\u21D5","UpEquilibrium":"\u296E","upharpoonleft":"\u21BF","upharpoonright":"\u21BE","uplus":"\u228E","UpperLeftArrow":"\u2196","UpperRightArrow":"\u2197","upsi":"\u03C5","Upsi":"\u03D2","upsih":"\u03D2","Upsilon":"\u03A5","upsilon":"\u03C5","UpTeeArrow":"\u21A5","UpTee":"\u22A5","upuparrows":"\u21C8","urcorn":"\u231D","urcorner":"\u231D","urcrop":"\u230E","Uring":"\u016E","uring":"\u016F","urtri":"\u25F9","Uscr":"\uD835\uDCB0","uscr":"\uD835\uDCCA","utdot":"\u22F0","Utilde":"\u0168","utilde":"\u0169","utri":"\u25B5","utrif":"\u25B4","uuarr":"\u21C8","Uuml":"\u00DC","uuml":"\u00FC","uwangle":"\u29A7","vangrt":"\u299C","varepsilon":"\u03F5","varkappa":"\u03F0","varnothing":"\u2205","varphi":"\u03D5","varpi":"\u03D6","varpropto":"\u221D","varr":"\u2195","vArr":"\u21D5","varrho":"\u03F1","varsigma":"\u03C2","varsubsetneq":"\u228A\uFE00","varsubsetneqq":"\u2ACB\uFE00","varsupsetneq":"\u228B\uFE00","varsupsetneqq":"\u2ACC\uFE00","vartheta":"\u03D1","vartriangleleft":"\u22B2","vartriangleright":"\u22B3","vBar":"\u2AE8","Vbar":"\u2AEB","vBarv":"\u2AE9","Vcy":"\u0412","vcy":"\u0432","vdash":"\u22A2","vDash":"\u22A8","Vdash":"\u22A9","VDash":"\u22AB","Vdashl":"\u2AE6","veebar":"\u22BB","vee":"\u2228","Vee":"\u22C1","veeeq":"\u225A","vellip":"\u22EE","verbar":"|","Verbar":"\u2016","vert":"|","Vert":"\u2016","VerticalBar":"\u2223","VerticalLine":"|","VerticalSeparator":"\u2758","VerticalTilde":"\u2240","VeryThinSpace":"\u200A","Vfr":"\uD835\uDD19","vfr":"\uD835\uDD33","vltri":"\u22B2","vnsub":"\u2282\u20D2","vnsup":"\u2283\u20D2","Vopf":"\uD835\uDD4D","vopf":"\uD835\uDD67","vprop":"\u221D","vrtri":"\u22B3","Vscr":"\uD835\uDCB1","vscr":"\uD835\uDCCB","vsubnE":"\u2ACB\uFE00","vsubne":"\u228A\uFE00","vsupnE":"\u2ACC\uFE00","vsupne":"\u228B\uFE00","Vvdash":"\u22AA","vzigzag":"\u299A","Wcirc":"\u0174","wcirc":"\u0175","wedbar":"\u2A5F","wedge":"\u2227","Wedge":"\u22C0","wedgeq":"\u2259","weierp":"\u2118","Wfr":"\uD835\uDD1A","wfr":"\uD835\uDD34","Wopf":"\uD835\uDD4E","wopf":"\uD835\uDD68","wp":"\u2118","wr":"\u2240","wreath":"\u2240","Wscr":"\uD835\uDCB2","wscr":"\uD835\uDCCC","xcap":"\u22C2","xcirc":"\u25EF","xcup":"\u22C3","xdtri":"\u25BD","Xfr":"\uD835\uDD1B","xfr":"\uD835\uDD35","xharr":"\u27F7","xhArr":"\u27FA","Xi":"\u039E","xi":"\u03BE","xlarr":"\u27F5","xlArr":"\u27F8","xmap":"\u27FC","xnis":"\u22FB","xodot":"\u2A00","Xopf":"\uD835\uDD4F","xopf":"\uD835\uDD69","xoplus":"\u2A01","xotime":"\u2A02","xrarr":"\u27F6","xrArr":"\u27F9","Xscr":"\uD835\uDCB3","xscr":"\uD835\uDCCD","xsqcup":"\u2A06","xuplus":"\u2A04","xutri":"\u25B3","xvee":"\u22C1","xwedge":"\u22C0","Yacute":"\u00DD","yacute":"\u00FD","YAcy":"\u042F","yacy":"\u044F","Ycirc":"\u0176","ycirc":"\u0177","Ycy":"\u042B","ycy":"\u044B","yen":"\u00A5","Yfr":"\uD835\uDD1C","yfr":"\uD835\uDD36","YIcy":"\u0407","yicy":"\u0457","Yopf":"\uD835\uDD50","yopf":"\uD835\uDD6A","Yscr":"\uD835\uDCB4","yscr":"\uD835\uDCCE","YUcy":"\u042E","yucy":"\u044E","yuml":"\u00FF","Yuml":"\u0178","Zacute":"\u0179","zacute":"\u017A","Zcaron":"\u017D","zcaron":"\u017E","Zcy":"\u0417","zcy":"\u0437","Zdot":"\u017B","zdot":"\u017C","zeetrf":"\u2128","ZeroWidthSpace":"\u200B","Zeta":"\u0396","zeta":"\u03B6","zfr":"\uD835\uDD37","Zfr":"\u2128","ZHcy":"\u0416","zhcy":"\u0436","zigrarr":"\u21DD","zopf":"\uD835\uDD6B","Zopf":"\u2124","Zscr":"\uD835\uDCB5","zscr":"\uD835\uDCCF","zwj":"\u200D","zwnj":"\u200C"}
+},{}],63:[function(require,module,exports){
+module.exports={"Aacute":"\u00C1","aacute":"\u00E1","Acirc":"\u00C2","acirc":"\u00E2","acute":"\u00B4","AElig":"\u00C6","aelig":"\u00E6","Agrave":"\u00C0","agrave":"\u00E0","amp":"&","AMP":"&","Aring":"\u00C5","aring":"\u00E5","Atilde":"\u00C3","atilde":"\u00E3","Auml":"\u00C4","auml":"\u00E4","brvbar":"\u00A6","Ccedil":"\u00C7","ccedil":"\u00E7","cedil":"\u00B8","cent":"\u00A2","copy":"\u00A9","COPY":"\u00A9","curren":"\u00A4","deg":"\u00B0","divide":"\u00F7","Eacute":"\u00C9","eacute":"\u00E9","Ecirc":"\u00CA","ecirc":"\u00EA","Egrave":"\u00C8","egrave":"\u00E8","ETH":"\u00D0","eth":"\u00F0","Euml":"\u00CB","euml":"\u00EB","frac12":"\u00BD","frac14":"\u00BC","frac34":"\u00BE","gt":">","GT":">","Iacute":"\u00CD","iacute":"\u00ED","Icirc":"\u00CE","icirc":"\u00EE","iexcl":"\u00A1","Igrave":"\u00CC","igrave":"\u00EC","iquest":"\u00BF","Iuml":"\u00CF","iuml":"\u00EF","laquo":"\u00AB","lt":"<","LT":"<","macr":"\u00AF","micro":"\u00B5","middot":"\u00B7","nbsp":"\u00A0","not":"\u00AC","Ntilde":"\u00D1","ntilde":"\u00F1","Oacute":"\u00D3","oacute":"\u00F3","Ocirc":"\u00D4","ocirc":"\u00F4","Ograve":"\u00D2","ograve":"\u00F2","ordf":"\u00AA","ordm":"\u00BA","Oslash":"\u00D8","oslash":"\u00F8","Otilde":"\u00D5","otilde":"\u00F5","Ouml":"\u00D6","ouml":"\u00F6","para":"\u00B6","plusmn":"\u00B1","pound":"\u00A3","quot":"\"","QUOT":"\"","raquo":"\u00BB","reg":"\u00AE","REG":"\u00AE","sect":"\u00A7","shy":"\u00AD","sup1":"\u00B9","sup2":"\u00B2","sup3":"\u00B3","szlig":"\u00DF","THORN":"\u00DE","thorn":"\u00FE","times":"\u00D7","Uacute":"\u00DA","uacute":"\u00FA","Ucirc":"\u00DB","ucirc":"\u00FB","Ugrave":"\u00D9","ugrave":"\u00F9","uml":"\u00A8","Uuml":"\u00DC","uuml":"\u00FC","Yacute":"\u00DD","yacute":"\u00FD","yen":"\u00A5","yuml":"\u00FF"}
+},{}],64:[function(require,module,exports){
+module.exports={"amp":"&","apos":"'","gt":">","lt":"<","quot":"\""}
+
+},{}],65:[function(require,module,exports){
 'use strict';
 
 var util = require('util');
@@ -4906,7 +9038,7 @@ errorEx.line = function (str, def) {
 
 module.exports = errorEx;
 
-},{"is-arrayish":74,"util":614}],34:[function(require,module,exports){
+},{"is-arrayish":115,"util":793}],66:[function(require,module,exports){
 'use strict';
 
 var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
@@ -4919,7 +9051,7 @@ module.exports = function (str) {
 	return str.replace(matchOperatorsRe, '\\$&');
 };
 
-},{}],35:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5223,7 +9355,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],36:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 var cloneRegexp = require('clone-regexp');
 
@@ -5248,7 +9380,7 @@ module.exports = function (input, str) {
 	return matches;
 };
 
-},{"clone-regexp":17}],37:[function(require,module,exports){
+},{"clone-regexp":24}],69:[function(require,module,exports){
 /*!
  * expand-brackets <https://github.com/jonschlinkert/expand-brackets>
  *
@@ -5413,7 +9545,7 @@ brackets.match = function(arr, pattern) {
   return res;
 };
 
-},{"is-posix-bracket":86}],38:[function(require,module,exports){
+},{"is-posix-bracket":131}],70:[function(require,module,exports){
 /*!
  * expand-range <https://github.com/jonschlinkert/expand-range>
  *
@@ -5458,7 +9590,95 @@ module.exports = function expandRange(str, options, fn) {
   return fill.apply(null, args.concat(fn));
 };
 
-},{"fill-range":42}],39:[function(require,module,exports){
+},{"fill-range":75}],71:[function(require,module,exports){
+'use strict';
+
+var hasOwn = Object.prototype.hasOwnProperty;
+var toStr = Object.prototype.toString;
+
+var isArray = function isArray(arr) {
+	if (typeof Array.isArray === 'function') {
+		return Array.isArray(arr);
+	}
+
+	return toStr.call(arr) === '[object Array]';
+};
+
+var isPlainObject = function isPlainObject(obj) {
+	if (!obj || toStr.call(obj) !== '[object Object]') {
+		return false;
+	}
+
+	var hasOwnConstructor = hasOwn.call(obj, 'constructor');
+	var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
+	// Not own constructor property must be Object
+	if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
+		return false;
+	}
+
+	// Own properties are enumerated firstly, so to speed up,
+	// if last one is own, then all properties are own.
+	var key;
+	for (key in obj) { /**/ }
+
+	return typeof key === 'undefined' || hasOwn.call(obj, key);
+};
+
+module.exports = function extend() {
+	var options, name, src, copy, copyIsArray, clone;
+	var target = arguments[0];
+	var i = 1;
+	var length = arguments.length;
+	var deep = false;
+
+	// Handle a deep copy situation
+	if (typeof target === 'boolean') {
+		deep = target;
+		target = arguments[1] || {};
+		// skip the boolean and the target
+		i = 2;
+	}
+	if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
+		target = {};
+	}
+
+	for (; i < length; ++i) {
+		options = arguments[i];
+		// Only deal with non-null/undefined values
+		if (options != null) {
+			// Extend the base object
+			for (name in options) {
+				src = target[name];
+				copy = options[name];
+
+				// Prevent never-ending loop
+				if (target !== copy) {
+					// Recurse if we're merging plain objects or arrays
+					if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
+						if (copyIsArray) {
+							copyIsArray = false;
+							clone = src && isArray(src) ? src : [];
+						} else {
+							clone = src && isPlainObject(src) ? src : {};
+						}
+
+						// Never move original objects, clone them
+						target[name] = extend(deep, clone, copy);
+
+					// Don't bring in undefined values
+					} else if (typeof copy !== 'undefined') {
+						target[name] = copy;
+					}
+				}
+			}
+		}
+	}
+
+	// Return the modified object
+	return target;
+};
+
+},{}],72:[function(require,module,exports){
 /*!
  * extglob <https://github.com/jonschlinkert/extglob>
  *
@@ -5638,7 +9858,7 @@ function toRegex(pattern, contains, isNegated) {
   return new RegExp(prefix + pattern);
 }
 
-},{"is-extglob":80}],40:[function(require,module,exports){
+},{"is-extglob":122}],73:[function(require,module,exports){
 var path = require( 'path' );
 
 module.exports = {
@@ -5856,7 +10076,7 @@ module.exports = {
   }
 };
 
-},{"flat-cache":43,"fs":14,"object-assign":138,"path":146}],41:[function(require,module,exports){
+},{"flat-cache":76,"fs":16,"object-assign":189,"path":198}],74:[function(require,module,exports){
 /*!
  * filename-regex <https://github.com/regexps/filename-regex>
  *
@@ -5868,7 +10088,7 @@ module.exports = function filenameRegex() {
   return /([^\\\/]+)$/;
 };
 
-},{}],42:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /*!
  * fill-range <https://github.com/jonschlinkert/fill-range>
  *
@@ -6278,7 +10498,7 @@ function length(val) {
   return val.toString().length;
 }
 
-},{"is-number":82,"isobject":91,"randomatic":288,"repeat-element":307,"repeat-string":308}],43:[function(require,module,exports){
+},{"is-number":125,"isobject":138,"randomatic":329,"repeat-element":441,"repeat-string":442}],76:[function(require,module,exports){
 (function (__dirname){
 var path = require( 'path' );
 var fs = require( 'graceful-fs' );
@@ -6479,7 +10699,7 @@ module.exports = {
 };
 
 }).call(this,"/node_modules\\flat-cache")
-},{"./utils":47,"del":44,"graceful-fs":62,"path":146}],44:[function(require,module,exports){
+},{"./utils":80,"del":77,"graceful-fs":92,"path":198}],77:[function(require,module,exports){
 'use strict';
 var path = require('path');
 var globby = require('globby');
@@ -6554,7 +10774,7 @@ module.exports.sync = function (patterns, opts) {
 	});
 };
 
-},{"globby":45,"is-path-cwd":83,"is-path-in-cwd":84,"object-assign":138,"path":146,"pify":46,"pinkie-promise":150,"rimraf":311}],45:[function(require,module,exports){
+},{"globby":78,"is-path-cwd":127,"is-path-in-cwd":128,"object-assign":189,"path":198,"pify":79,"pinkie-promise":202,"rimraf":446}],78:[function(require,module,exports){
 'use strict';
 var Promise = require('pinkie-promise');
 var arrayUnion = require('array-union');
@@ -6621,7 +10841,7 @@ module.exports.sync = function (patterns, opts) {
 
 module.exports.generateGlobTasks = generateGlobTasks;
 
-},{"array-union":4,"arrify":7,"glob":56,"object-assign":138,"pify":46,"pinkie-promise":150}],46:[function(require,module,exports){
+},{"array-union":5,"arrify":8,"glob":88,"object-assign":189,"pify":79,"pinkie-promise":202}],79:[function(require,module,exports){
 'use strict';
 
 var processFn = function (fn, P, opts) {
@@ -6691,7 +10911,7 @@ var pify = module.exports = function (obj, P, opts) {
 
 pify.all = pify;
 
-},{}],47:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var fs = require( 'graceful-fs' );
 var write = require( 'write' );
 var circularJson = require( 'circular-json' );
@@ -6732,32 +10952,7 @@ module.exports = {
 
 };
 
-},{"circular-json":16,"graceful-fs":62,"write":616}],48:[function(require,module,exports){
-module.exports = function flatten(list, depth) {
-  depth = (typeof depth == 'number') ? depth : Infinity;
-
-  if (!depth) {
-    if (Array.isArray(list)) {
-      return list.map(function(i) { return i; });
-    }
-    return list;
-  }
-
-  return _flatten(list, 1);
-
-  function _flatten(list, d) {
-    return list.reduce(function (acc, item) {
-      if (Array.isArray(item) && d < depth) {
-        return acc.concat(_flatten(item, d + 1));
-      }
-      else {
-        return acc.concat(item);
-      }
-    }, []);
-  }
-};
-
-},{}],49:[function(require,module,exports){
+},{"circular-json":23,"graceful-fs":92,"write":799}],81:[function(require,module,exports){
 /*!
  * for-in <https://github.com/jonschlinkert/for-in>
  *
@@ -6775,7 +10970,7 @@ module.exports = function forIn(obj, fn, thisArg) {
   }
 };
 
-},{}],50:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 /*!
  * for-own <https://github.com/jonschlinkert/for-own>
  *
@@ -6796,7 +10991,7 @@ module.exports = function forOwn(obj, fn, thisArg) {
   });
 };
 
-},{"for-in":49}],51:[function(require,module,exports){
+},{"for-in":81}],83:[function(require,module,exports){
 (function (process){
 module.exports = realpath
 realpath.realpath = realpath
@@ -6866,7 +11061,7 @@ function unmonkeypatch () {
 }
 
 }).call(this,require('_process'))
-},{"./old.js":52,"_process":283,"fs":14}],52:[function(require,module,exports){
+},{"./old.js":84,"_process":324,"fs":16}],84:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7173,7 +11368,7 @@ exports.realpath = function realpath(p, cache, cb) {
 };
 
 }).call(this,require('_process'))
-},{"_process":283,"fs":14,"path":146}],53:[function(require,module,exports){
+},{"_process":324,"fs":16,"path":198}],85:[function(require,module,exports){
 /*!
  * glob-base <https://github.com/jonschlinkert/glob-base>
  *
@@ -7226,7 +11421,7 @@ function dirname(glob) {
   return path.dirname(glob);
 }
 
-},{"glob-parent":54,"is-glob":81,"path":146}],54:[function(require,module,exports){
+},{"glob-parent":86,"is-glob":123,"path":198}],86:[function(require,module,exports){
 'use strict';
 
 var path = require('path');
@@ -7238,7 +11433,7 @@ module.exports = function globParent(str) {
 	return str;
 };
 
-},{"is-glob":81,"path":146}],55:[function(require,module,exports){
+},{"is-glob":123,"path":198}],87:[function(require,module,exports){
 (function (process){
 exports.alphasort = alphasort
 exports.alphasorti = alphasorti
@@ -7482,7 +11677,7 @@ function childrenIgnored (self, path) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283,"minimatch":133,"path":146,"path-is-absolute":147}],56:[function(require,module,exports){
+},{"_process":324,"minimatch":184,"path":198,"path-is-absolute":199}],88:[function(require,module,exports){
 (function (process){
 // Approach:
 //
@@ -8276,7 +12471,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./common.js":55,"./sync.js":57,"_process":283,"assert":8,"events":35,"fs":14,"fs.realpath":51,"inflight":72,"inherits":73,"minimatch":133,"once":140,"path":146,"path-is-absolute":147,"util":614}],57:[function(require,module,exports){
+},{"./common.js":87,"./sync.js":89,"_process":324,"assert":9,"events":67,"fs":16,"fs.realpath":83,"inflight":110,"inherits":111,"minimatch":184,"once":191,"path":198,"path-is-absolute":199,"util":793}],89:[function(require,module,exports){
 (function (process){
 module.exports = globSync
 globSync.GlobSync = GlobSync
@@ -8766,99 +12961,7 @@ GlobSync.prototype._makeAbs = function (f) {
 }
 
 }).call(this,require('_process'))
-},{"./common.js":55,"./glob.js":56,"_process":283,"assert":8,"fs":14,"fs.realpath":51,"minimatch":133,"path":146,"path-is-absolute":147,"util":614}],58:[function(require,module,exports){
-'use strict';
-var Promise = require('pinkie-promise');
-var arrayUnion = require('array-union');
-var objectAssign = require('object-assign');
-var glob = require('glob');
-var pify = require('pify');
-
-var globP = pify(glob, Promise).bind(glob);
-
-function isNegative(pattern) {
-	return pattern[0] === '!';
-}
-
-function isString(value) {
-	return typeof value === 'string';
-}
-
-function assertPatternsInput(patterns) {
-	if (!patterns.every(isString)) {
-		throw new TypeError('patterns must be a string or an array of strings');
-	}
-}
-
-function generateGlobTasks(patterns, opts) {
-	patterns = [].concat(patterns);
-	assertPatternsInput(patterns);
-
-	var globTasks = [];
-
-	opts = objectAssign({
-		cache: Object.create(null),
-		statCache: Object.create(null),
-		realpathCache: Object.create(null),
-		symlinks: Object.create(null),
-		ignore: []
-	}, opts);
-
-	patterns.forEach(function (pattern, i) {
-		if (isNegative(pattern)) {
-			return;
-		}
-
-		var ignore = patterns.slice(i).filter(isNegative).map(function (pattern) {
-			return pattern.slice(1);
-		});
-
-		globTasks.push({
-			pattern: pattern,
-			opts: objectAssign({}, opts, {
-				ignore: opts.ignore.concat(ignore)
-			})
-		});
-	});
-
-	return globTasks;
-}
-
-module.exports = function (patterns, opts) {
-	var globTasks;
-
-	try {
-		globTasks = generateGlobTasks(patterns, opts);
-	} catch (err) {
-		return Promise.reject(err);
-	}
-
-	return Promise.all(globTasks.map(function (task) {
-		return globP(task.pattern, task.opts);
-	})).then(function (paths) {
-		return arrayUnion.apply(null, paths);
-	});
-};
-
-module.exports.sync = function (patterns, opts) {
-	var globTasks = generateGlobTasks(patterns, opts);
-
-	return globTasks.reduce(function (matches, task) {
-		return arrayUnion(matches, glob.sync(task.pattern, task.opts));
-	}, []);
-};
-
-module.exports.generateGlobTasks = generateGlobTasks;
-
-module.exports.hasMagic = function (patterns, opts) {
-	return [].concat(patterns).some(function (pattern) {
-		return glob.hasMagic(pattern, opts);
-	});
-};
-
-},{"array-union":4,"glob":56,"object-assign":138,"pify":59,"pinkie-promise":150}],59:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments)
-},{"dup":46}],60:[function(require,module,exports){
+},{"./common.js":87,"./glob.js":88,"_process":324,"assert":9,"fs":16,"fs.realpath":83,"minimatch":184,"path":198,"path-is-absolute":199,"util":793}],90:[function(require,module,exports){
 'use strict';
 
 var Path = require('path');
@@ -8903,7 +13006,7 @@ function _join(path, glob) {
 
 module.exports = join;
 
-},{"path":146}],61:[function(require,module,exports){
+},{"path":198}],91:[function(require,module,exports){
 'use strict'
 
 var fs = require('fs')
@@ -8926,7 +13029,7 @@ function clone (obj) {
   return copy
 }
 
-},{"fs":14}],62:[function(require,module,exports){
+},{"fs":16}],92:[function(require,module,exports){
 (function (process){
 var fs = require('fs')
 var polyfills = require('./polyfills.js')
@@ -9192,7 +13295,7 @@ function retry () {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":61,"./legacy-streams.js":63,"./polyfills.js":64,"_process":283,"assert":8,"fs":14,"util":614}],63:[function(require,module,exports){
+},{"./fs.js":91,"./legacy-streams.js":93,"./polyfills.js":94,"_process":324,"assert":9,"fs":16,"util":793}],93:[function(require,module,exports){
 (function (process){
 var Stream = require('stream').Stream
 
@@ -9314,7 +13417,7 @@ function legacy (fs) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283,"stream":325}],64:[function(require,module,exports){
+},{"_process":324,"stream":462}],94:[function(require,module,exports){
 (function (process){
 var fs = require('./fs.js')
 var constants = require('constants')
@@ -9648,13 +13751,13 @@ function chownErOk (er) {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":61,"_process":283,"constants":19}],65:[function(require,module,exports){
+},{"./fs.js":91,"_process":324,"constants":27}],95:[function(require,module,exports){
 'use strict';
 var ansiRegex = require('ansi-regex');
 var re = new RegExp(ansiRegex().source); // remove the `g` flag
 module.exports = re.test.bind(re);
 
-},{"ansi-regex":1}],66:[function(require,module,exports){
+},{"ansi-regex":1}],96:[function(require,module,exports){
 module.exports=[
 	"a",
 	"abbr",
@@ -9776,11 +13879,1588 @@ module.exports=[
 	"wbr"
 ]
 
-},{}],67:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 'use strict';
 module.exports = require('./html-tags.json');
 
-},{"./html-tags.json":66}],68:[function(require,module,exports){
+},{"./html-tags.json":96}],98:[function(require,module,exports){
+module.exports = CollectingHandler;
+
+function CollectingHandler(cbs){
+	this._cbs = cbs || {};
+	this.events = [];
+}
+
+var EVENTS = require("./").EVENTS;
+Object.keys(EVENTS).forEach(function(name){
+	if(EVENTS[name] === 0){
+		name = "on" + name;
+		CollectingHandler.prototype[name] = function(){
+			this.events.push([name]);
+			if(this._cbs[name]) this._cbs[name]();
+		};
+	} else if(EVENTS[name] === 1){
+		name = "on" + name;
+		CollectingHandler.prototype[name] = function(a){
+			this.events.push([name, a]);
+			if(this._cbs[name]) this._cbs[name](a);
+		};
+	} else if(EVENTS[name] === 2){
+		name = "on" + name;
+		CollectingHandler.prototype[name] = function(a, b){
+			this.events.push([name, a, b]);
+			if(this._cbs[name]) this._cbs[name](a, b);
+		};
+	} else {
+		throw Error("wrong number of arguments");
+	}
+});
+
+CollectingHandler.prototype.onreset = function(){
+	this.events = [];
+	if(this._cbs.onreset) this._cbs.onreset();
+};
+
+CollectingHandler.prototype.restart = function(){
+	if(this._cbs.onreset) this._cbs.onreset();
+
+	for(var i = 0, len = this.events.length; i < len; i++){
+		if(this._cbs[this.events[i][0]]){
+
+			var num = this.events[i].length;
+
+			if(num === 1){
+				this._cbs[this.events[i][0]]();
+			} else if(num === 2){
+				this._cbs[this.events[i][0]](this.events[i][1]);
+			} else {
+				this._cbs[this.events[i][0]](this.events[i][1], this.events[i][2]);
+			}
+		}
+	}
+};
+
+},{"./":105}],99:[function(require,module,exports){
+var index = require("./index.js"),
+    DomHandler = index.DomHandler,
+    DomUtils = index.DomUtils;
+
+//TODO: make this a streamable handler
+function FeedHandler(callback, options){
+	this.init(callback, options);
+}
+
+require("inherits")(FeedHandler, DomHandler);
+
+FeedHandler.prototype.init = DomHandler;
+
+function getElements(what, where){
+	return DomUtils.getElementsByTagName(what, where, true);
+}
+function getOneElement(what, where){
+	return DomUtils.getElementsByTagName(what, where, true, 1)[0];
+}
+function fetch(what, where, recurse){
+	return DomUtils.getText(
+		DomUtils.getElementsByTagName(what, where, recurse, 1)
+	).trim();
+}
+
+function addConditionally(obj, prop, what, where, recurse){
+	var tmp = fetch(what, where, recurse);
+	if(tmp) obj[prop] = tmp;
+}
+
+var isValidFeed = function(value){
+	return value === "rss" || value === "feed" || value === "rdf:RDF";
+};
+
+FeedHandler.prototype.onend = function(){
+	var feed = {},
+	    feedRoot = getOneElement(isValidFeed, this.dom),
+	    tmp, childs;
+
+	if(feedRoot){
+		if(feedRoot.name === "feed"){
+			childs = feedRoot.children;
+
+			feed.type = "atom";
+			addConditionally(feed, "id", "id", childs);
+			addConditionally(feed, "title", "title", childs);
+			if((tmp = getOneElement("link", childs)) && (tmp = tmp.attribs) && (tmp = tmp.href)) feed.link = tmp;
+			addConditionally(feed, "description", "subtitle", childs);
+			if((tmp = fetch("updated", childs))) feed.updated = new Date(tmp);
+			addConditionally(feed, "author", "email", childs, true);
+
+			feed.items = getElements("entry", childs).map(function(item){
+				var entry = {}, tmp;
+
+				item = item.children;
+
+				addConditionally(entry, "id", "id", item);
+				addConditionally(entry, "title", "title", item);
+				if((tmp = getOneElement("link", item)) && (tmp = tmp.attribs) && (tmp = tmp.href)) entry.link = tmp;
+				if((tmp = fetch("summary", item) || fetch("content", item))) entry.description = tmp;
+				if((tmp = fetch("updated", item))) entry.pubDate = new Date(tmp);
+				return entry;
+			});
+		} else {
+			childs = getOneElement("channel", feedRoot.children).children;
+
+			feed.type = feedRoot.name.substr(0, 3);
+			feed.id = "";
+			addConditionally(feed, "title", "title", childs);
+			addConditionally(feed, "link", "link", childs);
+			addConditionally(feed, "description", "description", childs);
+			if((tmp = fetch("lastBuildDate", childs))) feed.updated = new Date(tmp);
+			addConditionally(feed, "author", "managingEditor", childs, true);
+
+			feed.items = getElements("item", feedRoot.children).map(function(item){
+				var entry = {}, tmp;
+
+				item = item.children;
+
+				addConditionally(entry, "id", "guid", item);
+				addConditionally(entry, "title", "title", item);
+				addConditionally(entry, "link", "link", item);
+				addConditionally(entry, "description", "description", item);
+				if((tmp = fetch("pubDate", item))) entry.pubDate = new Date(tmp);
+				return entry;
+			});
+		}
+	}
+	this.dom = feed;
+	DomHandler.prototype._handleCallback.call(
+		this, feedRoot ? null : Error("couldn't find root of feed")
+	);
+};
+
+module.exports = FeedHandler;
+
+},{"./index.js":105,"inherits":111}],100:[function(require,module,exports){
+var Tokenizer = require("./Tokenizer.js");
+
+/*
+	Options:
+
+	xmlMode: Disables the special behavior for script/style tags (false by default)
+	lowerCaseAttributeNames: call .toLowerCase for each attribute name (true if xmlMode is `false`)
+	lowerCaseTags: call .toLowerCase for each tag name (true if xmlMode is `false`)
+*/
+
+/*
+	Callbacks:
+
+	oncdataend,
+	oncdatastart,
+	onclosetag,
+	oncomment,
+	oncommentend,
+	onerror,
+	onopentag,
+	onprocessinginstruction,
+	onreset,
+	ontext
+*/
+
+var formTags = {
+	input: true,
+	option: true,
+	optgroup: true,
+	select: true,
+	button: true,
+	datalist: true,
+	textarea: true
+};
+
+var openImpliesClose = {
+	tr      : { tr:true, th:true, td:true },
+	th      : { th:true },
+	td      : { thead:true, th:true, td:true },
+	body    : { head:true, link:true, script:true },
+	li      : { li:true },
+	p       : { p:true },
+	h1      : { p:true },
+	h2      : { p:true },
+	h3      : { p:true },
+	h4      : { p:true },
+	h5      : { p:true },
+	h6      : { p:true },
+	select  : formTags,
+	input   : formTags,
+	output  : formTags,
+	button  : formTags,
+	datalist: formTags,
+	textarea: formTags,
+	option  : { option:true },
+	optgroup: { optgroup:true }
+};
+
+var voidElements = {
+	__proto__: null,
+	area: true,
+	base: true,
+	basefont: true,
+	br: true,
+	col: true,
+	command: true,
+	embed: true,
+	frame: true,
+	hr: true,
+	img: true,
+	input: true,
+	isindex: true,
+	keygen: true,
+	link: true,
+	meta: true,
+	param: true,
+	source: true,
+	track: true,
+	wbr: true,
+
+	//common self closing svg elements
+	path: true,
+	circle: true,
+	ellipse: true,
+	line: true,
+	rect: true,
+	use: true,
+	stop: true,
+	polyline: true,
+	polygon: true
+};
+
+var re_nameEnd = /\s|\//;
+
+function Parser(cbs, options){
+	this._options = options || {};
+	this._cbs = cbs || {};
+
+	this._tagname = "";
+	this._attribname = "";
+	this._attribvalue = "";
+	this._attribs = null;
+	this._stack = [];
+
+	this.startIndex = 0;
+	this.endIndex = null;
+
+	this._lowerCaseTagNames = "lowerCaseTags" in this._options ?
+									!!this._options.lowerCaseTags :
+									!this._options.xmlMode;
+	this._lowerCaseAttributeNames = "lowerCaseAttributeNames" in this._options ?
+									!!this._options.lowerCaseAttributeNames :
+									!this._options.xmlMode;
+
+	if(this._options.Tokenizer) {
+		Tokenizer = this._options.Tokenizer;
+	}
+	this._tokenizer = new Tokenizer(this._options, this);
+
+	if(this._cbs.onparserinit) this._cbs.onparserinit(this);
+}
+
+require("inherits")(Parser, require("events").EventEmitter);
+
+Parser.prototype._updatePosition = function(initialOffset){
+	if(this.endIndex === null){
+		if(this._tokenizer._sectionStart <= initialOffset){
+			this.startIndex = 0;
+		} else {
+			this.startIndex = this._tokenizer._sectionStart - initialOffset;
+		}
+	}
+	else this.startIndex = this.endIndex + 1;
+	this.endIndex = this._tokenizer.getAbsoluteIndex();
+};
+
+//Tokenizer event handlers
+Parser.prototype.ontext = function(data){
+	this._updatePosition(1);
+	this.endIndex--;
+
+	if(this._cbs.ontext) this._cbs.ontext(data);
+};
+
+Parser.prototype.onopentagname = function(name){
+	if(this._lowerCaseTagNames){
+		name = name.toLowerCase();
+	}
+
+	this._tagname = name;
+
+	if(!this._options.xmlMode && name in openImpliesClose) {
+		for(
+			var el;
+			(el = this._stack[this._stack.length - 1]) in openImpliesClose[name];
+			this.onclosetag(el)
+		);
+	}
+
+	if(this._options.xmlMode || !(name in voidElements)){
+		this._stack.push(name);
+	}
+
+	if(this._cbs.onopentagname) this._cbs.onopentagname(name);
+	if(this._cbs.onopentag) this._attribs = {};
+};
+
+Parser.prototype.onopentagend = function(){
+	this._updatePosition(1);
+
+	if(this._attribs){
+		if(this._cbs.onopentag) this._cbs.onopentag(this._tagname, this._attribs);
+		this._attribs = null;
+	}
+
+	if(!this._options.xmlMode && this._cbs.onclosetag && this._tagname in voidElements){
+		this._cbs.onclosetag(this._tagname);
+	}
+
+	this._tagname = "";
+};
+
+Parser.prototype.onclosetag = function(name){
+	this._updatePosition(1);
+
+	if(this._lowerCaseTagNames){
+		name = name.toLowerCase();
+	}
+
+	if(this._stack.length && (!(name in voidElements) || this._options.xmlMode)){
+		var pos = this._stack.lastIndexOf(name);
+		if(pos !== -1){
+			if(this._cbs.onclosetag){
+				pos = this._stack.length - pos;
+				while(pos--) this._cbs.onclosetag(this._stack.pop());
+			}
+			else this._stack.length = pos;
+		} else if(name === "p" && !this._options.xmlMode){
+			this.onopentagname(name);
+			this._closeCurrentTag();
+		}
+	} else if(!this._options.xmlMode && (name === "br" || name === "p")){
+		this.onopentagname(name);
+		this._closeCurrentTag();
+	}
+};
+
+Parser.prototype.onselfclosingtag = function(){
+	if(this._options.xmlMode || this._options.recognizeSelfClosing){
+		this._closeCurrentTag();
+	} else {
+		this.onopentagend();
+	}
+};
+
+Parser.prototype._closeCurrentTag = function(){
+	var name = this._tagname;
+
+	this.onopentagend();
+
+	//self-closing tags will be on the top of the stack
+	//(cheaper check than in onclosetag)
+	if(this._stack[this._stack.length - 1] === name){
+		if(this._cbs.onclosetag){
+			this._cbs.onclosetag(name);
+		}
+		this._stack.pop();
+	}
+};
+
+Parser.prototype.onattribname = function(name){
+	if(this._lowerCaseAttributeNames){
+		name = name.toLowerCase();
+	}
+	this._attribname = name;
+};
+
+Parser.prototype.onattribdata = function(value){
+	this._attribvalue += value;
+};
+
+Parser.prototype.onattribend = function(){
+	if(this._cbs.onattribute) this._cbs.onattribute(this._attribname, this._attribvalue);
+	if(
+		this._attribs &&
+		!Object.prototype.hasOwnProperty.call(this._attribs, this._attribname)
+	){
+		this._attribs[this._attribname] = this._attribvalue;
+	}
+	this._attribname = "";
+	this._attribvalue = "";
+};
+
+Parser.prototype._getInstructionName = function(value){
+	var idx = value.search(re_nameEnd),
+	    name = idx < 0 ? value : value.substr(0, idx);
+
+	if(this._lowerCaseTagNames){
+		name = name.toLowerCase();
+	}
+
+	return name;
+};
+
+Parser.prototype.ondeclaration = function(value){
+	if(this._cbs.onprocessinginstruction){
+		var name = this._getInstructionName(value);
+		this._cbs.onprocessinginstruction("!" + name, "!" + value);
+	}
+};
+
+Parser.prototype.onprocessinginstruction = function(value){
+	if(this._cbs.onprocessinginstruction){
+		var name = this._getInstructionName(value);
+		this._cbs.onprocessinginstruction("?" + name, "?" + value);
+	}
+};
+
+Parser.prototype.oncomment = function(value){
+	this._updatePosition(4);
+
+	if(this._cbs.oncomment) this._cbs.oncomment(value);
+	if(this._cbs.oncommentend) this._cbs.oncommentend();
+};
+
+Parser.prototype.oncdata = function(value){
+	this._updatePosition(1);
+
+	if(this._options.xmlMode || this._options.recognizeCDATA){
+		if(this._cbs.oncdatastart) this._cbs.oncdatastart();
+		if(this._cbs.ontext) this._cbs.ontext(value);
+		if(this._cbs.oncdataend) this._cbs.oncdataend();
+	} else {
+		this.oncomment("[CDATA[" + value + "]]");
+	}
+};
+
+Parser.prototype.onerror = function(err){
+	if(this._cbs.onerror) this._cbs.onerror(err);
+};
+
+Parser.prototype.onend = function(){
+	if(this._cbs.onclosetag){
+		for(
+			var i = this._stack.length;
+			i > 0;
+			this._cbs.onclosetag(this._stack[--i])
+		);
+	}
+	if(this._cbs.onend) this._cbs.onend();
+};
+
+
+//Resets the parser to a blank state, ready to parse a new HTML document
+Parser.prototype.reset = function(){
+	if(this._cbs.onreset) this._cbs.onreset();
+	this._tokenizer.reset();
+
+	this._tagname = "";
+	this._attribname = "";
+	this._attribs = null;
+	this._stack = [];
+
+	if(this._cbs.onparserinit) this._cbs.onparserinit(this);
+};
+
+//Parses a complete HTML document and pushes it to the handler
+Parser.prototype.parseComplete = function(data){
+	this.reset();
+	this.end(data);
+};
+
+Parser.prototype.write = function(chunk){
+	this._tokenizer.write(chunk);
+};
+
+Parser.prototype.end = function(chunk){
+	this._tokenizer.end(chunk);
+};
+
+Parser.prototype.pause = function(){
+	this._tokenizer.pause();
+};
+
+Parser.prototype.resume = function(){
+	this._tokenizer.resume();
+};
+
+//alias for backwards compat
+Parser.prototype.parseChunk = Parser.prototype.write;
+Parser.prototype.done = Parser.prototype.end;
+
+module.exports = Parser;
+
+},{"./Tokenizer.js":103,"events":67,"inherits":111}],101:[function(require,module,exports){
+module.exports = ProxyHandler;
+
+function ProxyHandler(cbs){
+	this._cbs = cbs || {};
+}
+
+var EVENTS = require("./").EVENTS;
+Object.keys(EVENTS).forEach(function(name){
+	if(EVENTS[name] === 0){
+		name = "on" + name;
+		ProxyHandler.prototype[name] = function(){
+			if(this._cbs[name]) this._cbs[name]();
+		};
+	} else if(EVENTS[name] === 1){
+		name = "on" + name;
+		ProxyHandler.prototype[name] = function(a){
+			if(this._cbs[name]) this._cbs[name](a);
+		};
+	} else if(EVENTS[name] === 2){
+		name = "on" + name;
+		ProxyHandler.prototype[name] = function(a, b){
+			if(this._cbs[name]) this._cbs[name](a, b);
+		};
+	} else {
+		throw Error("wrong number of arguments");
+	}
+});
+},{"./":105}],102:[function(require,module,exports){
+module.exports = Stream;
+
+var Parser = require("./WritableStream.js");
+
+function Stream(options){
+	Parser.call(this, new Cbs(this), options);
+}
+
+require("inherits")(Stream, Parser);
+
+Stream.prototype.readable = true;
+
+function Cbs(scope){
+	this.scope = scope;
+}
+
+var EVENTS = require("../").EVENTS;
+
+Object.keys(EVENTS).forEach(function(name){
+	if(EVENTS[name] === 0){
+		Cbs.prototype["on" + name] = function(){
+			this.scope.emit(name);
+		};
+	} else if(EVENTS[name] === 1){
+		Cbs.prototype["on" + name] = function(a){
+			this.scope.emit(name, a);
+		};
+	} else if(EVENTS[name] === 2){
+		Cbs.prototype["on" + name] = function(a, b){
+			this.scope.emit(name, a, b);
+		};
+	} else {
+		throw Error("wrong number of arguments!");
+	}
+});
+},{"../":105,"./WritableStream.js":104,"inherits":111}],103:[function(require,module,exports){
+module.exports = Tokenizer;
+
+var decodeCodePoint = require("entities/lib/decode_codepoint.js"),
+    entityMap = require("entities/maps/entities.json"),
+    legacyMap = require("entities/maps/legacy.json"),
+    xmlMap    = require("entities/maps/xml.json"),
+
+    i = 0,
+
+    TEXT                      = i++,
+    BEFORE_TAG_NAME           = i++, //after <
+    IN_TAG_NAME               = i++,
+    IN_SELF_CLOSING_TAG       = i++,
+    BEFORE_CLOSING_TAG_NAME   = i++,
+    IN_CLOSING_TAG_NAME       = i++,
+    AFTER_CLOSING_TAG_NAME    = i++,
+
+    //attributes
+    BEFORE_ATTRIBUTE_NAME     = i++,
+    IN_ATTRIBUTE_NAME         = i++,
+    AFTER_ATTRIBUTE_NAME      = i++,
+    BEFORE_ATTRIBUTE_VALUE    = i++,
+    IN_ATTRIBUTE_VALUE_DQ     = i++, // "
+    IN_ATTRIBUTE_VALUE_SQ     = i++, // '
+    IN_ATTRIBUTE_VALUE_NQ     = i++,
+
+    //declarations
+    BEFORE_DECLARATION        = i++, // !
+    IN_DECLARATION            = i++,
+
+    //processing instructions
+    IN_PROCESSING_INSTRUCTION = i++, // ?
+
+    //comments
+    BEFORE_COMMENT            = i++,
+    IN_COMMENT                = i++,
+    AFTER_COMMENT_1           = i++,
+    AFTER_COMMENT_2           = i++,
+
+    //cdata
+    BEFORE_CDATA_1            = i++, // [
+    BEFORE_CDATA_2            = i++, // C
+    BEFORE_CDATA_3            = i++, // D
+    BEFORE_CDATA_4            = i++, // A
+    BEFORE_CDATA_5            = i++, // T
+    BEFORE_CDATA_6            = i++, // A
+    IN_CDATA                  = i++, // [
+    AFTER_CDATA_1             = i++, // ]
+    AFTER_CDATA_2             = i++, // ]
+
+    //special tags
+    BEFORE_SPECIAL            = i++, //S
+    BEFORE_SPECIAL_END        = i++,   //S
+
+    BEFORE_SCRIPT_1           = i++, //C
+    BEFORE_SCRIPT_2           = i++, //R
+    BEFORE_SCRIPT_3           = i++, //I
+    BEFORE_SCRIPT_4           = i++, //P
+    BEFORE_SCRIPT_5           = i++, //T
+    AFTER_SCRIPT_1            = i++, //C
+    AFTER_SCRIPT_2            = i++, //R
+    AFTER_SCRIPT_3            = i++, //I
+    AFTER_SCRIPT_4            = i++, //P
+    AFTER_SCRIPT_5            = i++, //T
+
+    BEFORE_STYLE_1            = i++, //T
+    BEFORE_STYLE_2            = i++, //Y
+    BEFORE_STYLE_3            = i++, //L
+    BEFORE_STYLE_4            = i++, //E
+    AFTER_STYLE_1             = i++, //T
+    AFTER_STYLE_2             = i++, //Y
+    AFTER_STYLE_3             = i++, //L
+    AFTER_STYLE_4             = i++, //E
+
+    BEFORE_ENTITY             = i++, //&
+    BEFORE_NUMERIC_ENTITY     = i++, //#
+    IN_NAMED_ENTITY           = i++,
+    IN_NUMERIC_ENTITY         = i++,
+    IN_HEX_ENTITY             = i++, //X
+
+    j = 0,
+
+    SPECIAL_NONE              = j++,
+    SPECIAL_SCRIPT            = j++,
+    SPECIAL_STYLE             = j++;
+
+function whitespace(c){
+	return c === " " || c === "\n" || c === "\t" || c === "\f" || c === "\r";
+}
+
+function characterState(char, SUCCESS){
+	return function(c){
+		if(c === char) this._state = SUCCESS;
+	};
+}
+
+function ifElseState(upper, SUCCESS, FAILURE){
+	var lower = upper.toLowerCase();
+
+	if(upper === lower){
+		return function(c){
+			if(c === lower){
+				this._state = SUCCESS;
+			} else {
+				this._state = FAILURE;
+				this._index--;
+			}
+		};
+	} else {
+		return function(c){
+			if(c === lower || c === upper){
+				this._state = SUCCESS;
+			} else {
+				this._state = FAILURE;
+				this._index--;
+			}
+		};
+	}
+}
+
+function consumeSpecialNameChar(upper, NEXT_STATE){
+	var lower = upper.toLowerCase();
+
+	return function(c){
+		if(c === lower || c === upper){
+			this._state = NEXT_STATE;
+		} else {
+			this._state = IN_TAG_NAME;
+			this._index--; //consume the token again
+		}
+	};
+}
+
+function Tokenizer(options, cbs){
+	this._state = TEXT;
+	this._buffer = "";
+	this._sectionStart = 0;
+	this._index = 0;
+	this._bufferOffset = 0; //chars removed from _buffer
+	this._baseState = TEXT;
+	this._special = SPECIAL_NONE;
+	this._cbs = cbs;
+	this._running = true;
+	this._ended = false;
+	this._xmlMode = !!(options && options.xmlMode);
+	this._decodeEntities = !!(options && options.decodeEntities);
+}
+
+Tokenizer.prototype._stateText = function(c){
+	if(c === "<"){
+		if(this._index > this._sectionStart){
+			this._cbs.ontext(this._getSection());
+		}
+		this._state = BEFORE_TAG_NAME;
+		this._sectionStart = this._index;
+	} else if(this._decodeEntities && this._special === SPECIAL_NONE && c === "&"){
+		if(this._index > this._sectionStart){
+			this._cbs.ontext(this._getSection());
+		}
+		this._baseState = TEXT;
+		this._state = BEFORE_ENTITY;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateBeforeTagName = function(c){
+	if(c === "/"){
+		this._state = BEFORE_CLOSING_TAG_NAME;
+	} else if(c === "<"){
+		this._cbs.ontext(this._getSection());
+		this._sectionStart = this._index;
+	} else if(c === ">" || this._special !== SPECIAL_NONE || whitespace(c)) {
+		this._state = TEXT;
+	} else if(c === "!"){
+		this._state = BEFORE_DECLARATION;
+		this._sectionStart = this._index + 1;
+	} else if(c === "?"){
+		this._state = IN_PROCESSING_INSTRUCTION;
+		this._sectionStart = this._index + 1;
+	} else {
+		this._state = (!this._xmlMode && (c === "s" || c === "S")) ?
+						BEFORE_SPECIAL : IN_TAG_NAME;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateInTagName = function(c){
+	if(c === "/" || c === ">" || whitespace(c)){
+		this._emitToken("onopentagname");
+		this._state = BEFORE_ATTRIBUTE_NAME;
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._stateBeforeCloseingTagName = function(c){
+	if(whitespace(c));
+	else if(c === ">"){
+		this._state = TEXT;
+	} else if(this._special !== SPECIAL_NONE){
+		if(c === "s" || c === "S"){
+			this._state = BEFORE_SPECIAL_END;
+		} else {
+			this._state = TEXT;
+			this._index--;
+		}
+	} else {
+		this._state = IN_CLOSING_TAG_NAME;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateInCloseingTagName = function(c){
+	if(c === ">" || whitespace(c)){
+		this._emitToken("onclosetag");
+		this._state = AFTER_CLOSING_TAG_NAME;
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._stateAfterCloseingTagName = function(c){
+	//skip everything until ">"
+	if(c === ">"){
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	}
+};
+
+Tokenizer.prototype._stateBeforeAttributeName = function(c){
+	if(c === ">"){
+		this._cbs.onopentagend();
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	} else if(c === "/"){
+		this._state = IN_SELF_CLOSING_TAG;
+	} else if(!whitespace(c)){
+		this._state = IN_ATTRIBUTE_NAME;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateInSelfClosingTag = function(c){
+	if(c === ">"){
+		this._cbs.onselfclosingtag();
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	} else if(!whitespace(c)){
+		this._state = BEFORE_ATTRIBUTE_NAME;
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._stateInAttributeName = function(c){
+	if(c === "=" || c === "/" || c === ">" || whitespace(c)){
+		this._cbs.onattribname(this._getSection());
+		this._sectionStart = -1;
+		this._state = AFTER_ATTRIBUTE_NAME;
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._stateAfterAttributeName = function(c){
+	if(c === "="){
+		this._state = BEFORE_ATTRIBUTE_VALUE;
+	} else if(c === "/" || c === ">"){
+		this._cbs.onattribend();
+		this._state = BEFORE_ATTRIBUTE_NAME;
+		this._index--;
+	} else if(!whitespace(c)){
+		this._cbs.onattribend();
+		this._state = IN_ATTRIBUTE_NAME;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateBeforeAttributeValue = function(c){
+	if(c === "\""){
+		this._state = IN_ATTRIBUTE_VALUE_DQ;
+		this._sectionStart = this._index + 1;
+	} else if(c === "'"){
+		this._state = IN_ATTRIBUTE_VALUE_SQ;
+		this._sectionStart = this._index + 1;
+	} else if(!whitespace(c)){
+		this._state = IN_ATTRIBUTE_VALUE_NQ;
+		this._sectionStart = this._index;
+		this._index--; //reconsume token
+	}
+};
+
+Tokenizer.prototype._stateInAttributeValueDoubleQuotes = function(c){
+	if(c === "\""){
+		this._emitToken("onattribdata");
+		this._cbs.onattribend();
+		this._state = BEFORE_ATTRIBUTE_NAME;
+	} else if(this._decodeEntities && c === "&"){
+		this._emitToken("onattribdata");
+		this._baseState = this._state;
+		this._state = BEFORE_ENTITY;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateInAttributeValueSingleQuotes = function(c){
+	if(c === "'"){
+		this._emitToken("onattribdata");
+		this._cbs.onattribend();
+		this._state = BEFORE_ATTRIBUTE_NAME;
+	} else if(this._decodeEntities && c === "&"){
+		this._emitToken("onattribdata");
+		this._baseState = this._state;
+		this._state = BEFORE_ENTITY;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateInAttributeValueNoQuotes = function(c){
+	if(whitespace(c) || c === ">"){
+		this._emitToken("onattribdata");
+		this._cbs.onattribend();
+		this._state = BEFORE_ATTRIBUTE_NAME;
+		this._index--;
+	} else if(this._decodeEntities && c === "&"){
+		this._emitToken("onattribdata");
+		this._baseState = this._state;
+		this._state = BEFORE_ENTITY;
+		this._sectionStart = this._index;
+	}
+};
+
+Tokenizer.prototype._stateBeforeDeclaration = function(c){
+	this._state = c === "[" ? BEFORE_CDATA_1 :
+					c === "-" ? BEFORE_COMMENT :
+						IN_DECLARATION;
+};
+
+Tokenizer.prototype._stateInDeclaration = function(c){
+	if(c === ">"){
+		this._cbs.ondeclaration(this._getSection());
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	}
+};
+
+Tokenizer.prototype._stateInProcessingInstruction = function(c){
+	if(c === ">"){
+		this._cbs.onprocessinginstruction(this._getSection());
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	}
+};
+
+Tokenizer.prototype._stateBeforeComment = function(c){
+	if(c === "-"){
+		this._state = IN_COMMENT;
+		this._sectionStart = this._index + 1;
+	} else {
+		this._state = IN_DECLARATION;
+	}
+};
+
+Tokenizer.prototype._stateInComment = function(c){
+	if(c === "-") this._state = AFTER_COMMENT_1;
+};
+
+Tokenizer.prototype._stateAfterComment1 = function(c){
+	if(c === "-"){
+		this._state = AFTER_COMMENT_2;
+	} else {
+		this._state = IN_COMMENT;
+	}
+};
+
+Tokenizer.prototype._stateAfterComment2 = function(c){
+	if(c === ">"){
+		//remove 2 trailing chars
+		this._cbs.oncomment(this._buffer.substring(this._sectionStart, this._index - 2));
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	} else if(c !== "-"){
+		this._state = IN_COMMENT;
+	}
+	// else: stay in AFTER_COMMENT_2 (`--->`)
+};
+
+Tokenizer.prototype._stateBeforeCdata1 = ifElseState("C", BEFORE_CDATA_2, IN_DECLARATION);
+Tokenizer.prototype._stateBeforeCdata2 = ifElseState("D", BEFORE_CDATA_3, IN_DECLARATION);
+Tokenizer.prototype._stateBeforeCdata3 = ifElseState("A", BEFORE_CDATA_4, IN_DECLARATION);
+Tokenizer.prototype._stateBeforeCdata4 = ifElseState("T", BEFORE_CDATA_5, IN_DECLARATION);
+Tokenizer.prototype._stateBeforeCdata5 = ifElseState("A", BEFORE_CDATA_6, IN_DECLARATION);
+
+Tokenizer.prototype._stateBeforeCdata6 = function(c){
+	if(c === "["){
+		this._state = IN_CDATA;
+		this._sectionStart = this._index + 1;
+	} else {
+		this._state = IN_DECLARATION;
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._stateInCdata = function(c){
+	if(c === "]") this._state = AFTER_CDATA_1;
+};
+
+Tokenizer.prototype._stateAfterCdata1 = characterState("]", AFTER_CDATA_2);
+
+Tokenizer.prototype._stateAfterCdata2 = function(c){
+	if(c === ">"){
+		//remove 2 trailing chars
+		this._cbs.oncdata(this._buffer.substring(this._sectionStart, this._index - 2));
+		this._state = TEXT;
+		this._sectionStart = this._index + 1;
+	} else if(c !== "]") {
+		this._state = IN_CDATA;
+	}
+	//else: stay in AFTER_CDATA_2 (`]]]>`)
+};
+
+Tokenizer.prototype._stateBeforeSpecial = function(c){
+	if(c === "c" || c === "C"){
+		this._state = BEFORE_SCRIPT_1;
+	} else if(c === "t" || c === "T"){
+		this._state = BEFORE_STYLE_1;
+	} else {
+		this._state = IN_TAG_NAME;
+		this._index--; //consume the token again
+	}
+};
+
+Tokenizer.prototype._stateBeforeSpecialEnd = function(c){
+	if(this._special === SPECIAL_SCRIPT && (c === "c" || c === "C")){
+		this._state = AFTER_SCRIPT_1;
+	} else if(this._special === SPECIAL_STYLE && (c === "t" || c === "T")){
+		this._state = AFTER_STYLE_1;
+	}
+	else this._state = TEXT;
+};
+
+Tokenizer.prototype._stateBeforeScript1 = consumeSpecialNameChar("R", BEFORE_SCRIPT_2);
+Tokenizer.prototype._stateBeforeScript2 = consumeSpecialNameChar("I", BEFORE_SCRIPT_3);
+Tokenizer.prototype._stateBeforeScript3 = consumeSpecialNameChar("P", BEFORE_SCRIPT_4);
+Tokenizer.prototype._stateBeforeScript4 = consumeSpecialNameChar("T", BEFORE_SCRIPT_5);
+
+Tokenizer.prototype._stateBeforeScript5 = function(c){
+	if(c === "/" || c === ">" || whitespace(c)){
+		this._special = SPECIAL_SCRIPT;
+	}
+	this._state = IN_TAG_NAME;
+	this._index--; //consume the token again
+};
+
+Tokenizer.prototype._stateAfterScript1 = ifElseState("R", AFTER_SCRIPT_2, TEXT);
+Tokenizer.prototype._stateAfterScript2 = ifElseState("I", AFTER_SCRIPT_3, TEXT);
+Tokenizer.prototype._stateAfterScript3 = ifElseState("P", AFTER_SCRIPT_4, TEXT);
+Tokenizer.prototype._stateAfterScript4 = ifElseState("T", AFTER_SCRIPT_5, TEXT);
+
+Tokenizer.prototype._stateAfterScript5 = function(c){
+	if(c === ">" || whitespace(c)){
+		this._special = SPECIAL_NONE;
+		this._state = IN_CLOSING_TAG_NAME;
+		this._sectionStart = this._index - 6;
+		this._index--; //reconsume the token
+	}
+	else this._state = TEXT;
+};
+
+Tokenizer.prototype._stateBeforeStyle1 = consumeSpecialNameChar("Y", BEFORE_STYLE_2);
+Tokenizer.prototype._stateBeforeStyle2 = consumeSpecialNameChar("L", BEFORE_STYLE_3);
+Tokenizer.prototype._stateBeforeStyle3 = consumeSpecialNameChar("E", BEFORE_STYLE_4);
+
+Tokenizer.prototype._stateBeforeStyle4 = function(c){
+	if(c === "/" || c === ">" || whitespace(c)){
+		this._special = SPECIAL_STYLE;
+	}
+	this._state = IN_TAG_NAME;
+	this._index--; //consume the token again
+};
+
+Tokenizer.prototype._stateAfterStyle1 = ifElseState("Y", AFTER_STYLE_2, TEXT);
+Tokenizer.prototype._stateAfterStyle2 = ifElseState("L", AFTER_STYLE_3, TEXT);
+Tokenizer.prototype._stateAfterStyle3 = ifElseState("E", AFTER_STYLE_4, TEXT);
+
+Tokenizer.prototype._stateAfterStyle4 = function(c){
+	if(c === ">" || whitespace(c)){
+		this._special = SPECIAL_NONE;
+		this._state = IN_CLOSING_TAG_NAME;
+		this._sectionStart = this._index - 5;
+		this._index--; //reconsume the token
+	}
+	else this._state = TEXT;
+};
+
+Tokenizer.prototype._stateBeforeEntity = ifElseState("#", BEFORE_NUMERIC_ENTITY, IN_NAMED_ENTITY);
+Tokenizer.prototype._stateBeforeNumericEntity = ifElseState("X", IN_HEX_ENTITY, IN_NUMERIC_ENTITY);
+
+//for entities terminated with a semicolon
+Tokenizer.prototype._parseNamedEntityStrict = function(){
+	//offset = 1
+	if(this._sectionStart + 1 < this._index){
+		var entity = this._buffer.substring(this._sectionStart + 1, this._index),
+		    map = this._xmlMode ? xmlMap : entityMap;
+
+		if(map.hasOwnProperty(entity)){
+			this._emitPartial(map[entity]);
+			this._sectionStart = this._index + 1;
+		}
+	}
+};
+
+
+//parses legacy entities (without trailing semicolon)
+Tokenizer.prototype._parseLegacyEntity = function(){
+	var start = this._sectionStart + 1,
+	    limit = this._index - start;
+
+	if(limit > 6) limit = 6; //the max length of legacy entities is 6
+
+	while(limit >= 2){ //the min length of legacy entities is 2
+		var entity = this._buffer.substr(start, limit);
+
+		if(legacyMap.hasOwnProperty(entity)){
+			this._emitPartial(legacyMap[entity]);
+			this._sectionStart += limit + 1;
+			return;
+		} else {
+			limit--;
+		}
+	}
+};
+
+Tokenizer.prototype._stateInNamedEntity = function(c){
+	if(c === ";"){
+		this._parseNamedEntityStrict();
+		if(this._sectionStart + 1 < this._index && !this._xmlMode){
+			this._parseLegacyEntity();
+		}
+		this._state = this._baseState;
+	} else if((c < "a" || c > "z") && (c < "A" || c > "Z") && (c < "0" || c > "9")){
+		if(this._xmlMode);
+		else if(this._sectionStart + 1 === this._index);
+		else if(this._baseState !== TEXT){
+			if(c !== "="){
+				this._parseNamedEntityStrict();
+			}
+		} else {
+			this._parseLegacyEntity();
+		}
+
+		this._state = this._baseState;
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._decodeNumericEntity = function(offset, base){
+	var sectionStart = this._sectionStart + offset;
+
+	if(sectionStart !== this._index){
+		//parse entity
+		var entity = this._buffer.substring(sectionStart, this._index);
+		var parsed = parseInt(entity, base);
+
+		this._emitPartial(decodeCodePoint(parsed));
+		this._sectionStart = this._index;
+	} else {
+		this._sectionStart--;
+	}
+
+	this._state = this._baseState;
+};
+
+Tokenizer.prototype._stateInNumericEntity = function(c){
+	if(c === ";"){
+		this._decodeNumericEntity(2, 10);
+		this._sectionStart++;
+	} else if(c < "0" || c > "9"){
+		if(!this._xmlMode){
+			this._decodeNumericEntity(2, 10);
+		} else {
+			this._state = this._baseState;
+		}
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._stateInHexEntity = function(c){
+	if(c === ";"){
+		this._decodeNumericEntity(3, 16);
+		this._sectionStart++;
+	} else if((c < "a" || c > "f") && (c < "A" || c > "F") && (c < "0" || c > "9")){
+		if(!this._xmlMode){
+			this._decodeNumericEntity(3, 16);
+		} else {
+			this._state = this._baseState;
+		}
+		this._index--;
+	}
+};
+
+Tokenizer.prototype._cleanup = function (){
+	if(this._sectionStart < 0){
+		this._buffer = "";
+		this._bufferOffset += this._index;
+		this._index = 0;
+	} else if(this._running){
+		if(this._state === TEXT){
+			if(this._sectionStart !== this._index){
+				this._cbs.ontext(this._buffer.substr(this._sectionStart));
+			}
+			this._buffer = "";
+			this._bufferOffset += this._index;
+			this._index = 0;
+		} else if(this._sectionStart === this._index){
+			//the section just started
+			this._buffer = "";
+			this._bufferOffset += this._index;
+			this._index = 0;
+		} else {
+			//remove everything unnecessary
+			this._buffer = this._buffer.substr(this._sectionStart);
+			this._index -= this._sectionStart;
+			this._bufferOffset += this._sectionStart;
+		}
+
+		this._sectionStart = 0;
+	}
+};
+
+//TODO make events conditional
+Tokenizer.prototype.write = function(chunk){
+	if(this._ended) this._cbs.onerror(Error(".write() after done!"));
+
+	this._buffer += chunk;
+	this._parse();
+};
+
+Tokenizer.prototype._parse = function(){
+	while(this._index < this._buffer.length && this._running){
+		var c = this._buffer.charAt(this._index);
+		if(this._state === TEXT) {
+			this._stateText(c);
+		} else if(this._state === BEFORE_TAG_NAME){
+			this._stateBeforeTagName(c);
+		} else if(this._state === IN_TAG_NAME) {
+			this._stateInTagName(c);
+		} else if(this._state === BEFORE_CLOSING_TAG_NAME){
+			this._stateBeforeCloseingTagName(c);
+		} else if(this._state === IN_CLOSING_TAG_NAME){
+			this._stateInCloseingTagName(c);
+		} else if(this._state === AFTER_CLOSING_TAG_NAME){
+			this._stateAfterCloseingTagName(c);
+		} else if(this._state === IN_SELF_CLOSING_TAG){
+			this._stateInSelfClosingTag(c);
+		}
+
+		/*
+		*	attributes
+		*/
+		else if(this._state === BEFORE_ATTRIBUTE_NAME){
+			this._stateBeforeAttributeName(c);
+		} else if(this._state === IN_ATTRIBUTE_NAME){
+			this._stateInAttributeName(c);
+		} else if(this._state === AFTER_ATTRIBUTE_NAME){
+			this._stateAfterAttributeName(c);
+		} else if(this._state === BEFORE_ATTRIBUTE_VALUE){
+			this._stateBeforeAttributeValue(c);
+		} else if(this._state === IN_ATTRIBUTE_VALUE_DQ){
+			this._stateInAttributeValueDoubleQuotes(c);
+		} else if(this._state === IN_ATTRIBUTE_VALUE_SQ){
+			this._stateInAttributeValueSingleQuotes(c);
+		} else if(this._state === IN_ATTRIBUTE_VALUE_NQ){
+			this._stateInAttributeValueNoQuotes(c);
+		}
+
+		/*
+		*	declarations
+		*/
+		else if(this._state === BEFORE_DECLARATION){
+			this._stateBeforeDeclaration(c);
+		} else if(this._state === IN_DECLARATION){
+			this._stateInDeclaration(c);
+		}
+
+		/*
+		*	processing instructions
+		*/
+		else if(this._state === IN_PROCESSING_INSTRUCTION){
+			this._stateInProcessingInstruction(c);
+		}
+
+		/*
+		*	comments
+		*/
+		else if(this._state === BEFORE_COMMENT){
+			this._stateBeforeComment(c);
+		} else if(this._state === IN_COMMENT){
+			this._stateInComment(c);
+		} else if(this._state === AFTER_COMMENT_1){
+			this._stateAfterComment1(c);
+		} else if(this._state === AFTER_COMMENT_2){
+			this._stateAfterComment2(c);
+		}
+
+		/*
+		*	cdata
+		*/
+		else if(this._state === BEFORE_CDATA_1){
+			this._stateBeforeCdata1(c);
+		} else if(this._state === BEFORE_CDATA_2){
+			this._stateBeforeCdata2(c);
+		} else if(this._state === BEFORE_CDATA_3){
+			this._stateBeforeCdata3(c);
+		} else if(this._state === BEFORE_CDATA_4){
+			this._stateBeforeCdata4(c);
+		} else if(this._state === BEFORE_CDATA_5){
+			this._stateBeforeCdata5(c);
+		} else if(this._state === BEFORE_CDATA_6){
+			this._stateBeforeCdata6(c);
+		} else if(this._state === IN_CDATA){
+			this._stateInCdata(c);
+		} else if(this._state === AFTER_CDATA_1){
+			this._stateAfterCdata1(c);
+		} else if(this._state === AFTER_CDATA_2){
+			this._stateAfterCdata2(c);
+		}
+
+		/*
+		* special tags
+		*/
+		else if(this._state === BEFORE_SPECIAL){
+			this._stateBeforeSpecial(c);
+		} else if(this._state === BEFORE_SPECIAL_END){
+			this._stateBeforeSpecialEnd(c);
+		}
+
+		/*
+		* script
+		*/
+		else if(this._state === BEFORE_SCRIPT_1){
+			this._stateBeforeScript1(c);
+		} else if(this._state === BEFORE_SCRIPT_2){
+			this._stateBeforeScript2(c);
+		} else if(this._state === BEFORE_SCRIPT_3){
+			this._stateBeforeScript3(c);
+		} else if(this._state === BEFORE_SCRIPT_4){
+			this._stateBeforeScript4(c);
+		} else if(this._state === BEFORE_SCRIPT_5){
+			this._stateBeforeScript5(c);
+		}
+
+		else if(this._state === AFTER_SCRIPT_1){
+			this._stateAfterScript1(c);
+		} else if(this._state === AFTER_SCRIPT_2){
+			this._stateAfterScript2(c);
+		} else if(this._state === AFTER_SCRIPT_3){
+			this._stateAfterScript3(c);
+		} else if(this._state === AFTER_SCRIPT_4){
+			this._stateAfterScript4(c);
+		} else if(this._state === AFTER_SCRIPT_5){
+			this._stateAfterScript5(c);
+		}
+
+		/*
+		* style
+		*/
+		else if(this._state === BEFORE_STYLE_1){
+			this._stateBeforeStyle1(c);
+		} else if(this._state === BEFORE_STYLE_2){
+			this._stateBeforeStyle2(c);
+		} else if(this._state === BEFORE_STYLE_3){
+			this._stateBeforeStyle3(c);
+		} else if(this._state === BEFORE_STYLE_4){
+			this._stateBeforeStyle4(c);
+		}
+
+		else if(this._state === AFTER_STYLE_1){
+			this._stateAfterStyle1(c);
+		} else if(this._state === AFTER_STYLE_2){
+			this._stateAfterStyle2(c);
+		} else if(this._state === AFTER_STYLE_3){
+			this._stateAfterStyle3(c);
+		} else if(this._state === AFTER_STYLE_4){
+			this._stateAfterStyle4(c);
+		}
+
+		/*
+		* entities
+		*/
+		else if(this._state === BEFORE_ENTITY){
+			this._stateBeforeEntity(c);
+		} else if(this._state === BEFORE_NUMERIC_ENTITY){
+			this._stateBeforeNumericEntity(c);
+		} else if(this._state === IN_NAMED_ENTITY){
+			this._stateInNamedEntity(c);
+		} else if(this._state === IN_NUMERIC_ENTITY){
+			this._stateInNumericEntity(c);
+		} else if(this._state === IN_HEX_ENTITY){
+			this._stateInHexEntity(c);
+		}
+
+		else {
+			this._cbs.onerror(Error("unknown _state"), this._state);
+		}
+
+		this._index++;
+	}
+
+	this._cleanup();
+};
+
+Tokenizer.prototype.pause = function(){
+	this._running = false;
+};
+Tokenizer.prototype.resume = function(){
+	this._running = true;
+
+	if(this._index < this._buffer.length){
+		this._parse();
+	}
+	if(this._ended){
+		this._finish();
+	}
+};
+
+Tokenizer.prototype.end = function(chunk){
+	if(this._ended) this._cbs.onerror(Error(".end() after done!"));
+	if(chunk) this.write(chunk);
+
+	this._ended = true;
+
+	if(this._running) this._finish();
+};
+
+Tokenizer.prototype._finish = function(){
+	//if there is remaining data, emit it in a reasonable way
+	if(this._sectionStart < this._index){
+		this._handleTrailingData();
+	}
+
+	this._cbs.onend();
+};
+
+Tokenizer.prototype._handleTrailingData = function(){
+	var data = this._buffer.substr(this._sectionStart);
+
+	if(this._state === IN_CDATA || this._state === AFTER_CDATA_1 || this._state === AFTER_CDATA_2){
+		this._cbs.oncdata(data);
+	} else if(this._state === IN_COMMENT || this._state === AFTER_COMMENT_1 || this._state === AFTER_COMMENT_2){
+		this._cbs.oncomment(data);
+	} else if(this._state === IN_NAMED_ENTITY && !this._xmlMode){
+		this._parseLegacyEntity();
+		if(this._sectionStart < this._index){
+			this._state = this._baseState;
+			this._handleTrailingData();
+		}
+	} else if(this._state === IN_NUMERIC_ENTITY && !this._xmlMode){
+		this._decodeNumericEntity(2, 10);
+		if(this._sectionStart < this._index){
+			this._state = this._baseState;
+			this._handleTrailingData();
+		}
+	} else if(this._state === IN_HEX_ENTITY && !this._xmlMode){
+		this._decodeNumericEntity(3, 16);
+		if(this._sectionStart < this._index){
+			this._state = this._baseState;
+			this._handleTrailingData();
+		}
+	} else if(
+		this._state !== IN_TAG_NAME &&
+		this._state !== BEFORE_ATTRIBUTE_NAME &&
+		this._state !== BEFORE_ATTRIBUTE_VALUE &&
+		this._state !== AFTER_ATTRIBUTE_NAME &&
+		this._state !== IN_ATTRIBUTE_NAME &&
+		this._state !== IN_ATTRIBUTE_VALUE_SQ &&
+		this._state !== IN_ATTRIBUTE_VALUE_DQ &&
+		this._state !== IN_ATTRIBUTE_VALUE_NQ &&
+		this._state !== IN_CLOSING_TAG_NAME
+	){
+		this._cbs.ontext(data);
+	}
+	//else, ignore remaining data
+	//TODO add a way to remove current tag
+};
+
+Tokenizer.prototype.reset = function(){
+	Tokenizer.call(this, {xmlMode: this._xmlMode, decodeEntities: this._decodeEntities}, this._cbs);
+};
+
+Tokenizer.prototype.getAbsoluteIndex = function(){
+	return this._bufferOffset + this._index;
+};
+
+Tokenizer.prototype._getSection = function(){
+	return this._buffer.substring(this._sectionStart, this._index);
+};
+
+Tokenizer.prototype._emitToken = function(name){
+	this._cbs[name](this._getSection());
+	this._sectionStart = -1;
+};
+
+Tokenizer.prototype._emitPartial = function(value){
+	if(this._baseState !== TEXT){
+		this._cbs.onattribdata(value); //TODO implement the new event
+	} else {
+		this._cbs.ontext(value);
+	}
+};
+
+},{"entities/lib/decode_codepoint.js":59,"entities/maps/entities.json":62,"entities/maps/legacy.json":63,"entities/maps/xml.json":64}],104:[function(require,module,exports){
+module.exports = Stream;
+
+var Parser = require("./Parser.js"),
+    WritableStream = require("stream").Writable || require("readable-stream").Writable,
+    StringDecoder = require("string_decoder").StringDecoder,
+    Buffer = require("buffer").Buffer;
+
+function Stream(cbs, options){
+	var parser = this._parser = new Parser(cbs, options);
+	var decoder = this._decoder = new StringDecoder();
+
+	WritableStream.call(this, {decodeStrings: false});
+
+	this.once("finish", function(){
+		parser.end(decoder.end());
+	});
+}
+
+require("inherits")(Stream, WritableStream);
+
+WritableStream.prototype._write = function(chunk, encoding, cb){
+	if(chunk instanceof Buffer) chunk = this._decoder.write(chunk);
+	this._parser.write(chunk);
+	cb();
+};
+},{"./Parser.js":100,"buffer":17,"inherits":111,"readable-stream":15,"stream":462,"string_decoder":463}],105:[function(require,module,exports){
+var Parser = require("./Parser.js"),
+    DomHandler = require("domhandler");
+
+function defineProp(name, value){
+	delete module.exports[name];
+	module.exports[name] = value;
+	return value;
+}
+
+module.exports = {
+	Parser: Parser,
+	Tokenizer: require("./Tokenizer.js"),
+	ElementType: require("domelementtype"),
+	DomHandler: DomHandler,
+	get FeedHandler(){
+		return defineProp("FeedHandler", require("./FeedHandler.js"));
+	},
+	get Stream(){
+		return defineProp("Stream", require("./Stream.js"));
+	},
+	get WritableStream(){
+		return defineProp("WritableStream", require("./WritableStream.js"));
+	},
+	get ProxyHandler(){
+		return defineProp("ProxyHandler", require("./ProxyHandler.js"));
+	},
+	get DomUtils(){
+		return defineProp("DomUtils", require("domutils"));
+	},
+	get CollectingHandler(){
+		return defineProp("CollectingHandler", require("./CollectingHandler.js"));
+	},
+	// For legacy support
+	DefaultHandler: DomHandler,
+	get RssHandler(){
+		return defineProp("RssHandler", this.FeedHandler);
+	},
+	//helper methods
+	parseDOM: function(data, options){
+		var handler = new DomHandler(options);
+		new Parser(handler, options).end(data);
+		return handler.dom;
+	},
+	parseFeed: function(feed, options){
+		var handler = new module.exports.FeedHandler(options);
+		new Parser(handler, options).end(feed);
+		return handler.dom;
+	},
+	createDomStream: function(cb, options, elementCb){
+		var handler = new DomHandler(cb, options, elementCb);
+		return new Parser(handler, options);
+	},
+	// List of all events that the parser emits
+	EVENTS: { /* Format: eventname: number of arguments */
+		attribute: 2,
+		cdatastart: 0,
+		cdataend: 0,
+		text: 1,
+		processinginstruction: 2,
+		comment: 1,
+		commentend: 0,
+		closetag: 1,
+		opentag: 2,
+		opentagname: 1,
+		error: 1,
+		end: 0
+	}
+};
+
+},{"./CollectingHandler.js":98,"./FeedHandler.js":99,"./Parser.js":100,"./ProxyHandler.js":101,"./Stream.js":102,"./Tokenizer.js":103,"./WritableStream.js":104,"domelementtype":45,"domhandler":46,"domutils":49}],106:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -9866,7 +15546,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],69:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -10295,7 +15975,7 @@ typeof process !== 'undefined' && (process.env && process.env.IGNORE_TEST_WIN32 
 }
 
 }).call(this,require('_process'))
-},{"_process":283}],70:[function(require,module,exports){
+},{"_process":324}],108:[function(require,module,exports){
 /**
  * @preserve
  * JS Implementation of incremental MurmurHash3 (r150) (as of May 10, 2013)
@@ -10393,7 +16073,7 @@ typeof process !== 'undefined' && (process.env && process.env.IGNORE_TEST_WIN32 
     // @return {number} The 32-bit hash
     MurmurHash3.prototype.result = function() {
         var k1, h1;
-
+        
         k1 = this.k1;
         h1 = this.h1;
 
@@ -10435,7 +16115,7 @@ typeof process !== 'undefined' && (process.env && process.env.IGNORE_TEST_WIN32 
     }
 }());
 
-},{}],71:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = function (ary, item) {
   var i = -1, indexes = []
   while((i = ary.indexOf(item, i + 1)) !== -1)
@@ -10443,7 +16123,7 @@ module.exports = function (ary, item) {
   return indexes
 }
 
-},{}],72:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 (function (process){
 var wrappy = require('wrappy')
 var reqs = Object.create(null)
@@ -10501,7 +16181,7 @@ function slice (args) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283,"once":140,"wrappy":615}],73:[function(require,module,exports){
+},{"_process":324,"once":191,"wrappy":798}],111:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -10526,7 +16206,46 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],74:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
+'use strict';
+
+module.exports = alphabetical;
+
+/* Check if the given character code, or the character
+ * code at the first character, is alphabetical. */
+function alphabetical(character) {
+  var code = typeof character === 'string' ?
+    character.charCodeAt(0) : character;
+
+  return (code >= 97 && code <= 122) || /* a-z */
+    (code >= 65 && code <= 90); /* A-Z */
+}
+
+},{}],113:[function(require,module,exports){
+'use strict';
+module.exports = function (str) {
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string');
+	}
+
+	return !/[^0-9a-z\xDF-\xFF]/.test(str.toLowerCase());
+};
+
+},{}],114:[function(require,module,exports){
+'use strict';
+
+var alphabetical = require('is-alphabetical');
+var decimal = require('is-decimal');
+
+module.exports = alphanumerical;
+
+/* Check if the given character code, or the character
+ * code at the first character, is alphanumerical. */
+function alphanumerical(character) {
+  return alphabetical(character) || decimal(character);
+}
+
+},{"is-alphabetical":112,"is-decimal":117}],115:[function(require,module,exports){
 'use strict';
 
 module.exports = function isArrayish(obj) {
@@ -10538,7 +16257,7 @@ module.exports = function isArrayish(obj) {
 		(obj.length >= 0 && obj.splice instanceof Function);
 };
 
-},{}],75:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -10561,7 +16280,21 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],76:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
+'use strict';
+
+module.exports = decimal;
+
+/* Check if the given character code, or the character
+ * code at the first character, is decimal. */
+function decimal(character) {
+  var code = typeof character === 'string' ?
+    character.charCodeAt(0) : character;
+
+  return code >= 48 && code <= 57; /* 0-9 */
+}
+
+},{}],118:[function(require,module,exports){
 /*!
  * is-directory <https://github.com/jonschlinkert/is-directory>
  *
@@ -10628,7 +16361,7 @@ isDirectory.sync = function isDirectorySync(filepath) {
 
 module.exports = isDirectory;
 
-},{"fs":14}],77:[function(require,module,exports){
+},{"fs":16}],119:[function(require,module,exports){
 /*!
  * is-dotfile <https://github.com/jonschlinkert/is-dotfile>
  *
@@ -10644,7 +16377,7 @@ module.exports = function(str) {
   return slash !== -1 ? str.charCodeAt(slash + 1) === 46  /* . */ : false;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /*!
  * is-equal-shallow <https://github.com/jonschlinkert/is-equal-shallow>
  *
@@ -10673,7 +16406,7 @@ module.exports = function isEqual(a, b) {
   return numKeysA === numKeysB;
 };
 
-},{"is-primitive":87}],79:[function(require,module,exports){
+},{"is-primitive":132}],121:[function(require,module,exports){
 /*!
  * is-extendable <https://github.com/jonschlinkert/is-extendable>
  *
@@ -10688,7 +16421,7 @@ module.exports = function isExtendable(val) {
     && (typeof val === 'object' || typeof val === 'function');
 };
 
-},{}],80:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 /*!
  * is-extglob <https://github.com/jonschlinkert/is-extglob>
  *
@@ -10701,7 +16434,7 @@ module.exports = function isExtglob(str) {
     && /[@?!+*]\(/.test(str);
 };
 
-},{}],81:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 /*!
  * is-glob <https://github.com/jonschlinkert/is-glob>
  *
@@ -10716,7 +16449,23 @@ module.exports = function isGlob(str) {
     && (/[*!?{}(|)[\]]/.test(str)
      || isExtglob(str));
 };
-},{"is-extglob":80}],82:[function(require,module,exports){
+},{"is-extglob":122}],124:[function(require,module,exports){
+'use strict';
+
+module.exports = hexadecimal;
+
+/* Check if the given character code, or the character
+ * code at the first character, is hexadecimal. */
+function hexadecimal(character) {
+  var code = typeof character === 'string' ?
+    character.charCodeAt(0) : character;
+
+  return (code >= 97 /* a */ && code <= 102 /* z */) ||
+    (code >= 65 /* A */ && code <= 70 /* Z */) ||
+    (code >= 48 /* A */ && code <= 57 /* Z */);
+}
+
+},{}],125:[function(require,module,exports){
 /*!
  * is-number <https://github.com/jonschlinkert/is-number>
  *
@@ -10737,7 +16486,14 @@ module.exports = function isNumber(num) {
   return (n - n + 1) >= 0 && num !== '';
 };
 
-},{"kind-of":123}],83:[function(require,module,exports){
+},{"kind-of":170}],126:[function(require,module,exports){
+'use strict';
+module.exports = function (x) {
+	var type = typeof x;
+	return x !== null && (type === 'object' || type === 'function');
+};
+
+},{}],127:[function(require,module,exports){
 (function (process){
 'use strict';
 var path = require('path');
@@ -10747,7 +16503,7 @@ module.exports = function (str) {
 };
 
 }).call(this,require('_process'))
-},{"_process":283,"path":146}],84:[function(require,module,exports){
+},{"_process":324,"path":198}],128:[function(require,module,exports){
 (function (process){
 'use strict';
 var isPathInside = require('is-path-inside');
@@ -10757,7 +16513,7 @@ module.exports = function (str) {
 };
 
 }).call(this,require('_process'))
-},{"_process":283,"is-path-inside":85}],85:[function(require,module,exports){
+},{"_process":324,"is-path-inside":129}],129:[function(require,module,exports){
 'use strict';
 var path = require('path');
 var pathIsInside = require('path-is-inside');
@@ -10773,7 +16529,16 @@ module.exports = function (a, b) {
 	return pathIsInside(a, b);
 };
 
-},{"path":146,"path-is-inside":148}],86:[function(require,module,exports){
+},{"path":198,"path-is-inside":200}],130:[function(require,module,exports){
+'use strict';
+var toString = Object.prototype.toString;
+
+module.exports = function (x) {
+	var prototype;
+	return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
+};
+
+},{}],131:[function(require,module,exports){
 /*!
  * is-posix-bracket <https://github.com/jonschlinkert/is-posix-bracket>
  *
@@ -10785,7 +16550,7 @@ module.exports = function isPosixBracket(str) {
   return typeof str === 'string' && /\[([:.=+])(?:[^\[\]]|)+\1\]/.test(str);
 };
 
-},{}],87:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 /*!
  * is-primitive <https://github.com/jonschlinkert/is-primitive>
  *
@@ -10800,13 +16565,13 @@ module.exports = function isPrimitive(value) {
   return value == null || (typeof value !== 'function' && typeof value !== 'object');
 };
 
-},{}],88:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 'use strict';
 module.exports = function (re) {
 	return Object.prototype.toString.call(re) === '[object RegExp]';
 };
 
-},{}],89:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 'use strict';
 module.exports = function (flag) {
 	var supported = true;
@@ -10820,14 +16585,46 @@ module.exports = function (flag) {
 	return supported;
 };
 
-},{}],90:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
+'use strict';
+
+module.exports = whitespace;
+
+var fromCode = String.fromCharCode;
+var re = /\s/;
+
+/* Check if the given character code, or the character
+ * code at the first character, is a whitespace character. */
+function whitespace(character) {
+  return re.test(
+    typeof character === 'number' ? fromCode(character) : character.charAt(0)
+  );
+}
+
+},{}],136:[function(require,module,exports){
+'use strict';
+
+module.exports = wordCharacter;
+
+var fromCode = String.fromCharCode;
+var re = /\w/;
+
+/* Check if the given character code, or the character
+ * code at the first character, is a word character. */
+function wordCharacter(character) {
+  return re.test(
+    typeof character === 'number' ? fromCode(character) : character.charAt(0)
+  );
+}
+
+},{}],137:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],91:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 /*!
  * isobject <https://github.com/jonschlinkert/isobject>
  *
@@ -10843,7 +16640,7 @@ module.exports = function isObject(val) {
   return val != null && typeof val === 'object' && isArray(val) === false;
 };
 
-},{"isarray":90}],92:[function(require,module,exports){
+},{"isarray":137}],139:[function(require,module,exports){
 (function (global){
 /*
  * $Id: base64.js,v 2.15 2014/04/05 12:58:57 dankogai Exp dankogai $
@@ -11055,8 +16852,8 @@ module.exports = function isObject(val) {
     if (typeof module !== 'undefined' && module.exports) {
         module.exports.Base64 = global.Base64;
     }
-    else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
+    else if (typeof define === 'function' && define.amd) {		
+        // AMD. Register as an anonymous module.	
         define([], function(){ return global.Base64 });
     }
     // that's it!
@@ -11067,7 +16864,7 @@ module.exports = function isObject(val) {
 );
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"buffer":15}],93:[function(require,module,exports){
+},{"buffer":17}],140:[function(require,module,exports){
 'use strict';
 
 
@@ -11076,7 +16873,7 @@ var yaml = require('./lib/js-yaml.js');
 
 module.exports = yaml;
 
-},{"./lib/js-yaml.js":94}],94:[function(require,module,exports){
+},{"./lib/js-yaml.js":141}],141:[function(require,module,exports){
 'use strict';
 
 
@@ -11117,7 +16914,7 @@ module.exports.parse          = deprecated('parse');
 module.exports.compose        = deprecated('compose');
 module.exports.addConstructor = deprecated('addConstructor');
 
-},{"./js-yaml/dumper":96,"./js-yaml/exception":97,"./js-yaml/loader":98,"./js-yaml/schema":100,"./js-yaml/schema/core":101,"./js-yaml/schema/default_full":102,"./js-yaml/schema/default_safe":103,"./js-yaml/schema/failsafe":104,"./js-yaml/schema/json":105,"./js-yaml/type":106}],95:[function(require,module,exports){
+},{"./js-yaml/dumper":143,"./js-yaml/exception":144,"./js-yaml/loader":145,"./js-yaml/schema":147,"./js-yaml/schema/core":148,"./js-yaml/schema/default_full":149,"./js-yaml/schema/default_safe":150,"./js-yaml/schema/failsafe":151,"./js-yaml/schema/json":152,"./js-yaml/type":153}],142:[function(require,module,exports){
 'use strict';
 
 
@@ -11178,7 +16975,7 @@ module.exports.repeat         = repeat;
 module.exports.isNegativeZero = isNegativeZero;
 module.exports.extend         = extend;
 
-},{}],96:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-use-before-define*/
@@ -11999,7 +17796,7 @@ function safeDump(input, options) {
 module.exports.dump     = dump;
 module.exports.safeDump = safeDump;
 
-},{"./common":95,"./exception":97,"./schema/default_full":102,"./schema/default_safe":103}],97:[function(require,module,exports){
+},{"./common":142,"./exception":144,"./schema/default_full":149,"./schema/default_safe":150}],144:[function(require,module,exports){
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
 'use strict';
@@ -12044,7 +17841,7 @@ YAMLException.prototype.toString = function toString(compact) {
 
 module.exports = YAMLException;
 
-},{}],98:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
@@ -13644,7 +19441,7 @@ module.exports.load        = load;
 module.exports.safeLoadAll = safeLoadAll;
 module.exports.safeLoad    = safeLoad;
 
-},{"./common":95,"./exception":97,"./mark":99,"./schema/default_full":102,"./schema/default_safe":103}],99:[function(require,module,exports){
+},{"./common":142,"./exception":144,"./mark":146,"./schema/default_full":149,"./schema/default_safe":150}],146:[function(require,module,exports){
 'use strict';
 
 
@@ -13722,7 +19519,7 @@ Mark.prototype.toString = function toString(compact) {
 
 module.exports = Mark;
 
-},{"./common":95}],100:[function(require,module,exports){
+},{"./common":142}],147:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable max-len*/
@@ -13832,7 +19629,7 @@ Schema.create = function createSchema() {
 
 module.exports = Schema;
 
-},{"./common":95,"./exception":97,"./type":106}],101:[function(require,module,exports){
+},{"./common":142,"./exception":144,"./type":153}],148:[function(require,module,exports){
 // Standard YAML's Core schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2804923
 //
@@ -13852,7 +19649,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":100,"./json":105}],102:[function(require,module,exports){
+},{"../schema":147,"./json":152}],149:[function(require,module,exports){
 // JS-YAML's default schema for `load` function.
 // It is not described in the YAML specification.
 //
@@ -13879,7 +19676,7 @@ module.exports = Schema.DEFAULT = new Schema({
   ]
 });
 
-},{"../schema":100,"../type/js/function":111,"../type/js/regexp":112,"../type/js/undefined":113,"./default_safe":103}],103:[function(require,module,exports){
+},{"../schema":147,"../type/js/function":158,"../type/js/regexp":159,"../type/js/undefined":160,"./default_safe":150}],150:[function(require,module,exports){
 // JS-YAML's default schema for `safeLoad` function.
 // It is not described in the YAML specification.
 //
@@ -13909,7 +19706,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":100,"../type/binary":107,"../type/merge":115,"../type/omap":117,"../type/pairs":118,"../type/set":120,"../type/timestamp":122,"./core":101}],104:[function(require,module,exports){
+},{"../schema":147,"../type/binary":154,"../type/merge":162,"../type/omap":164,"../type/pairs":165,"../type/set":167,"../type/timestamp":169,"./core":148}],151:[function(require,module,exports){
 // Standard YAML's Failsafe schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2802346
 
@@ -13928,7 +19725,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":100,"../type/map":114,"../type/seq":119,"../type/str":121}],105:[function(require,module,exports){
+},{"../schema":147,"../type/map":161,"../type/seq":166,"../type/str":168}],152:[function(require,module,exports){
 // Standard YAML's JSON schema.
 // http://www.yaml.org/spec/1.2/spec.html#id2803231
 //
@@ -13955,7 +19752,7 @@ module.exports = new Schema({
   ]
 });
 
-},{"../schema":100,"../type/bool":108,"../type/float":109,"../type/int":110,"../type/null":116,"./failsafe":104}],106:[function(require,module,exports){
+},{"../schema":147,"../type/bool":155,"../type/float":156,"../type/int":157,"../type/null":163,"./failsafe":151}],153:[function(require,module,exports){
 'use strict';
 
 var YAMLException = require('./exception');
@@ -14018,7 +19815,7 @@ function Type(tag, options) {
 
 module.exports = Type;
 
-},{"./exception":97}],107:[function(require,module,exports){
+},{"./exception":144}],154:[function(require,module,exports){
 'use strict';
 
 /*eslint-disable no-bitwise*/
@@ -14158,7 +19955,7 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-},{"../type":106}],108:[function(require,module,exports){
+},{"../type":153}],155:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14195,7 +19992,7 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":106}],109:[function(require,module,exports){
+},{"../type":153}],156:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -14313,7 +20110,7 @@ module.exports = new Type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-},{"../common":95,"../type":106}],110:[function(require,module,exports){
+},{"../common":142,"../type":153}],157:[function(require,module,exports){
 'use strict';
 
 var common = require('../common');
@@ -14487,7 +20284,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   }
 });
 
-},{"../common":95,"../type":106}],111:[function(require,module,exports){
+},{"../common":142,"../type":153}],158:[function(require,module,exports){
 'use strict';
 
 var esprima;
@@ -14573,7 +20370,7 @@ module.exports = new Type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-},{"../../type":106}],112:[function(require,module,exports){
+},{"../../type":153}],159:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -14635,7 +20432,7 @@ module.exports = new Type('tag:yaml.org,2002:js/regexp', {
   represent: representJavascriptRegExp
 });
 
-},{"../../type":106}],113:[function(require,module,exports){
+},{"../../type":153}],160:[function(require,module,exports){
 'use strict';
 
 var Type = require('../../type');
@@ -14665,7 +20462,7 @@ module.exports = new Type('tag:yaml.org,2002:js/undefined', {
   represent: representJavascriptUndefined
 });
 
-},{"../../type":106}],114:[function(require,module,exports){
+},{"../../type":153}],161:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14675,7 +20472,7 @@ module.exports = new Type('tag:yaml.org,2002:map', {
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-},{"../type":106}],115:[function(require,module,exports){
+},{"../type":153}],162:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14689,7 +20486,7 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
   resolve: resolveYamlMerge
 });
 
-},{"../type":106}],116:[function(require,module,exports){
+},{"../type":153}],163:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14725,7 +20522,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-},{"../type":106}],117:[function(require,module,exports){
+},{"../type":153}],164:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14771,7 +20568,7 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-},{"../type":106}],118:[function(require,module,exports){
+},{"../type":153}],165:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14826,7 +20623,7 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-},{"../type":106}],119:[function(require,module,exports){
+},{"../type":153}],166:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14836,7 +20633,7 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
   construct: function (data) { return data !== null ? data : []; }
 });
 
-},{"../type":106}],120:[function(require,module,exports){
+},{"../type":153}],167:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14867,7 +20664,7 @@ module.exports = new Type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-},{"../type":106}],121:[function(require,module,exports){
+},{"../type":153}],168:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14877,7 +20674,7 @@ module.exports = new Type('tag:yaml.org,2002:str', {
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-},{"../type":106}],122:[function(require,module,exports){
+},{"../type":153}],169:[function(require,module,exports){
 'use strict';
 
 var Type = require('../type');
@@ -14967,7 +20764,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-},{"../type":106}],123:[function(require,module,exports){
+},{"../type":153}],170:[function(require,module,exports){
 var isBuffer = require('is-buffer');
 var toString = Object.prototype.toString;
 
@@ -15085,7 +20882,7 @@ module.exports = function kindOf(val) {
   return 'object';
 };
 
-},{"is-buffer":75}],124:[function(require,module,exports){
+},{"is-buffer":116}],171:[function(require,module,exports){
 module.exports={
   "properties": [
     "accelerator",
@@ -16176,10 +21973,10 @@ module.exports={
     "zoom"
   ]
 }
-},{}],125:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 module.exports.all = require('./data/all').properties;
 
-},{"./data/all":124}],126:[function(require,module,exports){
+},{"./data/all":171}],173:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -33267,7 +39064,358 @@ module.exports.all = require('./data/all').properties;
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],127:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
+'use strict';
+
+/* Expose. */
+module.exports = longestStreak;
+
+/* Get the count of the longest repeating streak of
+ * `character` in `value`. */
+function longestStreak(value, character) {
+  var count = 0;
+  var maximum = 0;
+  var expected;
+  var index;
+
+  if (typeof character !== 'string' || character.length !== 1) {
+    throw new Error('Expected character');
+  }
+
+  value = String(value);
+  index = value.indexOf(character);
+  expected = index;
+
+  while (index !== -1) {
+    count++;
+
+    if (index === expected) {
+      if (count > maximum) {
+        maximum = count;
+      }
+    } else {
+      count = 1;
+    }
+
+    expected = index + 1;
+    index = value.indexOf(character, expected);
+  }
+
+  return maximum;
+}
+
+},{}],175:[function(require,module,exports){
+'use strict';
+
+module.exports = escapes;
+
+var defaults = [
+  '\\',
+  '`',
+  '*',
+  '{',
+  '}',
+  '[',
+  ']',
+  '(',
+  ')',
+  '#',
+  '+',
+  '-',
+  '.',
+  '!',
+  '_',
+  '>'
+];
+
+var gfm = defaults.concat(['~', '|']);
+
+var commonmark = gfm.concat([
+  '\n',
+  '"',
+  '$',
+  '%',
+  '&',
+  '\'',
+  ',',
+  '/',
+  ':',
+  ';',
+  '<',
+  '=',
+  '?',
+  '@',
+  '^'
+]);
+
+escapes.default = defaults;
+escapes.gfm = gfm;
+escapes.commonmark = commonmark;
+
+/* Get markdown escapes. */
+function escapes(options) {
+  var settings = options || {};
+
+  if (settings.commonmark) {
+    return commonmark;
+  }
+
+  return settings.gfm ? gfm : defaults;
+}
+
+},{}],176:[function(require,module,exports){
+'use strict';
+
+/* Expose. */
+module.exports = markdownTable;
+
+/* Expressions. */
+var EXPRESSION_DOT = /\./;
+var EXPRESSION_LAST_DOT = /\.[^.]*$/;
+
+/* Allowed alignment values. */
+var LEFT = 'l';
+var RIGHT = 'r';
+var CENTER = 'c';
+var DOT = '.';
+var NULL = '';
+
+var ALLIGNMENT = [LEFT, RIGHT, CENTER, DOT, NULL];
+var MIN_CELL_SIZE = 3;
+
+/* Characters. */
+var COLON = ':';
+var DASH = '-';
+var PIPE = '|';
+var SPACE = ' ';
+var NEW_LINE = '\n';
+
+/* Create a table from a matrix of strings. */
+function markdownTable(table, options) {
+  var settings = options || {};
+  var delimiter = settings.delimiter;
+  var start = settings.start;
+  var end = settings.end;
+  var alignment = settings.align;
+  var calculateStringLength = settings.stringLength || lengthNoop;
+  var cellCount = 0;
+  var rowIndex = -1;
+  var rowLength = table.length;
+  var sizes = [];
+  var align;
+  var rule;
+  var rows;
+  var row;
+  var cells;
+  var index;
+  var position;
+  var size;
+  var value;
+  var spacing;
+  var before;
+  var after;
+
+  alignment = alignment ? alignment.concat() : [];
+
+  if (delimiter === null || delimiter === undefined) {
+    delimiter = SPACE + PIPE + SPACE;
+  }
+
+  if (start === null || start === undefined) {
+    start = PIPE + SPACE;
+  }
+
+  if (end === null || end === undefined) {
+    end = SPACE + PIPE;
+  }
+
+  while (++rowIndex < rowLength) {
+    row = table[rowIndex];
+
+    index = -1;
+
+    if (row.length > cellCount) {
+      cellCount = row.length;
+    }
+
+    while (++index < cellCount) {
+      position = row[index] ? dotindex(row[index]) : null;
+
+      if (!sizes[index]) {
+        sizes[index] = MIN_CELL_SIZE;
+      }
+
+      if (position > sizes[index]) {
+        sizes[index] = position;
+      }
+    }
+  }
+
+  if (typeof alignment === 'string') {
+    alignment = pad(cellCount, alignment).split('');
+  }
+
+  /* Make sure only valid alignments are used. */
+  index = -1;
+
+  while (++index < cellCount) {
+    align = alignment[index];
+
+    if (typeof align === 'string') {
+      align = align.charAt(0).toLowerCase();
+    }
+
+    if (ALLIGNMENT.indexOf(align) === -1) {
+      align = NULL;
+    }
+
+    alignment[index] = align;
+  }
+
+  rowIndex = -1;
+  rows = [];
+
+  while (++rowIndex < rowLength) {
+    row = table[rowIndex];
+
+    index = -1;
+    cells = [];
+
+    while (++index < cellCount) {
+      value = row[index];
+
+      value = stringify(value);
+
+      if (alignment[index] === DOT) {
+        position = dotindex(value);
+
+        size = sizes[index] +
+          (EXPRESSION_DOT.test(value) ? 0 : 1) -
+          (calculateStringLength(value) - position);
+
+        cells[index] = value + pad(size - 1);
+      } else {
+        cells[index] = value;
+      }
+    }
+
+    rows[rowIndex] = cells;
+  }
+
+  sizes = [];
+  rowIndex = -1;
+
+  while (++rowIndex < rowLength) {
+    cells = rows[rowIndex];
+
+    index = -1;
+
+    while (++index < cellCount) {
+      value = cells[index];
+
+      if (!sizes[index]) {
+        sizes[index] = MIN_CELL_SIZE;
+      }
+
+      size = calculateStringLength(value);
+
+      if (size > sizes[index]) {
+        sizes[index] = size;
+      }
+    }
+  }
+
+  rowIndex = -1;
+
+  while (++rowIndex < rowLength) {
+    cells = rows[rowIndex];
+
+    index = -1;
+
+    if (settings.pad !== false) {
+      while (++index < cellCount) {
+        value = cells[index];
+
+        position = sizes[index] - (calculateStringLength(value) || 0);
+        spacing = pad(position);
+
+        if (alignment[index] === RIGHT || alignment[index] === DOT) {
+          value = spacing + value;
+        } else if (alignment[index] === CENTER) {
+          position /= 2;
+
+          if (position % 1 === 0) {
+            before = position;
+            after = position;
+          } else {
+            before = position + 0.5;
+            after = position - 0.5;
+          }
+
+          value = pad(before) + value + pad(after);
+        } else {
+          value += spacing;
+        }
+
+        cells[index] = value;
+      }
+    }
+
+    rows[rowIndex] = cells.join(delimiter);
+  }
+
+  if (settings.rule !== false) {
+    index = -1;
+    rule = [];
+
+    while (++index < cellCount) {
+      /* When `pad` is false, make the rule the same size as the first row. */
+      if (settings.pad === false) {
+        value = table[0][index];
+        spacing = calculateStringLength(stringify(value));
+        spacing = spacing > MIN_CELL_SIZE ? spacing : MIN_CELL_SIZE;
+      } else {
+        spacing = sizes[index];
+      }
+
+      align = alignment[index];
+
+      /* When `align` is left, don't add colons. */
+      value = align === RIGHT || align === NULL ? DASH : COLON;
+      value += pad(spacing - 2, DASH);
+      value += align !== LEFT && align !== NULL ? COLON : DASH;
+
+      rule[index] = value;
+    }
+
+    rows.splice(1, 0, rule.join(delimiter));
+  }
+
+  return start + rows.join(end + NEW_LINE + start) + end;
+}
+
+function stringify(value) {
+  return (value === null || value === undefined) ? '' : String(value);
+}
+
+/* Get the length of `value`. */
+function lengthNoop(value) {
+  return String(value).length;
+}
+
+/* Get a string consisting of `length` `character`s. */
+function pad(length, character) {
+  return Array(length + 1).join(character || SPACE);
+}
+
+/* Get the position of the last dot in `value`. */
+function dotindex(value) {
+  var match = EXPRESSION_LAST_DOT.exec(value);
+
+  return match ? match.index + 1 : value.length;
+}
+
+},{}],177:[function(require,module,exports){
 module.exports=[
   "abs",
   "and",
@@ -33476,7 +39624,81 @@ module.exports=[
   "xor"
 ]
 
-},{}],128:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
+'use strict';
+
+/* Dependencies. */
+var visit = require('unist-util-visit');
+var modify = require('unist-util-modify-children');
+
+/* Expose. */
+module.exports = compact;
+
+/* Make an MDAST tree compact by merging adjacent text
+ * nodes. */
+function compact(tree, commonmark) {
+  var modifier = modify(iterator);
+
+  visit(tree, visitor);
+
+  return tree;
+
+  function visitor(node) {
+    if (node.children) {
+      modifier(node);
+    }
+  }
+
+  function iterator(child, index, parent) {
+    var siblings = parent.children;
+    var prev = index && siblings[index - 1];
+
+    if (
+      prev &&
+      child.type === prev.type &&
+      mergeable(prev, commonmark) &&
+      mergeable(child, commonmark)
+    ) {
+      if (child.value) {
+        prev.value += child.value;
+      }
+
+      if (child.children) {
+        prev.children = prev.children.concat(child.children);
+      }
+
+      siblings.splice(index, 1);
+
+      if (prev.position && child.position) {
+        prev.position.end = child.position.end;
+      }
+
+      return index;
+    }
+  }
+}
+
+function mergeable(node, commonmark) {
+  var start;
+  var end;
+
+  if (node.type === 'text') {
+    if (!node.position) {
+      return true;
+    }
+
+    start = node.position.start;
+    end = node.position.end;
+
+    /* Only merge nodes which occupy the same size as their `value`. */
+    return start.line !== end.line ||
+      end.column - start.column === node.value.length;
+  }
+
+  return commonmark && node.type === 'blockquote';
+}
+
+},{"unist-util-modify-children":784,"unist-util-visit":787}],179:[function(require,module,exports){
 /*!
  * micromatch <https://github.com/jonschlinkert/micromatch>
  *
@@ -33909,7 +40131,7 @@ micromatch.matchKeys = matchKeys;
 
 module.exports = micromatch;
 
-},{"./lib/expand":130,"./lib/utils":132}],129:[function(require,module,exports){
+},{"./lib/expand":181,"./lib/utils":183}],180:[function(require,module,exports){
 'use strict';
 
 var chars = {}, unesc, temp;
@@ -33978,7 +40200,7 @@ chars.TEMP = temp || (temp = reverse(chars.ESC_TEMP));
 
 module.exports = chars;
 
-},{}],130:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 /*!
  * micromatch <https://github.com/jonschlinkert/micromatch>
  *
@@ -34284,7 +40506,7 @@ function globstar(dotfile) {
   return '(?:(?!(?:\\/|^)\\.).)*?';
 }
 
-},{"./glob":131,"./utils":132}],131:[function(require,module,exports){
+},{"./glob":182,"./utils":183}],182:[function(require,module,exports){
 'use strict';
 
 var chars = require('./chars');
@@ -34479,7 +40701,7 @@ function unesc(str) {
   return str;
 }
 
-},{"./chars":129,"./utils":132}],132:[function(require,module,exports){
+},{"./chars":180,"./utils":183}],183:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34632,7 +40854,7 @@ utils.escapeRe = function escapeRe(str) {
 module.exports = utils;
 
 }).call(this,require('_process'))
-},{"_process":283,"arr-diff":2,"array-unique":6,"braces":12,"expand-brackets":37,"extglob":39,"filename-regex":41,"is-extglob":80,"is-glob":81,"kind-of":123,"normalize-path":136,"object.omit":139,"parse-glob":142,"path":146,"regex-cache":305}],133:[function(require,module,exports){
+},{"_process":324,"arr-diff":2,"array-unique":7,"braces":14,"expand-brackets":69,"extglob":72,"filename-regex":74,"is-extglob":122,"is-glob":123,"kind-of":170,"normalize-path":187,"object.omit":190,"parse-glob":194,"path":198,"regex-cache":346}],184:[function(require,module,exports){
 module.exports = minimatch
 minimatch.Minimatch = Minimatch
 
@@ -35557,7 +41779,7 @@ function regExpEscape (s) {
   return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-},{"brace-expansion":11,"path":146}],134:[function(require,module,exports){
+},{"brace-expansion":13,"path":198}],185:[function(require,module,exports){
 (function (process){
 var path = require('path');
 var fs = require('fs');
@@ -35573,18 +41795,18 @@ function mkdirP (p, opts, f, made) {
     else if (!opts || typeof opts !== 'object') {
         opts = { mode: opts };
     }
-
+    
     var mode = opts.mode;
     var xfs = opts.fs || fs;
-
+    
     if (mode === undefined) {
         mode = _0777 & (~process.umask());
     }
     if (!made) made = null;
-
+    
     var cb = f || function () {};
     p = path.resolve(p);
-
+    
     xfs.mkdir(p, mode, function (er) {
         if (!er) {
             made = made || p;
@@ -35617,10 +41839,10 @@ mkdirP.sync = function sync (p, opts, made) {
     if (!opts || typeof opts !== 'object') {
         opts = { mode: opts };
     }
-
+    
     var mode = opts.mode;
     var xfs = opts.fs || fs;
-
+    
     if (mode === undefined) {
         mode = _0777 & (~process.umask());
     }
@@ -35659,7 +41881,7 @@ mkdirP.sync = function sync (p, opts, made) {
 };
 
 }).call(this,require('_process'))
-},{"_process":283,"fs":14,"path":146}],135:[function(require,module,exports){
+},{"_process":324,"fs":16,"path":198}],186:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -35813,7 +42035,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],136:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 /*!
  * normalize-path <https://github.com/jonschlinkert/normalize-path>
  *
@@ -35834,7 +42056,7 @@ module.exports = function normalizePath(str, stripTrailing) {
   return str;
 };
 
-},{"remove-trailing-separator":306}],137:[function(require,module,exports){
+},{"remove-trailing-separator":440}],188:[function(require,module,exports){
 /* normalize-selector v0.1.0 (c) 2014 Kyle Simpson */
 
 (function UMD(name,context,definition){
@@ -35999,7 +42221,7 @@ module.exports = function normalizePath(str, stripTrailing) {
 });
 
 
-},{}],138:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -36091,7 +42313,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],139:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 /*!
  * object.omit <https://github.com/jonschlinkert/object.omit>
  *
@@ -36133,7 +42355,7 @@ module.exports = function omit(obj, keys) {
   return res;
 };
 
-},{"for-own":50,"is-extendable":79}],140:[function(require,module,exports){
+},{"for-own":82,"is-extendable":121}],191:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
@@ -36177,7 +42399,7 @@ function onceStrict (fn) {
   return f
 }
 
-},{"wrappy":615}],141:[function(require,module,exports){
+},{"wrappy":798}],192:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -36228,7 +42450,482 @@ exports.homedir = function () {
 	return '/'
 };
 
-},{}],142:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
+'use strict';
+
+/* Dependencies. */
+var characterEntities = require('character-entities');
+var legacy = require('character-entities-legacy');
+var invalid = require('character-reference-invalid');
+var decimal = require('is-decimal');
+var hexadecimal = require('is-hexadecimal');
+var alphanumerical = require('is-alphanumerical');
+
+/* Expose. */
+module.exports = wrapper;
+
+/* Methods. */
+var own = {}.hasOwnProperty;
+var fromCharCode = String.fromCharCode;
+var noop = Function.prototype;
+
+/* Characters. */
+var REPLACEMENT = '\uFFFD';
+var FORM_FEED = '\f';
+var AMPERSAND = '&';
+var OCTOTHORP = '#';
+var SEMICOLON = ';';
+var NEWLINE = '\n';
+var X_LOWER = 'x';
+var X_UPPER = 'X';
+var SPACE = ' ';
+var LESS_THAN = '<';
+var EQUAL = '=';
+var EMPTY = '';
+var TAB = '\t';
+
+/* Default settings. */
+var defaults = {
+  warning: null,
+  reference: null,
+  text: null,
+  warningContext: null,
+  referenceContext: null,
+  textContext: null,
+  position: {},
+  additional: null,
+  attribute: false,
+  nonTerminated: true
+};
+
+/* Reference types. */
+var NAMED = 'named';
+var HEXADECIMAL = 'hexadecimal';
+var DECIMAL = 'decimal';
+
+/* Map of bases. */
+var BASE = {};
+
+BASE[HEXADECIMAL] = 16;
+BASE[DECIMAL] = 10;
+
+/* Map of types to tests. Each type of character reference
+ * accepts different characters. This test is used to
+ * detect whether a reference has ended (as the semicolon
+ * is not strictly needed). */
+var TESTS = {};
+
+TESTS[NAMED] = alphanumerical;
+TESTS[DECIMAL] = decimal;
+TESTS[HEXADECIMAL] = hexadecimal;
+
+/* Warning messages. */
+var NAMED_NOT_TERMINATED = 1;
+var NUMERIC_NOT_TERMINATED = 2;
+var NAMED_EMPTY = 3;
+var NUMERIC_EMPTY = 4;
+var NAMED_UNKNOWN = 5;
+var NUMERIC_DISALLOWED = 6;
+var NUMERIC_PROHIBITED = 7;
+
+var NUMERIC_REFERENCE = 'Numeric character references';
+var NAMED_REFERENCE = 'Named character references';
+var TERMINATED = ' must be terminated by a semicolon';
+var VOID = ' cannot be empty';
+
+var MESSAGES = {};
+
+MESSAGES[NAMED_NOT_TERMINATED] = NAMED_REFERENCE + TERMINATED;
+MESSAGES[NUMERIC_NOT_TERMINATED] = NUMERIC_REFERENCE + TERMINATED;
+MESSAGES[NAMED_EMPTY] = NAMED_REFERENCE + VOID;
+MESSAGES[NUMERIC_EMPTY] = NUMERIC_REFERENCE + VOID;
+MESSAGES[NAMED_UNKNOWN] = NAMED_REFERENCE + ' must be known';
+MESSAGES[NUMERIC_DISALLOWED] = NUMERIC_REFERENCE + ' cannot be disallowed';
+MESSAGES[NUMERIC_PROHIBITED] = NUMERIC_REFERENCE + ' cannot be outside the ' +
+    'permissible Unicode range';
+
+/* Wrap to ensure clean parameters are given to `parse`. */
+function wrapper(value, options) {
+  var settings = {};
+  var option;
+  var key;
+
+  if (!options) {
+    options = {};
+  }
+
+  for (key in defaults) {
+    option = options[key];
+    settings[key] = option === null || option === undefined ? defaults[key] : option;
+  }
+
+  if (settings.position.indent || settings.position.start) {
+    settings.indent = settings.position.indent || [];
+    settings.position = settings.position.start;
+  }
+
+  return parse(value, settings);
+}
+
+/* Parse entities. */
+function parse(value, settings) {
+  var additional = settings.additional;
+  var nonTerminated = settings.nonTerminated;
+  var handleText = settings.text;
+  var handleReference = settings.reference;
+  var handleWarning = settings.warning;
+  var textContext = settings.textContext;
+  var referenceContext = settings.referenceContext;
+  var warningContext = settings.warningContext;
+  var pos = settings.position;
+  var indent = settings.indent || [];
+  var length = value.length;
+  var index = 0;
+  var lines = -1;
+  var column = pos.column || 1;
+  var line = pos.line || 1;
+  var queue = EMPTY;
+  var result = [];
+  var entityCharacters;
+  var terminated;
+  var characters;
+  var character;
+  var reference;
+  var following;
+  var warning;
+  var reason;
+  var output;
+  var entity;
+  var begin;
+  var start;
+  var type;
+  var test;
+  var prev;
+  var next;
+  var diff;
+  var end;
+
+  /* Cache the current point. */
+  prev = now();
+
+  /* Wrap `handleWarning`. */
+  warning = handleWarning ? parseError : noop;
+
+  /* Ensure the algorithm walks over the first character
+   * and the end (inclusive). */
+  index--;
+  length++;
+
+  while (++index < length) {
+    /* If the previous character was a newline. */
+    if (character === NEWLINE) {
+      column = indent[lines] || 1;
+    }
+
+    character = at(index);
+
+    /* Handle anything other than an ampersand,
+     * including newlines and EOF. */
+    if (character !== AMPERSAND) {
+      if (character === NEWLINE) {
+        line++;
+        lines++;
+        column = 0;
+      }
+
+      if (character) {
+        queue += character;
+        column++;
+      } else {
+        flush();
+      }
+    } else {
+      following = at(index + 1);
+
+      /* The behaviour depends on the identity of the next
+       * character. */
+      if (
+        following === TAB ||
+        following === NEWLINE ||
+        following === FORM_FEED ||
+        following === SPACE ||
+        following === LESS_THAN ||
+        following === AMPERSAND ||
+        following === EMPTY ||
+        (additional && following === additional)
+      ) {
+        /* Not a character reference. No characters
+         * are consumed, and nothing is returned.
+         * This is not an error, either. */
+        queue += character;
+        column++;
+
+        continue;
+      }
+
+      start = index + 1;
+      begin = start;
+      end = start;
+
+      /* Numerical entity. */
+      if (following !== OCTOTHORP) {
+        type = NAMED;
+      } else {
+        end = ++begin;
+
+        /* The behaviour further depends on the
+         * character after the U+0023 NUMBER SIGN. */
+        following = at(end);
+
+        if (following === X_LOWER || following === X_UPPER) {
+          /* ASCII hex digits. */
+          type = HEXADECIMAL;
+          end = ++begin;
+        } else {
+          /* ASCII digits. */
+          type = DECIMAL;
+        }
+      }
+
+      entityCharacters = EMPTY;
+      entity = EMPTY;
+      characters = EMPTY;
+      test = TESTS[type];
+      end--;
+
+      while (++end < length) {
+        following = at(end);
+
+        if (!test(following)) {
+          break;
+        }
+
+        characters += following;
+
+        /* Check if we can match a legacy named
+         * reference.  If so, we cache that as the
+         * last viable named reference.  This
+         * ensures we do not need to walk backwards
+         * later. */
+        if (type === NAMED && own.call(legacy, characters)) {
+          entityCharacters = characters;
+          entity = legacy[characters];
+        }
+      }
+
+      terminated = at(end) === SEMICOLON;
+
+      if (terminated) {
+        end++;
+
+        if (type === NAMED && own.call(characterEntities, characters)) {
+          entityCharacters = characters;
+          entity = characterEntities[characters];
+        }
+      }
+
+      diff = 1 + end - start;
+
+      if (!terminated && !nonTerminated) {
+        /* Empty. */
+      } else if (!characters) {
+        /* An empty (possible) entity is valid, unless
+         * its numeric (thus an ampersand followed by
+         * an octothorp). */
+        if (type !== NAMED) {
+          warning(NUMERIC_EMPTY, diff);
+        }
+      } else if (type === NAMED) {
+        /* An ampersand followed by anything
+         * unknown, and not terminated, is invalid. */
+        if (terminated && !entity) {
+          warning(NAMED_UNKNOWN, 1);
+        } else {
+          /* If theres something after an entity
+           * name which is not known, cap the
+           * reference. */
+          if (entityCharacters !== characters) {
+            end = begin + entityCharacters.length;
+            diff = 1 + end - begin;
+            terminated = false;
+          }
+
+          /* If the reference is not terminated,
+           * warn. */
+          if (!terminated) {
+            reason = entityCharacters ?
+              NAMED_NOT_TERMINATED :
+              NAMED_EMPTY;
+
+            if (!settings.attribute) {
+              warning(reason, diff);
+            } else {
+              following = at(end);
+
+              if (following === EQUAL) {
+                warning(reason, diff);
+                entity = null;
+              } else if (alphanumerical(following)) {
+                entity = null;
+              } else {
+                warning(reason, diff);
+              }
+            }
+          }
+        }
+
+        reference = entity;
+      } else {
+        if (!terminated) {
+          /* All non-terminated numeric entities are
+           * not rendered, and trigger a warning. */
+          warning(NUMERIC_NOT_TERMINATED, diff);
+        }
+
+        /* When terminated and number, parse as
+         * either hexadecimal or decimal. */
+        reference = parseInt(characters, BASE[type]);
+
+        /* Trigger a warning when the parsed number
+         * is prohibited, and replace with
+         * replacement character. */
+        if (isProhibited(reference)) {
+          warning(NUMERIC_PROHIBITED, diff);
+
+          reference = REPLACEMENT;
+        } else if (reference in invalid) {
+          /* Trigger a warning when the parsed number
+           * is disallowed, and replace by an
+           * alternative. */
+          warning(NUMERIC_DISALLOWED, diff);
+
+          reference = invalid[reference];
+        } else {
+          /* Parse the number. */
+          output = EMPTY;
+
+          /* Trigger a warning when the parsed
+           * number should not be used. */
+          if (isWarning(reference)) {
+            warning(NUMERIC_DISALLOWED, diff);
+          }
+
+          /* Stringify the number. */
+          if (reference > 0xFFFF) {
+            reference -= 0x10000;
+            output += fromCharCode((reference >>> (10 & 0x3FF)) | 0xD800);
+            reference = 0xDC00 | (reference & 0x3FF);
+          }
+
+          reference = output + fromCharCode(reference);
+        }
+      }
+
+      /* If we could not find a reference, queue the
+       * checked characters (as normal characters),
+       * and move the pointer to their end. This is
+       * possible because we can be certain neither
+       * newlines nor ampersands are included. */
+      if (!reference) {
+        characters = value.slice(start - 1, end);
+        queue += characters;
+        column += characters.length;
+        index = end - 1;
+      } else {
+        /* Found it! First eat the queued
+         * characters as normal text, then eat
+         * an entity. */
+        flush();
+
+        prev = now();
+        index = end - 1;
+        column += end - start + 1;
+        result.push(reference);
+        next = now();
+        next.offset++;
+
+        if (handleReference) {
+          handleReference.call(referenceContext, reference, {
+            start: prev,
+            end: next
+          }, value.slice(start - 1, end));
+        }
+
+        prev = next;
+      }
+    }
+  }
+
+  /* Return the reduced nodes, and any possible warnings. */
+  return result.join(EMPTY);
+
+  /* Get current position. */
+  function now() {
+    return {
+      line: line,
+      column: column,
+      offset: index + (pos.offset || 0)
+    };
+  }
+
+  /* “Throw” a parse-error: a warning. */
+  function parseError(code, offset) {
+    var position = now();
+
+    position.column += offset;
+    position.offset += offset;
+
+    handleWarning.call(warningContext, MESSAGES[code], position, code);
+  }
+
+  /* Get character at position. */
+  function at(position) {
+    return value.charAt(position);
+  }
+
+  /* Flush `queue` (normal text). Macro invoked before
+   * each entity and at the end of `value`.
+   * Does nothing when `queue` is empty. */
+  function flush() {
+    if (queue) {
+      result.push(queue);
+
+      if (handleText) {
+        handleText.call(textContext, queue, {
+          start: prev,
+          end: now()
+        });
+      }
+
+      queue = EMPTY;
+    }
+  }
+}
+
+/* Check if `character` is outside the permissible
+ * unicode range. */
+function isProhibited(code) {
+  return (code >= 0xD800 && code <= 0xDFFF) || (code > 0x10FFFF);
+}
+
+/* Check if `character` is disallowed. */
+function isWarning(code) {
+  if (
+    (code >= 0x0001 && code <= 0x0008) ||
+    code === 0x000B ||
+    (code >= 0x000D && code <= 0x001F) ||
+    (code >= 0x007F && code <= 0x009F) ||
+    (code >= 0xFDD0 && code <= 0xFDEF) ||
+    (code & 0xFFFF) === 0xFFFF ||
+    (code & 0xFFFF) === 0xFFFE
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+},{"character-entities":21,"character-entities-legacy":20,"character-reference-invalid":22,"is-alphanumerical":114,"is-decimal":117,"is-hexadecimal":124}],194:[function(require,module,exports){
 /*!
  * parse-glob <https://github.com/jonschlinkert/parse-glob>
  *
@@ -36386,7 +43083,7 @@ function unescape(str) {
   return str;
 }
 
-},{"glob-base":53,"is-dotfile":77,"is-extglob":80,"is-glob":81}],143:[function(require,module,exports){
+},{"glob-base":85,"is-dotfile":119,"is-extglob":122,"is-glob":123}],195:[function(require,module,exports){
 'use strict';
 const errorEx = require('error-ex');
 const fallback = require('./vendor/parse');
@@ -36438,7 +43135,7 @@ module.exports = (input, reviver, filename) => {
 	}
 };
 
-},{"./vendor/parse":144,"error-ex":33}],144:[function(require,module,exports){
+},{"./vendor/parse":196,"error-ex":65}],196:[function(require,module,exports){
 /*
  * Author: Alex Kocharin <alex@kocharin.ru>
  * GIT: https://github.com/rlidwka/jju
@@ -37192,7 +43889,7 @@ module.exports.tokenize = function tokenizeJSON(input, options) {
 }
 
 
-},{"./unicode":145}],145:[function(require,module,exports){
+},{"./unicode":197}],197:[function(require,module,exports){
 
 // This is autogenerated with esprima tools, see:
 // https://github.com/ariya/esprima/blob/master/esprima.js
@@ -37265,7 +43962,7 @@ module.exports.NonAsciiIdentifierStart = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u
 
 module.exports.NonAsciiIdentifierPart = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0300-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u0483-\u0487\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u05D0-\u05EA\u05F0-\u05F2\u0610-\u061A\u0620-\u0669\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06FC\u06FF\u0710-\u074A\u074D-\u07B1\u07C0-\u07F5\u07FA\u0800-\u082D\u0840-\u085B\u08A0\u08A2-\u08AC\u08E4-\u08FE\u0900-\u0963\u0966-\u096F\u0971-\u0977\u0979-\u097F\u0981-\u0983\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BC-\u09C4\u09C7\u09C8\u09CB-\u09CE\u09D7\u09DC\u09DD\u09DF-\u09E3\u09E6-\u09F1\u0A01-\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A59-\u0A5C\u0A5E\u0A66-\u0A75\u0A81-\u0A83\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABC-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AD0\u0AE0-\u0AE3\u0AE6-\u0AEF\u0B01-\u0B03\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3C-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B5C\u0B5D\u0B5F-\u0B63\u0B66-\u0B6F\u0B71\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD0\u0BD7\u0BE6-\u0BEF\u0C01-\u0C03\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C58\u0C59\u0C60-\u0C63\u0C66-\u0C6F\u0C82\u0C83\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBC-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CDE\u0CE0-\u0CE3\u0CE6-\u0CEF\u0CF1\u0CF2\u0D02\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D-\u0D44\u0D46-\u0D48\u0D4A-\u0D4E\u0D57\u0D60-\u0D63\u0D66-\u0D6F\u0D7A-\u0D7F\u0D82\u0D83\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DF2\u0DF3\u0E01-\u0E3A\u0E40-\u0E4E\u0E50-\u0E59\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB9\u0EBB-\u0EBD\u0EC0-\u0EC4\u0EC6\u0EC8-\u0ECD\u0ED0-\u0ED9\u0EDC-\u0EDF\u0F00\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E-\u0F47\u0F49-\u0F6C\u0F71-\u0F84\u0F86-\u0F97\u0F99-\u0FBC\u0FC6\u1000-\u1049\u1050-\u109D\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u135D-\u135F\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F0\u1700-\u170C\u170E-\u1714\u1720-\u1734\u1740-\u1753\u1760-\u176C\u176E-\u1770\u1772\u1773\u1780-\u17D3\u17D7\u17DC\u17DD\u17E0-\u17E9\u180B-\u180D\u1810-\u1819\u1820-\u1877\u1880-\u18AA\u18B0-\u18F5\u1900-\u191C\u1920-\u192B\u1930-\u193B\u1946-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u19D0-\u19D9\u1A00-\u1A1B\u1A20-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AA7\u1B00-\u1B4B\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1BF3\u1C00-\u1C37\u1C40-\u1C49\u1C4D-\u1C7D\u1CD0-\u1CD2\u1CD4-\u1CF6\u1D00-\u1DE6\u1DFC-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u200C\u200D\u203F\u2040\u2054\u2071\u207F\u2090-\u209C\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D7F-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2DE0-\u2DFF\u2E2F\u3005-\u3007\u3021-\u302F\u3031-\u3035\u3038-\u303C\u3041-\u3096\u3099\u309A\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA62B\uA640-\uA66F\uA674-\uA67D\uA67F-\uA697\uA69F-\uA6F1\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA827\uA840-\uA873\uA880-\uA8C4\uA8D0-\uA8D9\uA8E0-\uA8F7\uA8FB\uA900-\uA92D\uA930-\uA953\uA960-\uA97C\uA980-\uA9C0\uA9CF-\uA9D9\uAA00-\uAA36\uAA40-\uAA4D\uAA50-\uAA59\uAA60-\uAA76\uAA7A\uAA7B\uAA80-\uAAC2\uAADB-\uAADD\uAAE0-\uAAEF\uAAF2-\uAAF6\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABEA\uABEC\uABED\uABF0-\uABF9\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE00-\uFE0F\uFE20-\uFE26\uFE33\uFE34\uFE4D-\uFE4F\uFE70-\uFE74\uFE76-\uFEFC\uFF10-\uFF19\uFF21-\uFF3A\uFF3F\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]/
 
-},{}],146:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -37493,7 +44190,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":283}],147:[function(require,module,exports){
+},{"_process":324}],199:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -37517,7 +44214,7 @@ module.exports.posix = posix;
 module.exports.win32 = win32;
 
 }).call(this,require('_process'))
-},{"_process":283}],148:[function(require,module,exports){
+},{"_process":324}],200:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -37549,7 +44246,7 @@ function stripTrailingSep(thePath) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283,"path":146}],149:[function(require,module,exports){
+},{"_process":324,"path":198}],201:[function(require,module,exports){
 'use strict';
 
 const processFn = (fn, opts) => function () {
@@ -37635,12 +44332,12 @@ module.exports = (obj, opts) => {
 	return ret;
 };
 
-},{}],150:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 'use strict';
 
 module.exports = typeof Promise === 'function' ? Promise : require('pinkie');
 
-},{"pinkie":151}],151:[function(require,module,exports){
+},{"pinkie":203}],203:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -37936,7 +44633,477 @@ Promise.reject = function (reason) {
 module.exports = Promise;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],152:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
+"use strict";
+
+const getSyntax = require("./get-syntax");
+
+function autoParser (source, opts) {
+	const syntax = getSyntax(opts);
+	const document = syntax.parse(source, opts);
+	// document.source.syntax = syntax;
+	Object.defineProperty(document.source, "syntax", {
+		get: () => syntax,
+	});
+	return document;
+}
+
+module.exports = autoParser;
+
+},{"./get-syntax":207}],205:[function(require,module,exports){
+"use strict";
+const reNewLine = /(?:\r?\n|\r)/gm;
+const getSyntax = require("./get-syntax");
+
+function DocumentFixer (source) {
+	let match;
+	const lines = [];
+	reNewLine.lastIndex = 0;
+	while ((match = reNewLine.exec(source))) {
+		lines.push(match.index);
+	}
+	this.lines = lines;
+}
+
+DocumentFixer.prototype = {
+	block: function (style) {
+		return new LocalFixer(this.lines, style);
+	},
+};
+
+function LocalFixer (lines, style) {
+	let line = 0;
+	let column = style.startIndex;
+	lines.some((lineEndIndex, lineNumber) => {
+		if (lineEndIndex >= style.startIndex) {
+			line = lineNumber--;
+			if (lineNumber in lines) {
+				column = style.startIndex - lines[lineNumber] - 1;
+			}
+			return true;
+		}
+	});
+
+	this.line = line;
+	this.column = column;
+	this.style = style;
+}
+
+LocalFixer.prototype = {
+	object: function (object) {
+		if (object) {
+			if (object.line === 1) {
+				object.column += this.column;
+			}
+			object.line += this.line;
+		}
+	},
+	node: function (node) {
+		this.object(node.source.start);
+		this.object(node.source.end);
+	},
+	root: function (root) {
+		this.object(root.source.start);
+		root.walk(node => {
+			this.node(node);
+		});
+	},
+	error: function (error) {
+		if (error && error.name === "CssSyntaxError") {
+			this.object(error);
+			this.object(error.input);
+			error.message = error.message.replace(/:\d+:\d+:/, ":" + error.line + ":" + error.column + ":");
+		}
+		return error;
+	},
+	parse: function (opts) {
+		const style = this.style;
+		const syntax = getSyntax(opts, style.lang);
+		let root;
+		try {
+			root = syntax.parse(style.content, Object.assign({}, opts, {
+				map: false,
+			}));
+		} catch (error) {
+			throw this.error(error);
+		}
+		this.root(root);
+		Object.assign(root.source, {
+			isHTMLAttribute: !!style.isHTMLAttribute,
+			isMarkdown: !!style.isMarkdown,
+			isHTMLTag: !!style.isHTMLTag,
+			lang: style.lang || "css",
+			syntax,
+		});
+
+		return root;
+	},
+};
+
+module.exports = DocumentFixer;
+
+},{"./get-syntax":207}],206:[function(require,module,exports){
+"use strict";
+
+const stringify = require("postcss/lib/stringify");
+const parse = require("postcss/lib/parse");
+
+module.exports = opts => ({
+	stringify,
+	parse: opts.fix ? require("postcss-safe-parser") : parse,
+});
+
+},{"postcss-safe-parser":283,"postcss/lib/parse":307,"postcss/lib/stringify":316}],207:[function(require,module,exports){
+"use strict";
+
+const cssSyntax = require("./css-syntax");
+const extname = {
+	styl: "stylus",
+	sss: "sugarss",
+};
+
+function defaultConfig (opts, lang) {
+	let syntax;
+	if (lang === "scss" || lang === "sass" || lang === "less") {
+		syntax = require("postcss-" + lang);
+	} else if (lang === "sugarss") {
+		syntax = require("sugarss");
+	} else {
+		syntax = cssSyntax(opts);
+	}
+	return syntax;
+}
+
+function getSyntax (opts, lang) {
+	if (!lang) {
+		lang = opts.from && /\.(\w+)(?:\?.+)?$/.exec(opts.from);
+		if (lang) {
+			lang = lang[1].toLowerCase();
+			lang = extname[lang] || lang;
+		} else {
+			lang = "css";
+		}
+	}
+
+	let config = opts.syntax.config;
+
+	if (!config) {
+		return defaultConfig(opts, lang);
+	}
+
+	if (typeof config === "function") {
+		config = config(opts, lang);
+	}
+
+	if (config) {
+		config = config[lang] || config.css || config;
+		if (typeof config === "string") {
+			config = require(config);
+		}
+	} else {
+		return defaultConfig(opts, lang);
+	}
+
+	return Object.assign(cssSyntax(opts), config);
+}
+
+module.exports = getSyntax;
+
+},{"./css-syntax":206,"sugarss":766}],208:[function(require,module,exports){
+"use strict";
+
+const htmlparser = require("htmlparser2");
+
+function iterateCode (source, onStyleTag, onStyleAttribute) {
+	let currentStyle = null;
+	let isStructureHTML = false;
+
+	const parser = new htmlparser.Parser({
+		onopentag (name, attribute) {
+			// Found a tag, the structure is now confirmed as HTML
+			isStructureHTML = true;
+
+			// Test if current tag is a valid <style> tag.
+			if (name !== "style") {
+				return;
+			}
+			currentStyle = {
+				attribute,
+				startIndex: parser.endIndex + 1,
+			};
+		},
+
+		onclosetag (name) {
+			if (name !== "style" || currentStyle === null) {
+				return;
+			}
+			currentStyle.content = source.slice(currentStyle.startIndex, parser.startIndex);
+			onStyleTag(currentStyle);
+			currentStyle = null;
+		},
+
+		onattribute (name, value) {
+			if (name !== "style") {
+				return;
+			}
+			onStyleAttribute(value, parser.endIndex);
+		},
+	});
+
+	parser.parseComplete(source);
+
+	return isStructureHTML;
+}
+
+function getSubString (str, regexp) {
+	const subStr = str && regexp.exec(str);
+	if (subStr) {
+		return subStr[1].toLowerCase();
+	}
+}
+
+function getLang (attribute) {
+	return getSubString(attribute.type, /^\w+\/(?:x-)?(\w+)$/i) || getSubString(attribute.lang, /^(\w+)(?:\?.+)?$/) || "css";
+}
+
+function htmlParser (source) {
+	const styles = [];
+	function onStyleTag (style) {
+		const firstNewLine = /^[ \t]*\r?\n/.exec(style.content);
+		style.lang = getLang(style.attribute);
+		if (firstNewLine) {
+			const offset = firstNewLine[0].length;
+			style.startIndex += offset;
+			style.content = style.content.slice(offset);
+		}
+		style.content = style.content.replace(/[ \t]*$/, "");
+		style.isHTMLTag = true;
+		styles.push(style);
+	}
+	function onStyleAttribute (content, index) {
+		styles.push({
+			content: content,
+			startIndex: source.indexOf(content, index),
+			isHTMLAttribute: true,
+		});
+	}
+	const isStructureHTML = iterateCode(source, onStyleTag, onStyleAttribute);
+
+	if (!isStructureHTML) {
+		return;
+	}
+
+	return styles;
+}
+
+module.exports = htmlParser;
+
+},{"htmlparser2":105}],209:[function(require,module,exports){
+"use strict";
+
+const stringify = require("./stringify");
+const parse = require("./parse");
+
+function initSyntax (syntax) {
+	syntax.stringify = stringify.bind(syntax);
+	syntax.parse = parse.bind(syntax);
+	return syntax;
+}
+
+function syntax (config) {
+	return initSyntax({
+		config,
+	});
+}
+
+initSyntax(syntax);
+module.exports = syntax;
+
+},{"./parse":211,"./stringify":213}],210:[function(require,module,exports){
+"use strict";
+
+const remark = require("remark");
+const findAllAfter = require("unist-util-find-all-after");
+
+module.exports = function (source) {
+	let isStructureMD = false;
+	const ast = remark().parse(source);
+	const blocks = findAllAfter(ast, 0, (node) => {
+		if (node.type === "code" && node.lang) {
+			isStructureMD = true;
+			return /^(?:(?:[ps]?c)|le|wx|sa?|sugar)ss$/i.test(node.lang);
+		}
+	});
+	if (!isStructureMD) {
+		return;
+	}
+	return blocks.map((block) => {
+		const startIndex = source.indexOf(block.value, block.position.start.offset);
+		const content = source.slice(startIndex, block.position.end.offset).replace(/[ \t]*`*$/, "");
+		return {
+			startIndex: startIndex,
+			lang: block.lang.toLowerCase(),
+			isMarkdown: true,
+			content: content,
+		};
+	});
+};
+
+},{"remark":439,"unist-util-find-all-after":782}],211:[function(require,module,exports){
+"use strict";
+
+const parser = require("./parser");
+const autoParser = require("./auto-parser");
+
+function parse (source, opts) {
+	if (!opts.syntax) {
+		opts.syntax = this;
+	}
+	return parser(source, opts) || autoParser(source, opts);
+}
+
+module.exports = parse;
+
+},{"./auto-parser":204,"./parser":212}],212:[function(require,module,exports){
+"use strict";
+
+const Input = require("postcss/lib/input");
+const Root = require("postcss/lib/root");
+const htmlParser = require("./html-parser");
+const mdParser = require("./markdown-parser");
+const BlockFixer = require("./block-fixer");
+
+function parser (source, opts) {
+	// Skip known style sheet files
+	if (opts.from && /\.(?:css|(?:wx|le|sa|sc|s)ss|styl(?:us)?)(?:\?.+)?$/i.test(opts.from)) {
+		return;
+	}
+
+	source = source && source.toString();
+	const styleTag = htmlParser(source);
+	const stylesMd = mdParser(source);
+	if (!styleTag && !stylesMd) {
+		return;
+	}
+	const document = new Root();
+	const documentLocalFixer = new BlockFixer(source);
+	let index = 0;
+	[].concat(styleTag).concat(stylesMd).filter(Boolean).sort(function (a, b) {
+		return a.startIndex - b.startIndex;
+	}).forEach(style => {
+		const localFixer = documentLocalFixer.block(style);
+		const root = localFixer.parse(opts);
+		root.raws.beforeStart = source.slice(index, style.startIndex);
+		index = style.startIndex + style.content.length;
+		document.nodes.push(root);
+	});
+	document.raws.afterEnd = source.slice(index);
+	document.source = {
+		input: new Input(source, opts),
+		start: {
+			line: 1,
+			column: 1,
+		},
+	};
+
+	document.each = function (callback) {
+		let wasBreak, lastResult;
+		this.nodes.forEach(node => {
+			const result = node.each(callback);
+			if (result === false) {
+				wasBreak = true;
+			} else {
+				lastResult = result;
+			}
+		});
+		if (wasBreak) {
+			return false;
+		} else {
+			return lastResult;
+		}
+	};
+
+	document.append = function () {
+		this.last.append.apply(
+			this.last,
+			Array.from(arguments)
+		);
+		return this;
+	};
+
+	document.prepend = function () {
+		this.first.prepend.apply(
+			this.first,
+			Array.from(arguments)
+		);
+		return this;
+	};
+
+	document.insertBefore = function (exist, add) {
+		exist.prepend(add);
+		return this;
+	};
+
+	document.insertAfter = function (exist, add) {
+		exist.append(add);
+		return this;
+	};
+
+	return document;
+}
+
+module.exports = parser;
+
+},{"./block-fixer":205,"./html-parser":208,"./markdown-parser":210,"postcss/lib/input":302,"postcss/lib/root":313}],213:[function(require,module,exports){
+"use strict";
+const cssSyntax = require("./css-syntax");
+
+function stringify (document, builder) {
+	if (document.source.syntax) {
+		return document.source.syntax.stringify(document, builder);
+	} else {
+		const firstOriginalRoot = document.nodes.find(root => root.source && root.source.syntax);
+		let defaultSyntax;
+		document.nodes.forEach((root, i) => {
+			let syntax = root.source && root.source.syntax;
+			if (syntax) {
+				if (root.raws.beforeStart) {
+					builder(root.raws.beforeStart, root, "beforeStart");
+				}
+				defaultSyntax = syntax;
+			} else {
+				if (!i && firstOriginalRoot) {
+					builder(firstOriginalRoot.raws.beforeStart, root, "beforeStart");
+					firstOriginalRoot.raws.beforeStart = "";
+				}
+				syntax = defaultSyntax || (
+					defaultSyntax = firstOriginalRoot
+						? firstOriginalRoot.source.syntax
+						: cssSyntax({})
+				);
+			}
+			if (root.source && root.source.isHTMLAttribute) {
+				return syntax.stringify(root, string => {
+					builder.apply(
+						null,
+						[
+							string.replace(/[\r\n\t\s]+/g, " "),
+						].concat(
+							Array.from(arguments).slice(1)
+						)
+					);
+				});
+			} else {
+				syntax.stringify(root, builder);
+			}
+		});
+		builder(document.raws.afterEnd, document, "afterEnd");
+	}
+}
+
+module.exports = stringify;
+
+},{"./css-syntax":206}],214:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37974,7 +45141,7 @@ function findExtendRule(tokens) {
   return tokens.slice(start, end);
 }
 module.exports = exports['default'];
-},{}],153:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38031,7 +45198,7 @@ var Import = function (_PostCssRule) {
 
 exports.default = Import;
 module.exports = exports['default'];
-},{"./less-stringify":158,"postcss/lib/rule":197}],154:[function(require,module,exports){
+},{"./less-stringify":220,"postcss/lib/rule":259}],216:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38054,7 +45221,7 @@ function isMixinToken(token) {
   unpaddedFractionalNumbersPattern.test(symbol) === false;
 }
 module.exports = exports['default'];
-},{"./tokenizer/globals":164}],155:[function(require,module,exports){
+},{"./tokenizer/globals":226}],217:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38085,7 +45252,7 @@ function lessParse(less, opts) {
 // import Parser from 'postcss/lib/parser';
 
 module.exports = exports['default'];
-},{"./less-parser":156,"postcss/lib/input":186}],156:[function(require,module,exports){
+},{"./less-parser":218,"postcss/lib/input":248}],218:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38545,7 +45712,7 @@ var LessParser = function (_Parser) {
 
 exports.default = LessParser;
 module.exports = exports['default'];
-},{"./find-extend-rule":152,"./import":153,"./is-mixin-token":154,"./less-tokenize":160,"./root":161,"./rule":162,"postcss/lib/comment":182,"postcss/lib/parser":192}],157:[function(require,module,exports){
+},{"./find-extend-rule":214,"./import":215,"./is-mixin-token":216,"./less-tokenize":222,"./root":223,"./rule":224,"postcss/lib/comment":244,"postcss/lib/parser":254}],219:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38647,7 +45814,7 @@ var LessStringifier = function (_Stringifier) {
 
 exports.default = LessStringifier;
 module.exports = exports['default'];
-},{"postcss/lib/stringifier":198}],158:[function(require,module,exports){
+},{"postcss/lib/stringifier":260}],220:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38667,7 +45834,7 @@ function lessStringify(node, builder) {
   str.stringify(node);
 }
 module.exports = exports['default'];
-},{"./less-stringifier":157}],159:[function(require,module,exports){
+},{"./less-stringifier":219}],221:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38686,7 +45853,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = { parse: _lessParse2.default, stringify: _lessStringify2.default };
 module.exports = exports['default'];
-},{"./less-parse":155,"./less-stringify":158}],160:[function(require,module,exports){
+},{"./less-parse":217,"./less-stringify":220}],222:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38741,7 +45908,7 @@ function lessTokenize(input) {
   return state.tokens;
 }
 module.exports = exports['default'];
-},{"./tokenizer/globals":164,"./tokenizer/tokenize-symbol":175}],161:[function(require,module,exports){
+},{"./tokenizer/globals":226,"./tokenizer/tokenize-symbol":237}],223:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38795,7 +45962,7 @@ var Root = function (_PostCssRoot) {
 
 exports.default = Root;
 module.exports = exports['default'];
-},{"./less-stringify":158,"postcss/lib/root":196}],162:[function(require,module,exports){
+},{"./less-stringify":220,"postcss/lib/root":258}],224:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38849,7 +46016,7 @@ var Rule = function (_PostCssRule) {
 
 exports.default = Rule;
 module.exports = exports['default'];
-},{"./less-stringify":158,"postcss/lib/rule":197}],163:[function(require,module,exports){
+},{"./less-stringify":220,"postcss/lib/rule":259}],225:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38888,7 +46055,7 @@ function findEndOfEscaping(state) {
   return -1;
 }
 module.exports = exports['default'];
-},{"./globals":164}],164:[function(require,module,exports){
+},{"./globals":226}],226:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38925,7 +46092,7 @@ var badBracketPattern = exports.badBracketPattern = /.[\\\/\("'\n]/;
 
 var variablePattern = exports.variablePattern = /^@[^:\(\{]+:/;
 var hashColorPattern = exports.hashColorPattern = /^#[0-9a-fA-F]{6}$|^#[0-9a-fA-F]{3}$/;
-},{}],165:[function(require,module,exports){
+},{}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38943,7 +46110,7 @@ function isEscaping(state) {
   return state.symbolCode === _globals.tilde && nextSymbolVariants.indexOf(nextSymbolCode) >= 0;
 }
 module.exports = exports['default'];
-},{"./globals":164}],166:[function(require,module,exports){
+},{"./globals":226}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39017,7 +46184,7 @@ function tokenizeAtRule(state) {
   state.pos = state.nextPos;
 }
 module.exports = exports['default'];
-},{"./globals":164,"./unclosed":177}],167:[function(require,module,exports){
+},{"./globals":226,"./unclosed":239}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39047,7 +46214,7 @@ function tokenizeBackslash(state) {
   state.pos = state.nextPos;
 }
 module.exports = exports['default'];
-},{"./globals":164}],168:[function(require,module,exports){
+},{"./globals":226}],230:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39058,7 +46225,7 @@ function tokenizeBasicSymbol(state) {
   state.tokens.push([state.symbol, state.symbol, state.line, state.pos - state.offset]);
 }
 module.exports = exports["default"];
-},{}],169:[function(require,module,exports){
+},{}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39069,7 +46236,7 @@ function tokenizeComma(state) {
   state.tokens.push(['word', state.symbol, state.line, state.pos - state.offset, state.line, state.pos - state.offset + 1]);
 }
 module.exports = exports['default'];
-},{}],170:[function(require,module,exports){
+},{}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39136,7 +46303,7 @@ function tokenizeDefault(state) {
   }
 }
 module.exports = exports['default'];
-},{"./find-end-of-escaping":163,"./globals":164,"./is-escaping":165,"./tokenize-inline-comment":171,"./tokenize-multiline-comment":172,"./unclosed":177}],171:[function(require,module,exports){
+},{"./find-end-of-escaping":225,"./globals":226,"./is-escaping":227,"./tokenize-inline-comment":233,"./tokenize-multiline-comment":234,"./unclosed":239}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39155,7 +46322,7 @@ function tokenizeInlineComment(state) {
   state.pos = state.nextPos;
 }
 module.exports = exports['default'];
-},{}],172:[function(require,module,exports){
+},{}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39195,7 +46362,7 @@ function tokenizeMultilineComment(state) {
   state.pos = state.nextPos;
 }
 module.exports = exports['default'];
-},{"./unclosed":177}],173:[function(require,module,exports){
+},{"./unclosed":239}],235:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39286,7 +46453,7 @@ function tokenizeOpenedParenthesis(state) {
   }
 }
 module.exports = exports['default'];
-},{"./globals":164,"./unclosed":177}],174:[function(require,module,exports){
+},{"./globals":226,"./unclosed":239}],236:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39326,7 +46493,7 @@ function tokenizeQuotes(state) {
   state.pos = state.nextPos;
 }
 module.exports = exports['default'];
-},{"./globals":164,"./unclosed":177}],175:[function(require,module,exports){
+},{"./globals":226,"./unclosed":239}],237:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39419,7 +46586,7 @@ function tokenizeSymbol(state) {
   }
 }
 module.exports = exports['default'];
-},{"./globals":164,"./tokenize-at-rule":166,"./tokenize-backslash":167,"./tokenize-basic-symbol":168,"./tokenize-comma":169,"./tokenize-default":170,"./tokenize-opened-parenthesis":173,"./tokenize-quotes":174,"./tokenize-whitespace":176}],176:[function(require,module,exports){
+},{"./globals":226,"./tokenize-at-rule":228,"./tokenize-backslash":229,"./tokenize-basic-symbol":230,"./tokenize-comma":231,"./tokenize-default":232,"./tokenize-opened-parenthesis":235,"./tokenize-quotes":236,"./tokenize-whitespace":238}],238:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39446,7 +46613,7 @@ function tokenizeWhitespace(state) {
   state.pos = state.nextPos - 1;
 }
 module.exports = exports['default'];
-},{"./globals":164}],177:[function(require,module,exports){
+},{"./globals":226}],239:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39457,7 +46624,7 @@ function unclosed(state, what) {
   throw state.input.error("Unclosed " + what, state.line, state.pos - state.offset);
 }
 module.exports = exports["default"];
-},{}],178:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 'use strict';
 
 function assembleStyles () {
@@ -39524,7 +46691,7 @@ Object.defineProperty(module, 'exports', {
 	get: assembleStyles
 });
 
-},{}],179:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 (function (process){
 'use strict';
 var escapeStringRegexp = require('escape-string-regexp');
@@ -39644,7 +46811,7 @@ module.exports.stripColor = stripAnsi;
 module.exports.supportsColor = supportsColor;
 
 }).call(this,require('_process'))
-},{"_process":283,"ansi-styles":178,"escape-string-regexp":34,"has-ansi":65,"strip-ansi":327,"supports-color":180}],180:[function(require,module,exports){
+},{"_process":324,"ansi-styles":240,"escape-string-regexp":66,"has-ansi":95,"strip-ansi":466,"supports-color":242}],242:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -39698,7 +46865,7 @@ module.exports = (function () {
 })();
 
 }).call(this,require('_process'))
-},{"_process":283}],181:[function(require,module,exports){
+},{"_process":324}],243:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39859,7 +47026,7 @@ exports.default = AtRule;
 module.exports = exports['default'];
 
 
-},{"./container":183,"./warn-once":202}],182:[function(require,module,exports){
+},{"./container":245,"./warn-once":264}],244:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39950,7 +47117,7 @@ exports.default = Comment;
 module.exports = exports['default'];
 
 
-},{"./node":190,"./warn-once":202}],183:[function(require,module,exports){
+},{"./node":252,"./warn-once":264}],245:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40887,7 +48054,7 @@ exports.default = Container;
 module.exports = exports['default'];
 
 
-},{"./at-rule":181,"./comment":182,"./declaration":185,"./node":190,"./parse":191,"./root":196,"./rule":197,"./warn-once":202}],184:[function(require,module,exports){
+},{"./at-rule":243,"./comment":244,"./declaration":247,"./node":252,"./parse":253,"./root":258,"./rule":259,"./warn-once":264}],246:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41161,7 +48328,7 @@ exports.default = CssSyntaxError;
 module.exports = exports['default'];
 
 
-},{"./terminal-highlight":200,"./warn-once":202,"chalk":179,"supports-color":215}],185:[function(require,module,exports){
+},{"./terminal-highlight":262,"./warn-once":264,"chalk":241,"supports-color":277}],247:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41293,7 +48460,7 @@ exports.default = Declaration;
 module.exports = exports['default'];
 
 
-},{"./node":190,"./warn-once":202}],186:[function(require,module,exports){
+},{"./node":252,"./warn-once":264}],248:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41493,7 +48660,7 @@ exports.default = Input;
 module.exports = exports['default'];
 
 
-},{"./css-syntax-error":184,"./previous-map":193,"path":146}],187:[function(require,module,exports){
+},{"./css-syntax-error":246,"./previous-map":255,"path":198}],249:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41927,7 +49094,7 @@ exports.default = LazyResult;
 module.exports = exports['default'];
 
 
-},{"./map-generator":189,"./parse":191,"./result":195,"./stringify":199,"./warn-once":202}],188:[function(require,module,exports){
+},{"./map-generator":251,"./parse":253,"./result":257,"./stringify":261,"./warn-once":264}],250:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42024,7 +49191,7 @@ exports.default = list;
 module.exports = exports['default'];
 
 
-},{}],189:[function(require,module,exports){
+},{}],251:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42338,7 +49505,7 @@ exports.default = MapGenerator;
 module.exports = exports['default'];
 
 
-},{"js-base64":92,"path":146,"source-map":214}],190:[function(require,module,exports){
+},{"js-base64":139,"path":198,"source-map":276}],252:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43012,7 +50179,7 @@ exports.default = Node;
 module.exports = exports['default'];
 
 
-},{"./css-syntax-error":184,"./stringifier":198,"./stringify":199,"./warn-once":202}],191:[function(require,module,exports){
+},{"./css-syntax-error":246,"./stringifier":260,"./stringify":261,"./warn-once":264}],253:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43057,7 +50224,7 @@ function parse(css, opts) {
 module.exports = exports['default'];
 
 
-},{"./input":186,"./parser":192}],192:[function(require,module,exports){
+},{"./input":248,"./parser":254}],254:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43573,7 +50740,7 @@ exports.default = Parser;
 module.exports = exports['default'];
 
 
-},{"./at-rule":181,"./comment":182,"./declaration":185,"./root":196,"./rule":197,"./tokenize":201}],193:[function(require,module,exports){
+},{"./at-rule":243,"./comment":244,"./declaration":247,"./root":258,"./rule":259,"./tokenize":263}],255:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43737,7 +50904,7 @@ exports.default = PreviousMap;
 module.exports = exports['default'];
 
 
-},{"fs":13,"js-base64":92,"path":146,"source-map":214}],194:[function(require,module,exports){
+},{"fs":15,"js-base64":139,"path":198,"source-map":276}],256:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43979,7 +51146,7 @@ exports.default = Processor;
 module.exports = exports['default'];
 
 
-},{"./lazy-result":187}],195:[function(require,module,exports){
+},{"./lazy-result":249}],257:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44187,7 +51354,7 @@ exports.default = Result;
 module.exports = exports['default'];
 
 
-},{"./warning":203}],196:[function(require,module,exports){
+},{"./warning":265}],258:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44332,7 +51499,7 @@ exports.default = Root;
 module.exports = exports['default'];
 
 
-},{"./container":183,"./lazy-result":187,"./processor":194,"./warn-once":202}],197:[function(require,module,exports){
+},{"./container":245,"./lazy-result":249,"./processor":256,"./warn-once":264}],259:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44470,7 +51637,7 @@ exports.default = Rule;
 module.exports = exports['default'];
 
 
-},{"./container":183,"./list":188,"./warn-once":202}],198:[function(require,module,exports){
+},{"./container":245,"./list":250,"./warn-once":264}],260:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44807,7 +51974,7 @@ exports.default = Stringifier;
 module.exports = exports['default'];
 
 
-},{}],199:[function(require,module,exports){
+},{}],261:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44826,7 +51993,7 @@ function stringify(node, builder) {
 module.exports = exports['default'];
 
 
-},{"./stringifier":198}],200:[function(require,module,exports){
+},{"./stringifier":260}],262:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44904,7 +52071,7 @@ exports.default = terminalHighlight;
 module.exports = exports['default'];
 
 
-},{"./input":186,"./tokenize":201,"chalk":179}],201:[function(require,module,exports){
+},{"./input":248,"./tokenize":263,"chalk":241}],263:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45179,7 +52346,7 @@ function tokenize(input) {
 module.exports = exports['default'];
 
 
-},{}],202:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45195,7 +52362,7 @@ function warnOnce(message) {
 module.exports = exports['default'];
 
 
-},{}],203:[function(require,module,exports){
+},{}],265:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45319,7 +52486,7 @@ exports.default = Warning;
 module.exports = exports['default'];
 
 
-},{}],204:[function(require,module,exports){
+},{}],266:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -45442,7 +52609,7 @@ ArraySet.prototype.toArray = function ArraySet_toArray() {
 
 exports.ArraySet = ArraySet;
 
-},{"./util":213}],205:[function(require,module,exports){
+},{"./util":275}],267:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -45584,7 +52751,7 @@ exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
   aOutParam.rest = aIndex;
 };
 
-},{"./base64":206}],206:[function(require,module,exports){
+},{"./base64":268}],268:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -45653,7 +52820,7 @@ exports.decode = function (charCode) {
   return -1;
 };
 
-},{}],207:[function(require,module,exports){
+},{}],269:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -45766,7 +52933,7 @@ exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
   return index;
 };
 
-},{}],208:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -45847,7 +53014,7 @@ MappingList.prototype.toArray = function MappingList_toArray() {
 
 exports.MappingList = MappingList;
 
-},{"./util":213}],209:[function(require,module,exports){
+},{"./util":275}],271:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -45963,7 +53130,7 @@ exports.quickSort = function (ary, comparator) {
   doQuickSort(ary, comparator, 0, ary.length - 1);
 };
 
-},{}],210:[function(require,module,exports){
+},{}],272:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47047,7 +54214,7 @@ IndexedSourceMapConsumer.prototype._parseMappings =
 
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./array-set":204,"./base64-vlq":205,"./binary-search":207,"./quick-sort":209,"./util":213}],211:[function(require,module,exports){
+},{"./array-set":266,"./base64-vlq":267,"./binary-search":269,"./quick-sort":271,"./util":275}],273:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47465,7 +54632,7 @@ SourceMapGenerator.prototype.toString =
 
 exports.SourceMapGenerator = SourceMapGenerator;
 
-},{"./array-set":204,"./base64-vlq":205,"./mapping-list":208,"./util":213}],212:[function(require,module,exports){
+},{"./array-set":266,"./base64-vlq":267,"./mapping-list":270,"./util":275}],274:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47880,7 +55047,7 @@ SourceNode.prototype.toStringWithSourceMap = function SourceNode_toStringWithSou
 
 exports.SourceNode = SourceNode;
 
-},{"./source-map-generator":211,"./util":213}],213:[function(require,module,exports){
+},{"./source-map-generator":273,"./util":275}],275:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -48299,7 +55466,7 @@ function compareByGeneratedPositionsInflated(mappingA, mappingB) {
 }
 exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
 
-},{}],214:[function(require,module,exports){
+},{}],276:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -48309,11 +55476,11 @@ exports.SourceMapGenerator = require('./lib/source-map-generator').SourceMapGene
 exports.SourceMapConsumer = require('./lib/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./lib/source-node').SourceNode;
 
-},{"./lib/source-map-consumer":210,"./lib/source-map-generator":211,"./lib/source-node":212}],215:[function(require,module,exports){
+},{"./lib/source-map-consumer":272,"./lib/source-map-generator":273,"./lib/source-node":274}],277:[function(require,module,exports){
 'use strict';
 module.exports = false;
 
-},{}],216:[function(require,module,exports){
+},{}],278:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48357,7 +55524,7 @@ function parseMedia(value) {
     value: value.trim()
   });
 }
-},{"./nodes/Container":217,"./parsers":219}],217:[function(require,module,exports){
+},{"./nodes/Container":279,"./parsers":281}],279:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48452,7 +55619,7 @@ Container.prototype.each = function each() {
 };
 
 exports.default = Container;
-},{"./Node":218}],218:[function(require,module,exports){
+},{"./Node":280}],280:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48471,7 +55638,7 @@ function Node(opts) {
 }
 
 exports.default = Node;
-},{}],219:[function(require,module,exports){
+},{}],281:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48839,7 +56006,7 @@ function parseMediaList(string) {
 
   return result;
 }
-},{"./nodes/Container":217,"./nodes/Node":218}],220:[function(require,module,exports){
+},{"./nodes/Container":279,"./nodes/Node":280}],282:[function(require,module,exports){
 module.exports = function resolveNestedSelector(selector, node) {
   var parent = node.parent;
   var parentIsNestAtRule = parent.type === 'atrule' && parent.name === 'nest';
@@ -48866,7 +56033,7 @@ module.exports = function resolveNestedSelector(selector, node) {
   return resolvedSelectors;
 }
 
-},{}],221:[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48893,7 +56060,7 @@ function safeParse(css, opts) {
 module.exports = exports['default'];
 
 
-},{"./safe-parser":222,"postcss/lib/input":261}],222:[function(require,module,exports){
+},{"./safe-parser":284,"postcss/lib/input":302}],284:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49014,7 +56181,7 @@ exports.default = SafeParser;
 module.exports = exports['default'];
 
 
-},{"postcss/lib/comment":257,"postcss/lib/parser":267,"postcss/lib/tokenize":277}],223:[function(require,module,exports){
+},{"postcss/lib/comment":298,"postcss/lib/parser":308,"postcss/lib/tokenize":318}],285:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49052,7 +56219,7 @@ exports.default = NestedDeclaration;
 module.exports = exports['default'];
 
 
-},{"postcss/lib/container":258}],224:[function(require,module,exports){
+},{"postcss/lib/container":299}],286:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49079,7 +56246,7 @@ function scssParse(scss, opts) {
 module.exports = exports['default'];
 
 
-},{"./scss-parser":225,"postcss/lib/input":261}],225:[function(require,module,exports){
+},{"./scss-parser":287,"postcss/lib/input":302}],287:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49278,7 +56445,7 @@ exports.default = ScssParser;
 module.exports = exports['default'];
 
 
-},{"./nested-declaration":223,"./scss-tokenize":229,"postcss/lib/comment":257,"postcss/lib/parser":267}],226:[function(require,module,exports){
+},{"./nested-declaration":285,"./scss-tokenize":291,"postcss/lib/comment":298,"postcss/lib/parser":308}],288:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49348,7 +56515,7 @@ exports.default = ScssStringifier;
 module.exports = exports['default'];
 
 
-},{"postcss/lib/stringifier":274}],227:[function(require,module,exports){
+},{"postcss/lib/stringifier":315}],289:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49367,7 +56534,7 @@ function scssStringify(node, builder) {
 module.exports = exports['default'];
 
 
-},{"./scss-stringifier":226}],228:[function(require,module,exports){
+},{"./scss-stringifier":288}],290:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49386,7 +56553,7 @@ exports.default = { parse: _scssParse2.default, stringify: _scssStringify2.defau
 module.exports = exports['default'];
 
 
-},{"./scss-parse":224,"./scss-stringify":227}],229:[function(require,module,exports){
+},{"./scss-parse":286,"./scss-stringify":289}],291:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49778,2037 +56945,7 @@ function scssTokenize(input) {
 module.exports = exports['default'];
 
 
-},{}],230:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _processor = require('./processor');
-
-var _processor2 = _interopRequireDefault(_processor);
-
-var _attribute = require('./selectors/attribute');
-
-var _attribute2 = _interopRequireDefault(_attribute);
-
-var _className = require('./selectors/className');
-
-var _className2 = _interopRequireDefault(_className);
-
-var _combinator = require('./selectors/combinator');
-
-var _combinator2 = _interopRequireDefault(_combinator);
-
-var _comment = require('./selectors/comment');
-
-var _comment2 = _interopRequireDefault(_comment);
-
-var _id = require('./selectors/id');
-
-var _id2 = _interopRequireDefault(_id);
-
-var _nesting = require('./selectors/nesting');
-
-var _nesting2 = _interopRequireDefault(_nesting);
-
-var _pseudo = require('./selectors/pseudo');
-
-var _pseudo2 = _interopRequireDefault(_pseudo);
-
-var _root = require('./selectors/root');
-
-var _root2 = _interopRequireDefault(_root);
-
-var _selector = require('./selectors/selector');
-
-var _selector2 = _interopRequireDefault(_selector);
-
-var _string = require('./selectors/string');
-
-var _string2 = _interopRequireDefault(_string);
-
-var _tag = require('./selectors/tag');
-
-var _tag2 = _interopRequireDefault(_tag);
-
-var _universal = require('./selectors/universal');
-
-var _universal2 = _interopRequireDefault(_universal);
-
-var _types = require('./selectors/types');
-
-var types = _interopRequireWildcard(_types);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var parser = function parser(processor) {
-    return new _processor2.default(processor);
-};
-
-parser.attribute = function (opts) {
-    return new _attribute2.default(opts);
-};
-parser.className = function (opts) {
-    return new _className2.default(opts);
-};
-parser.combinator = function (opts) {
-    return new _combinator2.default(opts);
-};
-parser.comment = function (opts) {
-    return new _comment2.default(opts);
-};
-parser.id = function (opts) {
-    return new _id2.default(opts);
-};
-parser.nesting = function (opts) {
-    return new _nesting2.default(opts);
-};
-parser.pseudo = function (opts) {
-    return new _pseudo2.default(opts);
-};
-parser.root = function (opts) {
-    return new _root2.default(opts);
-};
-parser.selector = function (opts) {
-    return new _selector2.default(opts);
-};
-parser.string = function (opts) {
-    return new _string2.default(opts);
-};
-parser.tag = function (opts) {
-    return new _tag2.default(opts);
-};
-parser.universal = function (opts) {
-    return new _universal2.default(opts);
-};
-
-Object.keys(types).forEach(function (type) {
-    if (type === '__esModule') {
-        return;
-    }
-    parser[type] = types[type]; // eslint-disable-line
-});
-
-exports.default = parser;
-module.exports = exports['default'];
-},{"./processor":232,"./selectors/attribute":233,"./selectors/className":234,"./selectors/combinator":235,"./selectors/comment":236,"./selectors/id":238,"./selectors/nesting":240,"./selectors/pseudo":242,"./selectors/root":243,"./selectors/selector":244,"./selectors/string":245,"./selectors/tag":246,"./selectors/types":247,"./selectors/universal":248}],231:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _flatten = require('flatten');
-
-var _flatten2 = _interopRequireDefault(_flatten);
-
-var _indexesOf = require('indexes-of');
-
-var _indexesOf2 = _interopRequireDefault(_indexesOf);
-
-var _uniq = require('uniq');
-
-var _uniq2 = _interopRequireDefault(_uniq);
-
-var _root = require('./selectors/root');
-
-var _root2 = _interopRequireDefault(_root);
-
-var _selector = require('./selectors/selector');
-
-var _selector2 = _interopRequireDefault(_selector);
-
-var _className = require('./selectors/className');
-
-var _className2 = _interopRequireDefault(_className);
-
-var _comment = require('./selectors/comment');
-
-var _comment2 = _interopRequireDefault(_comment);
-
-var _id = require('./selectors/id');
-
-var _id2 = _interopRequireDefault(_id);
-
-var _tag = require('./selectors/tag');
-
-var _tag2 = _interopRequireDefault(_tag);
-
-var _string = require('./selectors/string');
-
-var _string2 = _interopRequireDefault(_string);
-
-var _pseudo = require('./selectors/pseudo');
-
-var _pseudo2 = _interopRequireDefault(_pseudo);
-
-var _attribute = require('./selectors/attribute');
-
-var _attribute2 = _interopRequireDefault(_attribute);
-
-var _universal = require('./selectors/universal');
-
-var _universal2 = _interopRequireDefault(_universal);
-
-var _combinator = require('./selectors/combinator');
-
-var _combinator2 = _interopRequireDefault(_combinator);
-
-var _nesting = require('./selectors/nesting');
-
-var _nesting2 = _interopRequireDefault(_nesting);
-
-var _sortAscending = require('./sortAscending');
-
-var _sortAscending2 = _interopRequireDefault(_sortAscending);
-
-var _tokenize = require('./tokenize');
-
-var _tokenize2 = _interopRequireDefault(_tokenize);
-
-var _types = require('./selectors/types');
-
-var types = _interopRequireWildcard(_types);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Parser = function () {
-    function Parser(input) {
-        _classCallCheck(this, Parser);
-
-        this.input = input;
-        this.lossy = input.options.lossless === false;
-        this.position = 0;
-        this.root = new _root2.default();
-
-        var selectors = new _selector2.default();
-        this.root.append(selectors);
-
-        this.current = selectors;
-        if (this.lossy) {
-            this.tokens = (0, _tokenize2.default)({ safe: input.safe, css: input.css.trim() });
-        } else {
-            this.tokens = (0, _tokenize2.default)(input);
-        }
-
-        return this.loop();
-    }
-
-    Parser.prototype.attribute = function attribute() {
-        var str = '';
-        var attr = void 0;
-        var startingToken = this.currToken;
-        this.position++;
-        while (this.position < this.tokens.length && this.currToken[0] !== ']') {
-            str += this.tokens[this.position][1];
-            this.position++;
-        }
-        if (this.position === this.tokens.length && !~str.indexOf(']')) {
-            this.error('Expected a closing square bracket.');
-        }
-        var parts = str.split(/((?:[*~^$|]?=))([^]*)/);
-        var namespace = parts[0].split(/(\|)/g);
-        var attributeProps = {
-            operator: parts[1],
-            value: parts[2],
-            source: {
-                start: {
-                    line: startingToken[2],
-                    column: startingToken[3]
-                },
-                end: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                }
-            },
-            sourceIndex: startingToken[4]
-        };
-        if (namespace.length > 1) {
-            if (namespace[0] === '') {
-                namespace[0] = true;
-            }
-            attributeProps.attribute = this.parseValue(namespace[2]);
-            attributeProps.namespace = this.parseNamespace(namespace[0]);
-        } else {
-            attributeProps.attribute = this.parseValue(parts[0]);
-        }
-        attr = new _attribute2.default(attributeProps);
-
-        if (parts[2]) {
-            var insensitive = parts[2].split(/(\s+i\s*?)$/);
-            var trimmedValue = insensitive[0].trim();
-            attr.value = this.lossy ? trimmedValue : insensitive[0];
-            if (insensitive[1]) {
-                attr.insensitive = true;
-                if (!this.lossy) {
-                    attr.raws.insensitive = insensitive[1];
-                }
-            }
-            attr.quoted = trimmedValue[0] === '\'' || trimmedValue[0] === '"';
-            attr.raws.unquoted = attr.quoted ? trimmedValue.slice(1, -1) : trimmedValue;
-        }
-        this.newNode(attr);
-        this.position++;
-    };
-
-    Parser.prototype.combinator = function combinator() {
-        if (this.currToken[1] === '|') {
-            return this.namespace();
-        }
-        var node = new _combinator2.default({
-            value: '',
-            source: {
-                start: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                },
-                end: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                }
-            },
-            sourceIndex: this.currToken[4]
-        });
-        while (this.position < this.tokens.length && this.currToken && (this.currToken[0] === 'space' || this.currToken[0] === 'combinator')) {
-            if (this.nextToken && this.nextToken[0] === 'combinator') {
-                node.spaces.before = this.parseSpace(this.currToken[1]);
-                node.source.start.line = this.nextToken[2];
-                node.source.start.column = this.nextToken[3];
-                node.source.end.column = this.nextToken[3];
-                node.source.end.line = this.nextToken[2];
-                node.sourceIndex = this.nextToken[4];
-            } else if (this.prevToken && this.prevToken[0] === 'combinator') {
-                node.spaces.after = this.parseSpace(this.currToken[1]);
-            } else if (this.currToken[0] === 'combinator') {
-                node.value = this.currToken[1];
-            } else if (this.currToken[0] === 'space') {
-                node.value = this.parseSpace(this.currToken[1], ' ');
-            }
-            this.position++;
-        }
-        return this.newNode(node);
-    };
-
-    Parser.prototype.comma = function comma() {
-        if (this.position === this.tokens.length - 1) {
-            this.root.trailingComma = true;
-            this.position++;
-            return;
-        }
-        var selectors = new _selector2.default();
-        this.current.parent.append(selectors);
-        this.current = selectors;
-        this.position++;
-    };
-
-    Parser.prototype.comment = function comment() {
-        var node = new _comment2.default({
-            value: this.currToken[1],
-            source: {
-                start: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                },
-                end: {
-                    line: this.currToken[4],
-                    column: this.currToken[5]
-                }
-            },
-            sourceIndex: this.currToken[6]
-        });
-        this.newNode(node);
-        this.position++;
-    };
-
-    Parser.prototype.error = function error(message) {
-        throw new this.input.error(message); // eslint-disable-line new-cap
-    };
-
-    Parser.prototype.missingBackslash = function missingBackslash() {
-        return this.error('Expected a backslash preceding the semicolon.');
-    };
-
-    Parser.prototype.missingParenthesis = function missingParenthesis() {
-        return this.error('Expected opening parenthesis.');
-    };
-
-    Parser.prototype.missingSquareBracket = function missingSquareBracket() {
-        return this.error('Expected opening square bracket.');
-    };
-
-    Parser.prototype.namespace = function namespace() {
-        var before = this.prevToken && this.prevToken[1] || true;
-        if (this.nextToken[0] === 'word') {
-            this.position++;
-            return this.word(before);
-        } else if (this.nextToken[0] === '*') {
-            this.position++;
-            return this.universal(before);
-        }
-    };
-
-    Parser.prototype.nesting = function nesting() {
-        this.newNode(new _nesting2.default({
-            value: this.currToken[1],
-            source: {
-                start: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                },
-                end: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                }
-            },
-            sourceIndex: this.currToken[4]
-        }));
-        this.position++;
-    };
-
-    Parser.prototype.parentheses = function parentheses() {
-        var last = this.current.last;
-        if (last && last.type === types.PSEUDO) {
-            var selector = new _selector2.default();
-            var cache = this.current;
-            last.append(selector);
-            this.current = selector;
-            var balanced = 1;
-            this.position++;
-            while (this.position < this.tokens.length && balanced) {
-                if (this.currToken[0] === '(') {
-                    balanced++;
-                }
-                if (this.currToken[0] === ')') {
-                    balanced--;
-                }
-                if (balanced) {
-                    this.parse();
-                } else {
-                    selector.parent.source.end.line = this.currToken[2];
-                    selector.parent.source.end.column = this.currToken[3];
-                    this.position++;
-                }
-            }
-            if (balanced) {
-                this.error('Expected closing parenthesis.');
-            }
-            this.current = cache;
-        } else {
-            var _balanced = 1;
-            this.position++;
-            last.value += '(';
-            while (this.position < this.tokens.length && _balanced) {
-                if (this.currToken[0] === '(') {
-                    _balanced++;
-                }
-                if (this.currToken[0] === ')') {
-                    _balanced--;
-                }
-                last.value += this.parseParenthesisToken(this.currToken);
-                this.position++;
-            }
-            if (_balanced) {
-                this.error('Expected closing parenthesis.');
-            }
-        }
-    };
-
-    Parser.prototype.pseudo = function pseudo() {
-        var _this = this;
-
-        var pseudoStr = '';
-        var startingToken = this.currToken;
-        while (this.currToken && this.currToken[0] === ':') {
-            pseudoStr += this.currToken[1];
-            this.position++;
-        }
-        if (!this.currToken) {
-            return this.error('Expected pseudo-class or pseudo-element');
-        }
-        if (this.currToken[0] === 'word') {
-            var pseudo = void 0;
-            this.splitWord(false, function (first, length) {
-                pseudoStr += first;
-                pseudo = new _pseudo2.default({
-                    value: pseudoStr,
-                    source: {
-                        start: {
-                            line: startingToken[2],
-                            column: startingToken[3]
-                        },
-                        end: {
-                            line: _this.currToken[4],
-                            column: _this.currToken[5]
-                        }
-                    },
-                    sourceIndex: startingToken[4]
-                });
-                _this.newNode(pseudo);
-                if (length > 1 && _this.nextToken && _this.nextToken[0] === '(') {
-                    _this.error('Misplaced parenthesis.');
-                }
-            });
-        } else {
-            this.error('Unexpected "' + this.currToken[0] + '" found.');
-        }
-    };
-
-    Parser.prototype.space = function space() {
-        var token = this.currToken;
-        // Handle space before and after the selector
-        if (this.position === 0 || this.prevToken[0] === ',' || this.prevToken[0] === '(') {
-            this.spaces = this.parseSpace(token[1]);
-            this.position++;
-        } else if (this.position === this.tokens.length - 1 || this.nextToken[0] === ',' || this.nextToken[0] === ')') {
-            this.current.last.spaces.after = this.parseSpace(token[1]);
-            this.position++;
-        } else {
-            this.combinator();
-        }
-    };
-
-    Parser.prototype.string = function string() {
-        var token = this.currToken;
-        this.newNode(new _string2.default({
-            value: this.currToken[1],
-            source: {
-                start: {
-                    line: token[2],
-                    column: token[3]
-                },
-                end: {
-                    line: token[4],
-                    column: token[5]
-                }
-            },
-            sourceIndex: token[6]
-        }));
-        this.position++;
-    };
-
-    Parser.prototype.universal = function universal(namespace) {
-        var nextToken = this.nextToken;
-        if (nextToken && nextToken[1] === '|') {
-            this.position++;
-            return this.namespace();
-        }
-        this.newNode(new _universal2.default({
-            value: this.currToken[1],
-            source: {
-                start: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                },
-                end: {
-                    line: this.currToken[2],
-                    column: this.currToken[3]
-                }
-            },
-            sourceIndex: this.currToken[4]
-        }), namespace);
-        this.position++;
-    };
-
-    Parser.prototype.splitWord = function splitWord(namespace, firstCallback) {
-        var _this2 = this;
-
-        var nextToken = this.nextToken;
-        var word = this.currToken[1];
-        while (nextToken && nextToken[0] === 'word') {
-            this.position++;
-            var current = this.currToken[1];
-            word += current;
-            if (current.lastIndexOf('\\') === current.length - 1) {
-                var next = this.nextToken;
-                if (next && next[0] === 'space') {
-                    word += this.parseSpace(next[1], ' ');
-                    this.position++;
-                }
-            }
-            nextToken = this.nextToken;
-        }
-        var hasClass = (0, _indexesOf2.default)(word, '.');
-        var hasId = (0, _indexesOf2.default)(word, '#');
-        // Eliminate Sass interpolations from the list of id indexes
-        var interpolations = (0, _indexesOf2.default)(word, '#{');
-        if (interpolations.length) {
-            hasId = hasId.filter(function (hashIndex) {
-                return !~interpolations.indexOf(hashIndex);
-            });
-        }
-        var indices = (0, _sortAscending2.default)((0, _uniq2.default)((0, _flatten2.default)([[0], hasClass, hasId])));
-        indices.forEach(function (ind, i) {
-            var index = indices[i + 1] || word.length;
-            var value = word.slice(ind, index);
-            if (i === 0 && firstCallback) {
-                return firstCallback.call(_this2, value, indices.length);
-            }
-            var node = void 0;
-            if (~hasClass.indexOf(ind)) {
-                node = new _className2.default({
-                    value: value.slice(1),
-                    source: {
-                        start: {
-                            line: _this2.currToken[2],
-                            column: _this2.currToken[3] + ind
-                        },
-                        end: {
-                            line: _this2.currToken[4],
-                            column: _this2.currToken[3] + (index - 1)
-                        }
-                    },
-                    sourceIndex: _this2.currToken[6] + indices[i]
-                });
-            } else if (~hasId.indexOf(ind)) {
-                node = new _id2.default({
-                    value: value.slice(1),
-                    source: {
-                        start: {
-                            line: _this2.currToken[2],
-                            column: _this2.currToken[3] + ind
-                        },
-                        end: {
-                            line: _this2.currToken[4],
-                            column: _this2.currToken[3] + (index - 1)
-                        }
-                    },
-                    sourceIndex: _this2.currToken[6] + indices[i]
-                });
-            } else {
-                node = new _tag2.default({
-                    value: value,
-                    source: {
-                        start: {
-                            line: _this2.currToken[2],
-                            column: _this2.currToken[3] + ind
-                        },
-                        end: {
-                            line: _this2.currToken[4],
-                            column: _this2.currToken[3] + (index - 1)
-                        }
-                    },
-                    sourceIndex: _this2.currToken[6] + indices[i]
-                });
-            }
-            _this2.newNode(node, namespace);
-        });
-        this.position++;
-    };
-
-    Parser.prototype.word = function word(namespace) {
-        var nextToken = this.nextToken;
-        if (nextToken && nextToken[1] === '|') {
-            this.position++;
-            return this.namespace();
-        }
-        return this.splitWord(namespace);
-    };
-
-    Parser.prototype.loop = function loop() {
-        while (this.position < this.tokens.length) {
-            this.parse(true);
-        }
-        return this.root;
-    };
-
-    Parser.prototype.parse = function parse(throwOnParenthesis) {
-        switch (this.currToken[0]) {
-            case 'space':
-                this.space();
-                break;
-            case 'comment':
-                this.comment();
-                break;
-            case '(':
-                this.parentheses();
-                break;
-            case ')':
-                if (throwOnParenthesis) {
-                    this.missingParenthesis();
-                }
-                break;
-            case '[':
-                this.attribute();
-                break;
-            case ']':
-                this.missingSquareBracket();
-                break;
-            case 'at-word':
-            case 'word':
-                this.word();
-                break;
-            case ':':
-                this.pseudo();
-                break;
-            case ';':
-                this.missingBackslash();
-                break;
-            case ',':
-                this.comma();
-                break;
-            case '*':
-                this.universal();
-                break;
-            case '&':
-                this.nesting();
-                break;
-            case 'combinator':
-                this.combinator();
-                break;
-            case 'string':
-                this.string();
-                break;
-        }
-    };
-
-    /**
-     * Helpers
-     */
-
-    Parser.prototype.parseNamespace = function parseNamespace(namespace) {
-        if (this.lossy && typeof namespace === 'string') {
-            var trimmed = namespace.trim();
-            if (!trimmed.length) {
-                return true;
-            }
-
-            return trimmed;
-        }
-
-        return namespace;
-    };
-
-    Parser.prototype.parseSpace = function parseSpace(space, replacement) {
-        return this.lossy ? replacement || '' : space;
-    };
-
-    Parser.prototype.parseValue = function parseValue(value) {
-        return this.lossy && value && typeof value === 'string' ? value.trim() : value;
-    };
-
-    Parser.prototype.parseParenthesisToken = function parseParenthesisToken(token) {
-        if (!this.lossy) {
-            return token[1];
-        }
-
-        if (token[0] === 'space') {
-            return this.parseSpace(token[1], ' ');
-        }
-
-        return this.parseValue(token[1]);
-    };
-
-    Parser.prototype.newNode = function newNode(node, namespace) {
-        if (namespace) {
-            node.namespace = this.parseNamespace(namespace);
-        }
-        if (this.spaces) {
-            node.spaces.before = this.spaces;
-            this.spaces = '';
-        }
-        return this.current.append(node);
-    };
-
-    _createClass(Parser, [{
-        key: 'currToken',
-        get: function get() {
-            return this.tokens[this.position];
-        }
-    }, {
-        key: 'nextToken',
-        get: function get() {
-            return this.tokens[this.position + 1];
-        }
-    }, {
-        key: 'prevToken',
-        get: function get() {
-            return this.tokens[this.position - 1];
-        }
-    }]);
-
-    return Parser;
-}();
-
-exports.default = Parser;
-module.exports = exports['default'];
-},{"./selectors/attribute":233,"./selectors/className":234,"./selectors/combinator":235,"./selectors/comment":236,"./selectors/id":238,"./selectors/nesting":240,"./selectors/pseudo":242,"./selectors/root":243,"./selectors/selector":244,"./selectors/string":245,"./selectors/tag":246,"./selectors/types":247,"./selectors/universal":248,"./sortAscending":249,"./tokenize":250,"flatten":48,"indexes-of":71,"uniq":608}],232:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _parser = require('./parser');
-
-var _parser2 = _interopRequireDefault(_parser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Processor = function () {
-    function Processor(func) {
-        _classCallCheck(this, Processor);
-
-        this.func = func || function noop() {};
-        return this;
-    }
-
-    Processor.prototype.process = function process(selectors) {
-        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        var input = new _parser2.default({
-            css: selectors,
-            error: function error(e) {
-                throw new Error(e);
-            },
-            options: options
-        });
-        this.res = input;
-        this.func(input);
-        return this;
-    };
-
-    _createClass(Processor, [{
-        key: 'result',
-        get: function get() {
-            return String(this.res);
-        }
-    }]);
-
-    return Processor;
-}();
-
-exports.default = Processor;
-module.exports = exports['default'];
-},{"./parser":231}],233:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _namespace = require('./namespace');
-
-var _namespace2 = _interopRequireDefault(_namespace);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Attribute = function (_Namespace) {
-    _inherits(Attribute, _Namespace);
-
-    function Attribute(opts) {
-        _classCallCheck(this, Attribute);
-
-        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
-
-        _this.type = _types.ATTRIBUTE;
-        _this.raws = {};
-        return _this;
-    }
-
-    Attribute.prototype.toString = function toString() {
-        var selector = [this.spaces.before, '[', this.ns, this.attribute];
-
-        if (this.operator) {
-            selector.push(this.operator);
-        }
-        if (this.value) {
-            selector.push(this.value);
-        }
-        if (this.raws.insensitive) {
-            selector.push(this.raws.insensitive);
-        } else if (this.insensitive) {
-            selector.push(' i');
-        }
-        selector.push(']');
-        return selector.concat(this.spaces.after).join('');
-    };
-
-    return Attribute;
-}(_namespace2.default);
-
-exports.default = Attribute;
-module.exports = exports['default'];
-},{"./namespace":239,"./types":247}],234:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _namespace = require('./namespace');
-
-var _namespace2 = _interopRequireDefault(_namespace);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ClassName = function (_Namespace) {
-    _inherits(ClassName, _Namespace);
-
-    function ClassName(opts) {
-        _classCallCheck(this, ClassName);
-
-        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
-
-        _this.type = _types.CLASS;
-        return _this;
-    }
-
-    ClassName.prototype.toString = function toString() {
-        return [this.spaces.before, this.ns, String('.' + this.value), this.spaces.after].join('');
-    };
-
-    return ClassName;
-}(_namespace2.default);
-
-exports.default = ClassName;
-module.exports = exports['default'];
-},{"./namespace":239,"./types":247}],235:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _node = require('./node');
-
-var _node2 = _interopRequireDefault(_node);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Combinator = function (_Node) {
-    _inherits(Combinator, _Node);
-
-    function Combinator(opts) {
-        _classCallCheck(this, Combinator);
-
-        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
-
-        _this.type = _types.COMBINATOR;
-        return _this;
-    }
-
-    return Combinator;
-}(_node2.default);
-
-exports.default = Combinator;
-module.exports = exports['default'];
-},{"./node":241,"./types":247}],236:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _node = require('./node');
-
-var _node2 = _interopRequireDefault(_node);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Comment = function (_Node) {
-    _inherits(Comment, _Node);
-
-    function Comment(opts) {
-        _classCallCheck(this, Comment);
-
-        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
-
-        _this.type = _types.COMMENT;
-        return _this;
-    }
-
-    return Comment;
-}(_node2.default);
-
-exports.default = Comment;
-module.exports = exports['default'];
-},{"./node":241,"./types":247}],237:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _node = require('./node');
-
-var _node2 = _interopRequireDefault(_node);
-
-var _types = require('./types');
-
-var types = _interopRequireWildcard(_types);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Container = function (_Node) {
-    _inherits(Container, _Node);
-
-    function Container(opts) {
-        _classCallCheck(this, Container);
-
-        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
-
-        if (!_this.nodes) {
-            _this.nodes = [];
-        }
-        return _this;
-    }
-
-    Container.prototype.append = function append(selector) {
-        selector.parent = this;
-        this.nodes.push(selector);
-        return this;
-    };
-
-    Container.prototype.prepend = function prepend(selector) {
-        selector.parent = this;
-        this.nodes.unshift(selector);
-        return this;
-    };
-
-    Container.prototype.at = function at(index) {
-        return this.nodes[index];
-    };
-
-    Container.prototype.index = function index(child) {
-        if (typeof child === 'number') {
-            return child;
-        }
-        return this.nodes.indexOf(child);
-    };
-
-    Container.prototype.removeChild = function removeChild(child) {
-        child = this.index(child);
-        this.at(child).parent = undefined;
-        this.nodes.splice(child, 1);
-
-        var index = void 0;
-        for (var id in this.indexes) {
-            index = this.indexes[id];
-            if (index >= child) {
-                this.indexes[id] = index - 1;
-            }
-        }
-
-        return this;
-    };
-
-    Container.prototype.removeAll = function removeAll() {
-        for (var _iterator = this.nodes, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-            var _ref;
-
-            if (_isArray) {
-                if (_i >= _iterator.length) break;
-                _ref = _iterator[_i++];
-            } else {
-                _i = _iterator.next();
-                if (_i.done) break;
-                _ref = _i.value;
-            }
-
-            var node = _ref;
-
-            node.parent = undefined;
-        }
-        this.nodes = [];
-        return this;
-    };
-
-    Container.prototype.empty = function empty() {
-        return this.removeAll();
-    };
-
-    Container.prototype.insertAfter = function insertAfter(oldNode, newNode) {
-        var oldIndex = this.index(oldNode);
-        this.nodes.splice(oldIndex + 1, 0, newNode);
-
-        var index = void 0;
-        for (var id in this.indexes) {
-            index = this.indexes[id];
-            if (oldIndex <= index) {
-                this.indexes[id] = index + this.nodes.length;
-            }
-        }
-
-        return this;
-    };
-
-    Container.prototype.insertBefore = function insertBefore(oldNode, newNode) {
-        var oldIndex = this.index(oldNode);
-        this.nodes.splice(oldIndex, 0, newNode);
-
-        var index = void 0;
-        for (var id in this.indexes) {
-            index = this.indexes[id];
-            if (oldIndex <= index) {
-                this.indexes[id] = index + this.nodes.length;
-            }
-        }
-
-        return this;
-    };
-
-    Container.prototype.each = function each(callback) {
-        if (!this.lastEach) {
-            this.lastEach = 0;
-        }
-        if (!this.indexes) {
-            this.indexes = {};
-        }
-
-        this.lastEach++;
-        var id = this.lastEach;
-        this.indexes[id] = 0;
-
-        if (!this.length) {
-            return undefined;
-        }
-
-        var index = void 0,
-            result = void 0;
-        while (this.indexes[id] < this.length) {
-            index = this.indexes[id];
-            result = callback(this.at(index), index);
-            if (result === false) {
-                break;
-            }
-
-            this.indexes[id] += 1;
-        }
-
-        delete this.indexes[id];
-
-        if (result === false) {
-            return false;
-        }
-    };
-
-    Container.prototype.walk = function walk(callback) {
-        return this.each(function (node, i) {
-            var result = callback(node, i);
-
-            if (result !== false && node.length) {
-                result = node.walk(callback);
-            }
-
-            if (result === false) {
-                return false;
-            }
-        });
-    };
-
-    Container.prototype.walkAttributes = function walkAttributes(callback) {
-        var _this2 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.ATTRIBUTE) {
-                return callback.call(_this2, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkClasses = function walkClasses(callback) {
-        var _this3 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.CLASS) {
-                return callback.call(_this3, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkCombinators = function walkCombinators(callback) {
-        var _this4 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.COMBINATOR) {
-                return callback.call(_this4, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkComments = function walkComments(callback) {
-        var _this5 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.COMMENT) {
-                return callback.call(_this5, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkIds = function walkIds(callback) {
-        var _this6 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.ID) {
-                return callback.call(_this6, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkNesting = function walkNesting(callback) {
-        var _this7 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.NESTING) {
-                return callback.call(_this7, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkPseudos = function walkPseudos(callback) {
-        var _this8 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.PSEUDO) {
-                return callback.call(_this8, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkTags = function walkTags(callback) {
-        var _this9 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.TAG) {
-                return callback.call(_this9, selector);
-            }
-        });
-    };
-
-    Container.prototype.walkUniversals = function walkUniversals(callback) {
-        var _this10 = this;
-
-        return this.walk(function (selector) {
-            if (selector.type === types.UNIVERSAL) {
-                return callback.call(_this10, selector);
-            }
-        });
-    };
-
-    Container.prototype.split = function split(callback) {
-        var _this11 = this;
-
-        var current = [];
-        return this.reduce(function (memo, node, index) {
-            var split = callback.call(_this11, node);
-            current.push(node);
-            if (split) {
-                memo.push(current);
-                current = [];
-            } else if (index === _this11.length - 1) {
-                memo.push(current);
-            }
-            return memo;
-        }, []);
-    };
-
-    Container.prototype.map = function map(callback) {
-        return this.nodes.map(callback);
-    };
-
-    Container.prototype.reduce = function reduce(callback, memo) {
-        return this.nodes.reduce(callback, memo);
-    };
-
-    Container.prototype.every = function every(callback) {
-        return this.nodes.every(callback);
-    };
-
-    Container.prototype.some = function some(callback) {
-        return this.nodes.some(callback);
-    };
-
-    Container.prototype.filter = function filter(callback) {
-        return this.nodes.filter(callback);
-    };
-
-    Container.prototype.sort = function sort(callback) {
-        return this.nodes.sort(callback);
-    };
-
-    Container.prototype.toString = function toString() {
-        return this.map(String).join('');
-    };
-
-    _createClass(Container, [{
-        key: 'first',
-        get: function get() {
-            return this.at(0);
-        }
-    }, {
-        key: 'last',
-        get: function get() {
-            return this.at(this.length - 1);
-        }
-    }, {
-        key: 'length',
-        get: function get() {
-            return this.nodes.length;
-        }
-    }]);
-
-    return Container;
-}(_node2.default);
-
-exports.default = Container;
-module.exports = exports['default'];
-},{"./node":241,"./types":247}],238:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _namespace = require('./namespace');
-
-var _namespace2 = _interopRequireDefault(_namespace);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ID = function (_Namespace) {
-    _inherits(ID, _Namespace);
-
-    function ID(opts) {
-        _classCallCheck(this, ID);
-
-        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
-
-        _this.type = _types.ID;
-        return _this;
-    }
-
-    ID.prototype.toString = function toString() {
-        return [this.spaces.before, this.ns, String('#' + this.value), this.spaces.after].join('');
-    };
-
-    return ID;
-}(_namespace2.default);
-
-exports.default = ID;
-module.exports = exports['default'];
-},{"./namespace":239,"./types":247}],239:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _node = require('./node');
-
-var _node2 = _interopRequireDefault(_node);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Namespace = function (_Node) {
-    _inherits(Namespace, _Node);
-
-    function Namespace() {
-        _classCallCheck(this, Namespace);
-
-        return _possibleConstructorReturn(this, _Node.apply(this, arguments));
-    }
-
-    Namespace.prototype.toString = function toString() {
-        return [this.spaces.before, this.ns, String(this.value), this.spaces.after].join('');
-    };
-
-    _createClass(Namespace, [{
-        key: 'ns',
-        get: function get() {
-            var n = this.namespace;
-            return n ? (typeof n === 'string' ? n : '') + '|' : '';
-        }
-    }]);
-
-    return Namespace;
-}(_node2.default);
-
-exports.default = Namespace;
-;
-module.exports = exports['default'];
-},{"./node":241}],240:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _node = require('./node');
-
-var _node2 = _interopRequireDefault(_node);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Nesting = function (_Node) {
-    _inherits(Nesting, _Node);
-
-    function Nesting(opts) {
-        _classCallCheck(this, Nesting);
-
-        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
-
-        _this.type = _types.NESTING;
-        _this.value = '&';
-        return _this;
-    }
-
-    return Nesting;
-}(_node2.default);
-
-exports.default = Nesting;
-module.exports = exports['default'];
-},{"./node":241,"./types":247}],241:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var cloneNode = function cloneNode(obj, parent) {
-    if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object') {
-        return obj;
-    }
-
-    var cloned = new obj.constructor();
-
-    for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) {
-            continue;
-        }
-        var value = obj[i];
-        var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
-
-        if (i === 'parent' && type === 'object') {
-            if (parent) {
-                cloned[i] = parent;
-            }
-        } else if (value instanceof Array) {
-            cloned[i] = value.map(function (j) {
-                return cloneNode(j, cloned);
-            });
-        } else {
-            cloned[i] = cloneNode(value, cloned);
-        }
-    }
-
-    return cloned;
-};
-
-var _class = function () {
-    function _class() {
-        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-        _classCallCheck(this, _class);
-
-        for (var key in opts) {
-            this[key] = opts[key];
-        }
-        var _opts$spaces = opts.spaces;
-        _opts$spaces = _opts$spaces === undefined ? {} : _opts$spaces;
-        var _opts$spaces$before = _opts$spaces.before,
-            before = _opts$spaces$before === undefined ? '' : _opts$spaces$before,
-            _opts$spaces$after = _opts$spaces.after,
-            after = _opts$spaces$after === undefined ? '' : _opts$spaces$after;
-
-        this.spaces = { before: before, after: after };
-    }
-
-    _class.prototype.remove = function remove() {
-        if (this.parent) {
-            this.parent.removeChild(this);
-        }
-        this.parent = undefined;
-        return this;
-    };
-
-    _class.prototype.replaceWith = function replaceWith() {
-        if (this.parent) {
-            for (var index in arguments) {
-                this.parent.insertBefore(this, arguments[index]);
-            }
-            this.remove();
-        }
-        return this;
-    };
-
-    _class.prototype.next = function next() {
-        return this.parent.at(this.parent.index(this) + 1);
-    };
-
-    _class.prototype.prev = function prev() {
-        return this.parent.at(this.parent.index(this) - 1);
-    };
-
-    _class.prototype.clone = function clone() {
-        var overrides = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-        var cloned = cloneNode(this);
-        for (var name in overrides) {
-            cloned[name] = overrides[name];
-        }
-        return cloned;
-    };
-
-    _class.prototype.toString = function toString() {
-        return [this.spaces.before, String(this.value), this.spaces.after].join('');
-    };
-
-    return _class;
-}();
-
-exports.default = _class;
-module.exports = exports['default'];
-},{}],242:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _container = require('./container');
-
-var _container2 = _interopRequireDefault(_container);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Pseudo = function (_Container) {
-    _inherits(Pseudo, _Container);
-
-    function Pseudo(opts) {
-        _classCallCheck(this, Pseudo);
-
-        var _this = _possibleConstructorReturn(this, _Container.call(this, opts));
-
-        _this.type = _types.PSEUDO;
-        return _this;
-    }
-
-    Pseudo.prototype.toString = function toString() {
-        var params = this.length ? '(' + this.map(String).join(',') + ')' : '';
-        return [this.spaces.before, String(this.value), params, this.spaces.after].join('');
-    };
-
-    return Pseudo;
-}(_container2.default);
-
-exports.default = Pseudo;
-module.exports = exports['default'];
-},{"./container":237,"./types":247}],243:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _container = require('./container');
-
-var _container2 = _interopRequireDefault(_container);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Root = function (_Container) {
-    _inherits(Root, _Container);
-
-    function Root(opts) {
-        _classCallCheck(this, Root);
-
-        var _this = _possibleConstructorReturn(this, _Container.call(this, opts));
-
-        _this.type = _types.ROOT;
-        return _this;
-    }
-
-    Root.prototype.toString = function toString() {
-        var str = this.reduce(function (memo, selector) {
-            var sel = String(selector);
-            return sel ? memo + sel + ',' : '';
-        }, '').slice(0, -1);
-        return this.trailingComma ? str + ',' : str;
-    };
-
-    return Root;
-}(_container2.default);
-
-exports.default = Root;
-module.exports = exports['default'];
-},{"./container":237,"./types":247}],244:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _container = require('./container');
-
-var _container2 = _interopRequireDefault(_container);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Selector = function (_Container) {
-    _inherits(Selector, _Container);
-
-    function Selector(opts) {
-        _classCallCheck(this, Selector);
-
-        var _this = _possibleConstructorReturn(this, _Container.call(this, opts));
-
-        _this.type = _types.SELECTOR;
-        return _this;
-    }
-
-    return Selector;
-}(_container2.default);
-
-exports.default = Selector;
-module.exports = exports['default'];
-},{"./container":237,"./types":247}],245:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _node = require('./node');
-
-var _node2 = _interopRequireDefault(_node);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var String = function (_Node) {
-    _inherits(String, _Node);
-
-    function String(opts) {
-        _classCallCheck(this, String);
-
-        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
-
-        _this.type = _types.STRING;
-        return _this;
-    }
-
-    return String;
-}(_node2.default);
-
-exports.default = String;
-module.exports = exports['default'];
-},{"./node":241,"./types":247}],246:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _namespace = require('./namespace');
-
-var _namespace2 = _interopRequireDefault(_namespace);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Tag = function (_Namespace) {
-    _inherits(Tag, _Namespace);
-
-    function Tag(opts) {
-        _classCallCheck(this, Tag);
-
-        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
-
-        _this.type = _types.TAG;
-        return _this;
-    }
-
-    return Tag;
-}(_namespace2.default);
-
-exports.default = Tag;
-module.exports = exports['default'];
-},{"./namespace":239,"./types":247}],247:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-var TAG = exports.TAG = 'tag';
-var STRING = exports.STRING = 'string';
-var SELECTOR = exports.SELECTOR = 'selector';
-var ROOT = exports.ROOT = 'root';
-var PSEUDO = exports.PSEUDO = 'pseudo';
-var NESTING = exports.NESTING = 'nesting';
-var ID = exports.ID = 'id';
-var COMMENT = exports.COMMENT = 'comment';
-var COMBINATOR = exports.COMBINATOR = 'combinator';
-var CLASS = exports.CLASS = 'class';
-var ATTRIBUTE = exports.ATTRIBUTE = 'attribute';
-var UNIVERSAL = exports.UNIVERSAL = 'universal';
-},{}],248:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-
-var _namespace = require('./namespace');
-
-var _namespace2 = _interopRequireDefault(_namespace);
-
-var _types = require('./types');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Universal = function (_Namespace) {
-    _inherits(Universal, _Namespace);
-
-    function Universal(opts) {
-        _classCallCheck(this, Universal);
-
-        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
-
-        _this.type = _types.UNIVERSAL;
-        _this.value = '*';
-        return _this;
-    }
-
-    return Universal;
-}(_namespace2.default);
-
-exports.default = Universal;
-module.exports = exports['default'];
-},{"./namespace":239,"./types":247}],249:[function(require,module,exports){
-"use strict";
-
-exports.__esModule = true;
-exports.default = sortAscending;
-function sortAscending(list) {
-    return list.sort(function (a, b) {
-        return a - b;
-    });
-};
-module.exports = exports["default"];
-},{}],250:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports.default = tokenize;
-var singleQuote = 39,
-    doubleQuote = 34,
-    backslash = 92,
-    slash = 47,
-    newline = 10,
-    space = 32,
-    feed = 12,
-    tab = 9,
-    cr = 13,
-    plus = 43,
-    gt = 62,
-    tilde = 126,
-    pipe = 124,
-    comma = 44,
-    openBracket = 40,
-    closeBracket = 41,
-    openSq = 91,
-    closeSq = 93,
-    semicolon = 59,
-    asterisk = 42,
-    colon = 58,
-    ampersand = 38,
-    at = 64,
-    atEnd = /[ \n\t\r\{\(\)'"\\;/]/g,
-    wordEnd = /[ \n\t\r\(\)\*:;@!&'"\+\|~>,\[\]\\]|\/(?=\*)/g;
-
-function tokenize(input) {
-    var tokens = [];
-    var css = input.css.valueOf();
-
-    var code = void 0,
-        next = void 0,
-        quote = void 0,
-        lines = void 0,
-        last = void 0,
-        content = void 0,
-        escape = void 0,
-        nextLine = void 0,
-        nextOffset = void 0,
-        escaped = void 0,
-        escapePos = void 0;
-
-    var length = css.length;
-    var offset = -1;
-    var line = 1;
-    var pos = 0;
-
-    var unclosed = function unclosed(what, end) {
-        if (input.safe) {
-            css += end;
-            next = css.length - 1;
-        } else {
-            throw input.error('Unclosed ' + what, line, pos - offset, pos);
-        }
-    };
-
-    while (pos < length) {
-        code = css.charCodeAt(pos);
-
-        if (code === newline) {
-            offset = pos;
-            line += 1;
-        }
-
-        switch (code) {
-            case newline:
-            case space:
-            case tab:
-            case cr:
-            case feed:
-                next = pos;
-                do {
-                    next += 1;
-                    code = css.charCodeAt(next);
-                    if (code === newline) {
-                        offset = next;
-                        line += 1;
-                    }
-                } while (code === space || code === newline || code === tab || code === cr || code === feed);
-
-                tokens.push(['space', css.slice(pos, next), line, pos - offset, pos]);
-                pos = next - 1;
-                break;
-
-            case plus:
-            case gt:
-            case tilde:
-            case pipe:
-                next = pos;
-                do {
-                    next += 1;
-                    code = css.charCodeAt(next);
-                } while (code === plus || code === gt || code === tilde || code === pipe);
-                tokens.push(['combinator', css.slice(pos, next), line, pos - offset, pos]);
-                pos = next - 1;
-                break;
-
-            case asterisk:
-                tokens.push(['*', '*', line, pos - offset, pos]);
-                break;
-
-            case ampersand:
-                tokens.push(['&', '&', line, pos - offset, pos]);
-                break;
-
-            case comma:
-                tokens.push([',', ',', line, pos - offset, pos]);
-                break;
-
-            case openSq:
-                tokens.push(['[', '[', line, pos - offset, pos]);
-                break;
-
-            case closeSq:
-                tokens.push([']', ']', line, pos - offset, pos]);
-                break;
-
-            case colon:
-                tokens.push([':', ':', line, pos - offset, pos]);
-                break;
-
-            case semicolon:
-                tokens.push([';', ';', line, pos - offset, pos]);
-                break;
-
-            case openBracket:
-                tokens.push(['(', '(', line, pos - offset, pos]);
-                break;
-
-            case closeBracket:
-                tokens.push([')', ')', line, pos - offset, pos]);
-                break;
-
-            case singleQuote:
-            case doubleQuote:
-                quote = code === singleQuote ? "'" : '"';
-                next = pos;
-                do {
-                    escaped = false;
-                    next = css.indexOf(quote, next + 1);
-                    if (next === -1) {
-                        unclosed('quote', quote);
-                    }
-                    escapePos = next;
-                    while (css.charCodeAt(escapePos - 1) === backslash) {
-                        escapePos -= 1;
-                        escaped = !escaped;
-                    }
-                } while (escaped);
-
-                tokens.push(['string', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                pos = next;
-                break;
-
-            case at:
-                atEnd.lastIndex = pos + 1;
-                atEnd.test(css);
-                if (atEnd.lastIndex === 0) {
-                    next = css.length - 1;
-                } else {
-                    next = atEnd.lastIndex - 2;
-                }
-                tokens.push(['at-word', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                pos = next;
-                break;
-
-            case backslash:
-                next = pos;
-                escape = true;
-                while (css.charCodeAt(next + 1) === backslash) {
-                    next += 1;
-                    escape = !escape;
-                }
-                code = css.charCodeAt(next + 1);
-                if (escape && code !== slash && code !== space && code !== newline && code !== tab && code !== cr && code !== feed) {
-                    next += 1;
-                }
-                tokens.push(['word', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                pos = next;
-                break;
-
-            default:
-                if (code === slash && css.charCodeAt(pos + 1) === asterisk) {
-                    next = css.indexOf('*/', pos + 2) + 1;
-                    if (next === 0) {
-                        unclosed('comment', '*/');
-                    }
-
-                    content = css.slice(pos, next + 1);
-                    lines = content.split('\n');
-                    last = lines.length - 1;
-
-                    if (last > 0) {
-                        nextLine = line + last;
-                        nextOffset = next - lines[last].length;
-                    } else {
-                        nextLine = line;
-                        nextOffset = offset;
-                    }
-
-                    tokens.push(['comment', content, line, pos - offset, nextLine, next - nextOffset, pos]);
-
-                    offset = nextOffset;
-                    line = nextLine;
-                    pos = next;
-                } else {
-                    wordEnd.lastIndex = pos + 1;
-                    wordEnd.test(css);
-                    if (wordEnd.lastIndex === 0) {
-                        next = css.length - 1;
-                    } else {
-                        next = wordEnd.lastIndex - 2;
-                    }
-
-                    tokens.push(['word', css.slice(pos, next + 1), line, pos - offset, line, next - offset, pos]);
-                    pos = next;
-                }
-
-                break;
-        }
-
-        pos++;
-    }
-
-    return tokens;
-}
-module.exports = exports['default'];
-},{}],251:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 var parse = require('./parse');
 var walk = require('./walk');
 var stringify = require('./stringify');
@@ -51838,7 +56975,7 @@ ValueParser.stringify = stringify;
 
 module.exports = ValueParser;
 
-},{"./parse":252,"./stringify":253,"./unit":254,"./walk":255}],252:[function(require,module,exports){
+},{"./parse":293,"./stringify":294,"./unit":295,"./walk":296}],293:[function(require,module,exports){
 var openParentheses = '('.charCodeAt(0);
 var closeParentheses = ')'.charCodeAt(0);
 var singleQuote = '\''.charCodeAt(0);
@@ -52082,7 +57219,7 @@ module.exports = function (input) {
     return stack[0].nodes;
 };
 
-},{}],253:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 function stringifyNode(node, custom) {
     var type = node.type;
     var value = node.value;
@@ -52125,7 +57262,7 @@ function stringify(nodes, custom) {
 
 module.exports = stringify;
 
-},{}],254:[function(require,module,exports){
+},{}],295:[function(require,module,exports){
 var minus = '-'.charCodeAt(0);
 var plus  = '+'.charCodeAt(0);
 var dot   = '.'.charCodeAt(0);
@@ -52168,7 +57305,7 @@ module.exports = function (value) {
     } : false;
 };
 
-},{}],255:[function(require,module,exports){
+},{}],296:[function(require,module,exports){
 module.exports = function walk(nodes, cb, bubble) {
     var i, max, node, result;
 
@@ -52188,7 +57325,7 @@ module.exports = function walk(nodes, cb, bubble) {
     }
 };
 
-},{}],256:[function(require,module,exports){
+},{}],297:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52321,7 +57458,7 @@ exports.default = AtRule;
 module.exports = exports['default'];
 
 
-},{"./container":258}],257:[function(require,module,exports){
+},{"./container":299}],298:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52384,7 +57521,7 @@ exports.default = Comment;
 module.exports = exports['default'];
 
 
-},{"./node":265}],258:[function(require,module,exports){
+},{"./node":306}],299:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53293,7 +58430,7 @@ exports.default = Container;
 module.exports = exports['default'];
 
 
-},{"./at-rule":256,"./comment":257,"./declaration":260,"./node":265,"./parse":266,"./root":272,"./rule":273}],259:[function(require,module,exports){
+},{"./at-rule":297,"./comment":298,"./declaration":301,"./node":306,"./parse":307,"./root":313,"./rule":314}],300:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53551,7 +58688,7 @@ exports.default = CssSyntaxError;
 module.exports = exports['default'];
 
 
-},{"./terminal-highlight":276,"chalk":13,"supports-color":13}],260:[function(require,module,exports){
+},{"./terminal-highlight":317,"chalk":15,"supports-color":15}],301:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53654,9 +58791,9 @@ exports.default = Declaration;
 module.exports = exports['default'];
 
 
-},{"./node":265}],261:[function(require,module,exports){
-arguments[4][186][0].apply(exports,arguments)
-},{"./css-syntax-error":259,"./previous-map":269,"dup":186,"path":146}],262:[function(require,module,exports){
+},{"./node":306}],302:[function(require,module,exports){
+arguments[4][248][0].apply(exports,arguments)
+},{"./css-syntax-error":300,"./previous-map":310,"dup":248,"path":198}],303:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54086,9 +59223,9 @@ exports.default = LazyResult;
 module.exports = exports['default'];
 
 
-},{"./map-generator":264,"./parse":266,"./result":271,"./stringify":275}],263:[function(require,module,exports){
-arguments[4][188][0].apply(exports,arguments)
-},{"dup":188}],264:[function(require,module,exports){
+},{"./map-generator":305,"./parse":307,"./result":312,"./stringify":316}],304:[function(require,module,exports){
+arguments[4][250][0].apply(exports,arguments)
+},{"dup":250}],305:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -54415,7 +59552,7 @@ module.exports = exports['default'];
 
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":15,"path":146,"source-map":323}],265:[function(require,module,exports){
+},{"buffer":17,"path":198,"source-map":459}],306:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55040,7 +60177,7 @@ exports.default = Node;
 module.exports = exports['default'];
 
 
-},{"./css-syntax-error":259,"./stringifier":274,"./stringify":275,"./warn-once":279}],266:[function(require,module,exports){
+},{"./css-syntax-error":300,"./stringifier":315,"./stringify":316,"./warn-once":320}],307:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55083,7 +60220,7 @@ function parse(css, opts) {
 module.exports = exports['default'];
 
 
-},{"./input":261,"./parser":267}],267:[function(require,module,exports){
+},{"./input":302,"./parser":308}],308:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55619,7 +60756,7 @@ exports.default = Parser;
 module.exports = exports['default'];
 
 
-},{"./at-rule":256,"./comment":257,"./declaration":260,"./root":272,"./rule":273,"./tokenize":277}],268:[function(require,module,exports){
+},{"./at-rule":297,"./comment":298,"./declaration":301,"./root":313,"./rule":314,"./tokenize":318}],309:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55913,7 +61050,7 @@ exports.default = postcss;
 module.exports = exports['default'];
 
 
-},{"./at-rule":256,"./comment":257,"./declaration":260,"./list":263,"./parse":266,"./processor":270,"./root":272,"./rule":273,"./stringify":275,"./vendor":278}],269:[function(require,module,exports){
+},{"./at-rule":297,"./comment":298,"./declaration":301,"./list":304,"./parse":307,"./processor":311,"./root":313,"./rule":314,"./stringify":316,"./vendor":319}],310:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -56087,7 +61224,7 @@ module.exports = exports['default'];
 
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":15,"fs":13,"path":146,"source-map":323}],270:[function(require,module,exports){
+},{"buffer":17,"fs":15,"path":198,"source-map":459}],311:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56329,9 +61466,9 @@ exports.default = Processor;
 module.exports = exports['default'];
 
 
-},{"./lazy-result":262}],271:[function(require,module,exports){
-arguments[4][195][0].apply(exports,arguments)
-},{"./warning":280,"dup":195}],272:[function(require,module,exports){
+},{"./lazy-result":303}],312:[function(require,module,exports){
+arguments[4][257][0].apply(exports,arguments)
+},{"./warning":321,"dup":257}],313:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56462,7 +61599,7 @@ exports.default = Root;
 module.exports = exports['default'];
 
 
-},{"./container":258,"./lazy-result":262,"./processor":270}],273:[function(require,module,exports){
+},{"./container":299,"./lazy-result":303,"./processor":311}],314:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56587,7 +61724,7 @@ exports.default = Rule;
 module.exports = exports['default'];
 
 
-},{"./container":258,"./list":263}],274:[function(require,module,exports){
+},{"./container":299,"./list":304}],315:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56933,9 +62070,9 @@ exports.default = Stringifier;
 module.exports = exports['default'];
 
 
-},{}],275:[function(require,module,exports){
-arguments[4][199][0].apply(exports,arguments)
-},{"./stringifier":274,"dup":199}],276:[function(require,module,exports){
+},{}],316:[function(require,module,exports){
+arguments[4][261][0].apply(exports,arguments)
+},{"./stringifier":315,"dup":261}],317:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57020,7 +62157,7 @@ exports.default = terminalHighlight;
 module.exports = exports['default'];
 
 
-},{"./input":261,"./tokenize":277,"chalk":13}],277:[function(require,module,exports){
+},{"./input":302,"./tokenize":318,"chalk":15}],318:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57328,7 +62465,7 @@ function tokenizer(input) {
 module.exports = exports['default'];
 
 
-},{}],278:[function(require,module,exports){
+},{}],319:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57382,11 +62519,11 @@ exports.default = vendor;
 module.exports = exports['default'];
 
 
-},{}],279:[function(require,module,exports){
-arguments[4][202][0].apply(exports,arguments)
-},{"dup":202}],280:[function(require,module,exports){
-arguments[4][203][0].apply(exports,arguments)
-},{"dup":203}],281:[function(require,module,exports){
+},{}],320:[function(require,module,exports){
+arguments[4][264][0].apply(exports,arguments)
+},{"dup":264}],321:[function(require,module,exports){
+arguments[4][265][0].apply(exports,arguments)
+},{"dup":265}],322:[function(require,module,exports){
 /*!
  * preserve <https://github.com/jonschlinkert/preserve>
  *
@@ -57441,7 +62578,7 @@ function randomize() {
 }
 
 var cache = {};
-},{}],282:[function(require,module,exports){
+},{}],323:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -57488,7 +62625,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283}],283:[function(require,module,exports){
+},{"_process":324}],324:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -57674,7 +62811,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],284:[function(require,module,exports){
+},{}],325:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -58211,7 +63348,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],285:[function(require,module,exports){
+},{}],326:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -58297,7 +63434,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],286:[function(require,module,exports){
+},{}],327:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -58384,13 +63521,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],287:[function(require,module,exports){
+},{}],328:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":285,"./encode":286}],288:[function(require,module,exports){
+},{"./decode":326,"./encode":327}],329:[function(require,module,exports){
 /*!
  * randomatic <https://github.com/jonschlinkert/randomatic>
  *
@@ -58474,7 +63611,7 @@ function randomatic(pattern, length, options) {
   return res;
 };
 
-},{"is-number":289,"kind-of":291}],289:[function(require,module,exports){
+},{"is-number":330,"kind-of":332}],330:[function(require,module,exports){
 /*!
  * is-number <https://github.com/jonschlinkert/is-number>
  *
@@ -58498,9 +63635,9 @@ module.exports = function isNumber(num) {
   return (num - num + 1) >= 0;
 };
 
-},{"kind-of":290}],290:[function(require,module,exports){
-arguments[4][123][0].apply(exports,arguments)
-},{"dup":123,"is-buffer":75}],291:[function(require,module,exports){
+},{"kind-of":331}],331:[function(require,module,exports){
+arguments[4][170][0].apply(exports,arguments)
+},{"dup":170,"is-buffer":116}],332:[function(require,module,exports){
 var isBuffer = require('is-buffer');
 var toString = Object.prototype.toString;
 
@@ -58621,10 +63758,10 @@ module.exports = function kindOf(val) {
   return 'object';
 };
 
-},{"is-buffer":75}],292:[function(require,module,exports){
+},{"is-buffer":116}],333:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":293}],293:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":334}],334:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -58749,7 +63886,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":295,"./_stream_writable":297,"core-util-is":20,"inherits":73,"process-nextick-args":282}],294:[function(require,module,exports){
+},{"./_stream_readable":336,"./_stream_writable":338,"core-util-is":28,"inherits":111,"process-nextick-args":323}],335:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -58797,7 +63934,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":296,"core-util-is":20,"inherits":73}],295:[function(require,module,exports){
+},{"./_stream_transform":337,"core-util-is":28,"inherits":111}],336:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -59807,7 +64944,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":293,"./internal/streams/BufferList":298,"./internal/streams/destroy":299,"./internal/streams/stream":300,"_process":283,"core-util-is":20,"events":35,"inherits":73,"isarray":90,"process-nextick-args":282,"safe-buffer":312,"string_decoder/":326,"util":13}],296:[function(require,module,exports){
+},{"./_stream_duplex":334,"./internal/streams/BufferList":339,"./internal/streams/destroy":340,"./internal/streams/stream":341,"_process":324,"core-util-is":28,"events":67,"inherits":111,"isarray":137,"process-nextick-args":323,"safe-buffer":447,"string_decoder/":463,"util":15}],337:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -60022,7 +65159,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":293,"core-util-is":20,"inherits":73}],297:[function(require,module,exports){
+},{"./_stream_duplex":334,"core-util-is":28,"inherits":111}],338:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -60689,7 +65826,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":293,"./internal/streams/destroy":299,"./internal/streams/stream":300,"_process":283,"core-util-is":20,"inherits":73,"process-nextick-args":282,"safe-buffer":312,"util-deprecate":611}],298:[function(require,module,exports){
+},{"./_stream_duplex":334,"./internal/streams/destroy":340,"./internal/streams/stream":341,"_process":324,"core-util-is":28,"inherits":111,"process-nextick-args":323,"safe-buffer":447,"util-deprecate":790}],339:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -60764,7 +65901,7 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":312}],299:[function(require,module,exports){
+},{"safe-buffer":447}],340:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -60837,13 +65974,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":282}],300:[function(require,module,exports){
+},{"process-nextick-args":323}],341:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":35}],301:[function(require,module,exports){
+},{"events":67}],342:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":302}],302:[function(require,module,exports){
+},{"./readable":343}],343:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -60852,13 +65989,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":293,"./lib/_stream_passthrough.js":294,"./lib/_stream_readable.js":295,"./lib/_stream_transform.js":296,"./lib/_stream_writable.js":297}],303:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":334,"./lib/_stream_passthrough.js":335,"./lib/_stream_readable.js":336,"./lib/_stream_transform.js":337,"./lib/_stream_writable.js":338}],344:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":302}],304:[function(require,module,exports){
+},{"./readable":343}],345:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":297}],305:[function(require,module,exports){
+},{"./lib/_stream_writable.js":338}],346:[function(require,module,exports){
 /*!
  * regex-cache <https://github.com/jonschlinkert/regex-cache>
  *
@@ -60928,7 +66065,6410 @@ function memo(key, opts, regex) {
 module.exports.cache = cache;
 module.exports.basic = basic;
 
-},{"is-equal-shallow":78}],306:[function(require,module,exports){
+},{"is-equal-shallow":120}],347:[function(require,module,exports){
+'use strict';
+
+var unherit = require('unherit');
+var xtend = require('xtend');
+var Parser = require('./lib/parser.js');
+
+module.exports = parse;
+parse.Parser = Parser;
+
+function parse(options) {
+  var Local = unherit(Parser);
+  Local.prototype.options = xtend(Local.prototype.options, this.data('settings'), options);
+  this.Parser = Local;
+}
+
+},{"./lib/parser.js":361,"unherit":779,"xtend":802}],348:[function(require,module,exports){
+module.exports=[
+  "address",
+  "article",
+  "aside",
+  "base",
+  "basefont",
+  "blockquote",
+  "body",
+  "caption",
+  "center",
+  "col",
+  "colgroup",
+  "dd",
+  "details",
+  "dialog",
+  "dir",
+  "div",
+  "dl",
+  "dt",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "head",
+  "header",
+  "hgroup",
+  "hr",
+  "html",
+  "iframe",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "menu",
+  "menuitem",
+  "meta",
+  "nav",
+  "noframes",
+  "ol",
+  "optgroup",
+  "option",
+  "p",
+  "param",
+  "pre",
+  "section",
+  "source",
+  "title",
+  "summary",
+  "table",
+  "tbody",
+  "td",
+  "tfoot",
+  "th",
+  "thead",
+  "title",
+  "tr",
+  "track",
+  "ul"
+]
+
+},{}],349:[function(require,module,exports){
+'use strict';
+
+var entities = require('parse-entities');
+
+module.exports = factory;
+
+/* Factory to create an entity decoder. */
+function factory(ctx) {
+  decoder.raw = decodeRaw;
+
+  return decoder;
+
+  /* Normalize `position` to add an `indent`. */
+  function normalize(position) {
+    var offsets = ctx.offset;
+    var line = position.line;
+    var result = [];
+
+    while (++line) {
+      if (!(line in offsets)) {
+        break;
+      }
+
+      result.push((offsets[line] || 0) + 1);
+    }
+
+    return {
+      start: position,
+      indent: result
+    };
+  }
+
+  /* Handle a warning.
+   * See https://github.com/wooorm/parse-entities
+   * for the warnings. */
+  function handleWarning(reason, position, code) {
+    if (code === 3) {
+      return;
+    }
+
+    ctx.file.message(reason, position);
+  }
+
+  /* Decode `value` (at `position`) into text-nodes. */
+  function decoder(value, position, handler) {
+    entities(value, {
+      position: normalize(position),
+      warning: handleWarning,
+      text: handler,
+      reference: handler,
+      textContext: ctx,
+      referenceContext: ctx
+    });
+  }
+
+  /* Decode `value` (at `position`) into a string. */
+  function decodeRaw(value, position) {
+    return entities(value, {
+      position: normalize(position),
+      warning: handleWarning
+    });
+  }
+}
+
+},{"parse-entities":193}],350:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  position: true,
+  gfm: true,
+  commonmark: false,
+  footnotes: false,
+  pedantic: false,
+  blocks: require('./block-elements.json')
+};
+
+},{"./block-elements.json":348}],351:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  var index = value.indexOf('\n', fromIndex);
+
+  while (index > fromIndex) {
+    if (value.charAt(index - 1) !== ' ') {
+      break;
+    }
+
+    index--;
+  }
+
+  return index;
+}
+
+},{}],352:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  return value.indexOf('`', fromIndex);
+}
+
+},{}],353:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  return value.indexOf('~~', fromIndex);
+}
+
+},{}],354:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  var asterisk = value.indexOf('*', fromIndex);
+  var underscore = value.indexOf('_', fromIndex);
+
+  if (underscore === -1) {
+    return asterisk;
+  }
+
+  if (asterisk === -1) {
+    return underscore;
+  }
+
+  return underscore < asterisk ? underscore : asterisk;
+}
+
+},{}],355:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  return value.indexOf('\\', fromIndex);
+}
+
+},{}],356:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  var link = value.indexOf('[', fromIndex);
+  var image = value.indexOf('![', fromIndex);
+
+  if (image === -1) {
+    return link;
+  }
+
+  /* Link can never be `-1` if an image is found, so we don’t need
+   * to check for that :) */
+  return link < image ? link : image;
+}
+
+},{}],357:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  var asterisk = value.indexOf('**', fromIndex);
+  var underscore = value.indexOf('__', fromIndex);
+
+  if (underscore === -1) {
+    return asterisk;
+  }
+
+  if (asterisk === -1) {
+    return underscore;
+  }
+
+  return underscore < asterisk ? underscore : asterisk;
+}
+
+},{}],358:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+function locate(value, fromIndex) {
+  return value.indexOf('<', fromIndex);
+}
+
+},{}],359:[function(require,module,exports){
+'use strict';
+
+module.exports = locate;
+
+var PROTOCOLS = ['https://', 'http://', 'mailto:'];
+
+function locate(value, fromIndex) {
+  var length = PROTOCOLS.length;
+  var index = -1;
+  var min = -1;
+  var position;
+
+  if (!this.options.gfm) {
+    return -1;
+  }
+
+  while (++index < length) {
+    position = value.indexOf(PROTOCOLS[index], fromIndex);
+
+    if (position !== -1 && (position < min || min === -1)) {
+      min = position;
+    }
+  }
+
+  return min;
+}
+
+},{}],360:[function(require,module,exports){
+'use strict';
+
+var xtend = require('xtend');
+var removePosition = require('unist-util-remove-position');
+
+module.exports = parse;
+
+var C_NEWLINE = '\n';
+var EXPRESSION_LINE_BREAKS = /\r\n|\r/g;
+
+/* Parse the bound file. */
+function parse() {
+  var self = this;
+  var value = String(self.file);
+  var start = {line: 1, column: 1, offset: 0};
+  var content = xtend(start);
+  var node;
+
+  /* Clean non-unix newlines: `\r\n` and `\r` are all
+   * changed to `\n`.  This should not affect positional
+   * information. */
+  value = value.replace(EXPRESSION_LINE_BREAKS, C_NEWLINE);
+
+  if (value.charCodeAt(0) === 0xFEFF) {
+    value = value.slice(1);
+
+    content.column++;
+    content.offset++;
+  }
+
+  node = {
+    type: 'root',
+    children: self.tokenizeBlock(value, content),
+    position: {
+      start: start,
+      end: self.eof || xtend(start)
+    }
+  };
+
+  if (!self.options.position) {
+    removePosition(node, true);
+  }
+
+  return node;
+}
+
+},{"unist-util-remove-position":785,"xtend":802}],361:[function(require,module,exports){
+'use strict';
+
+var xtend = require('xtend');
+var toggle = require('state-toggle');
+var vfileLocation = require('vfile-location');
+var unescape = require('./unescape');
+var decode = require('./decode');
+var tokenizer = require('./tokenizer');
+
+module.exports = Parser;
+
+function Parser(doc, file) {
+  this.file = file;
+  this.offset = {};
+  this.options = xtend(this.options);
+  this.setOptions({});
+
+  this.inList = false;
+  this.inBlock = false;
+  this.inLink = false;
+  this.atStart = true;
+
+  this.toOffset = vfileLocation(file).toOffset;
+  this.unescape = unescape(this, 'escape');
+  this.decode = decode(this);
+}
+
+var proto = Parser.prototype;
+
+/* Expose core. */
+proto.setOptions = require('./set-options');
+proto.parse = require('./parse');
+
+/* Expose `defaults`. */
+proto.options = require('./defaults');
+
+/* Enter and exit helpers. */
+proto.exitStart = toggle('atStart', true);
+proto.enterList = toggle('inList', false);
+proto.enterLink = toggle('inLink', false);
+proto.enterBlock = toggle('inBlock', false);
+
+/* Nodes that can interupt a paragraph:
+ *
+ * ```markdown
+ * A paragraph, followed by a thematic break.
+ * ___
+ * ```
+ *
+ * In the above example, the thematic break “interupts”
+ * the paragraph. */
+proto.interruptParagraph = [
+  ['thematicBreak'],
+  ['atxHeading'],
+  ['fencedCode'],
+  ['blockquote'],
+  ['html'],
+  ['setextHeading', {commonmark: false}],
+  ['definition', {commonmark: false}],
+  ['footnote', {commonmark: false}]
+];
+
+/* Nodes that can interupt a list:
+ *
+ * ```markdown
+ * - One
+ * ___
+ * ```
+ *
+ * In the above example, the thematic break “interupts”
+ * the list. */
+proto.interruptList = [
+  ['fencedCode', {pedantic: false}],
+  ['thematicBreak', {pedantic: false}],
+  ['definition', {commonmark: false}],
+  ['footnote', {commonmark: false}]
+];
+
+/* Nodes that can interupt a blockquote:
+ *
+ * ```markdown
+ * > A paragraph.
+ * ___
+ * ```
+ *
+ * In the above example, the thematic break “interupts”
+ * the blockquote. */
+proto.interruptBlockquote = [
+  ['indentedCode', {commonmark: true}],
+  ['fencedCode', {commonmark: true}],
+  ['atxHeading', {commonmark: true}],
+  ['setextHeading', {commonmark: true}],
+  ['thematicBreak', {commonmark: true}],
+  ['html', {commonmark: true}],
+  ['list', {commonmark: true}],
+  ['definition', {commonmark: false}],
+  ['footnote', {commonmark: false}]
+];
+
+/* Handlers. */
+proto.blockTokenizers = {
+  newline: require('./tokenize/newline'),
+  indentedCode: require('./tokenize/code-indented'),
+  fencedCode: require('./tokenize/code-fenced'),
+  blockquote: require('./tokenize/blockquote'),
+  atxHeading: require('./tokenize/heading-atx'),
+  thematicBreak: require('./tokenize/thematic-break'),
+  list: require('./tokenize/list'),
+  setextHeading: require('./tokenize/heading-setext'),
+  html: require('./tokenize/html-block'),
+  footnote: require('./tokenize/footnote-definition'),
+  definition: require('./tokenize/definition'),
+  table: require('./tokenize/table'),
+  paragraph: require('./tokenize/paragraph')
+};
+
+proto.inlineTokenizers = {
+  escape: require('./tokenize/escape'),
+  autoLink: require('./tokenize/auto-link'),
+  url: require('./tokenize/url'),
+  html: require('./tokenize/html-inline'),
+  link: require('./tokenize/link'),
+  reference: require('./tokenize/reference'),
+  strong: require('./tokenize/strong'),
+  emphasis: require('./tokenize/emphasis'),
+  deletion: require('./tokenize/delete'),
+  code: require('./tokenize/code-inline'),
+  break: require('./tokenize/break'),
+  text: require('./tokenize/text')
+};
+
+/* Expose precedence. */
+proto.blockMethods = keys(proto.blockTokenizers);
+proto.inlineMethods = keys(proto.inlineTokenizers);
+
+/* Tokenizers. */
+proto.tokenizeBlock = tokenizer('block');
+proto.tokenizeInline = tokenizer('inline');
+proto.tokenizeFactory = tokenizer;
+
+/* Get all keys in `value`. */
+function keys(value) {
+  var result = [];
+  var key;
+
+  for (key in value) {
+    result.push(key);
+  }
+
+  return result;
+}
+
+},{"./decode":349,"./defaults":350,"./parse":360,"./set-options":362,"./tokenize/auto-link":363,"./tokenize/blockquote":364,"./tokenize/break":365,"./tokenize/code-fenced":366,"./tokenize/code-indented":367,"./tokenize/code-inline":368,"./tokenize/definition":369,"./tokenize/delete":370,"./tokenize/emphasis":371,"./tokenize/escape":372,"./tokenize/footnote-definition":373,"./tokenize/heading-atx":374,"./tokenize/heading-setext":375,"./tokenize/html-block":376,"./tokenize/html-inline":377,"./tokenize/link":378,"./tokenize/list":379,"./tokenize/newline":380,"./tokenize/paragraph":381,"./tokenize/reference":382,"./tokenize/strong":383,"./tokenize/table":384,"./tokenize/text":385,"./tokenize/thematic-break":386,"./tokenize/url":387,"./tokenizer":388,"./unescape":389,"state-toggle":461,"vfile-location":794,"xtend":802}],362:[function(require,module,exports){
+'use strict';
+
+var xtend = require('xtend');
+var escapes = require('markdown-escapes');
+var defaults = require('./defaults');
+
+module.exports = setOptions;
+
+function setOptions(options) {
+  var self = this;
+  var current = self.options;
+  var key;
+  var value;
+
+  if (options == null) {
+    options = {};
+  } else if (typeof options === 'object') {
+    options = xtend(options);
+  } else {
+    throw new Error(
+      'Invalid value `' + options + '` ' +
+      'for setting `options`'
+    );
+  }
+
+  for (key in defaults) {
+    value = options[key];
+
+    if (value == null) {
+      value = current[key];
+    }
+
+    if (
+      (key !== 'blocks' && typeof value !== 'boolean') ||
+      (key === 'blocks' && typeof value !== 'object')
+    ) {
+      throw new Error('Invalid value `' + value + '` for setting `options.' + key + '`');
+    }
+
+    options[key] = value;
+  }
+
+  self.options = options;
+  self.escape = escapes(options);
+
+  return self;
+}
+
+},{"./defaults":350,"markdown-escapes":175,"xtend":802}],363:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var decode = require('parse-entities');
+var locate = require('../locate/tag');
+
+module.exports = autoLink;
+autoLink.locator = locate;
+autoLink.notInLink = true;
+
+var C_LT = '<';
+var C_GT = '>';
+var C_AT_SIGN = '@';
+var C_SLASH = '/';
+var MAILTO = 'mailto:';
+var MAILTO_LENGTH = MAILTO.length;
+
+/* Tokenise a link. */
+function autoLink(eat, value, silent) {
+  var self;
+  var subvalue;
+  var length;
+  var index;
+  var queue;
+  var character;
+  var hasAtCharacter;
+  var link;
+  var now;
+  var content;
+  var tokenize;
+  var exit;
+
+  if (value.charAt(0) !== C_LT) {
+    return;
+  }
+
+  self = this;
+  subvalue = '';
+  length = value.length;
+  index = 0;
+  queue = '';
+  hasAtCharacter = false;
+  link = '';
+
+  index++;
+  subvalue = C_LT;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (
+      whitespace(character) ||
+      character === C_GT ||
+      character === C_AT_SIGN ||
+      (character === ':' && value.charAt(index + 1) === C_SLASH)
+    ) {
+      break;
+    }
+
+    queue += character;
+    index++;
+  }
+
+  if (!queue) {
+    return;
+  }
+
+  link += queue;
+  queue = '';
+
+  character = value.charAt(index);
+  link += character;
+  index++;
+
+  if (character === C_AT_SIGN) {
+    hasAtCharacter = true;
+  } else {
+    if (
+      character !== ':' ||
+      value.charAt(index + 1) !== C_SLASH
+    ) {
+      return;
+    }
+
+    link += C_SLASH;
+    index++;
+  }
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (whitespace(character) || character === C_GT) {
+      break;
+    }
+
+    queue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+
+  if (!queue || character !== C_GT) {
+    return;
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  link += queue;
+  content = link;
+  subvalue += link + character;
+  now = eat.now();
+  now.column++;
+  now.offset++;
+
+  if (hasAtCharacter) {
+    if (link.slice(0, MAILTO_LENGTH).toLowerCase() === MAILTO) {
+      content = content.substr(MAILTO_LENGTH);
+      now.column += MAILTO_LENGTH;
+      now.offset += MAILTO_LENGTH;
+    } else {
+      link = MAILTO + link;
+    }
+  }
+
+  /* Temporarily remove support for escapes in autolinks. */
+  tokenize = self.inlineTokenizers.escape;
+  self.inlineTokenizers.escape = null;
+  exit = self.enterLink();
+
+  content = self.tokenizeInline(content, now);
+
+  self.inlineTokenizers.escape = tokenize;
+  exit();
+
+  return eat(subvalue)({
+    type: 'link',
+    title: null,
+    url: decode(link),
+    children: content
+  });
+}
+
+},{"../locate/tag":358,"is-whitespace-character":135,"parse-entities":193}],364:[function(require,module,exports){
+'use strict';
+
+var trim = require('trim');
+var interrupt = require('../util/interrupt');
+
+module.exports = blockquote;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_GT = '>';
+
+/* Tokenise a blockquote. */
+function blockquote(eat, value, silent) {
+  var self = this;
+  var offsets = self.offset;
+  var tokenizers = self.blockTokenizers;
+  var interruptors = self.interruptBlockquote;
+  var now = eat.now();
+  var currentLine = now.line;
+  var length = value.length;
+  var values = [];
+  var contents = [];
+  var indents = [];
+  var add;
+  var index = 0;
+  var character;
+  var rest;
+  var nextIndex;
+  var content;
+  var line;
+  var startIndex;
+  var prefixed;
+  var exit;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE && character !== C_TAB) {
+      break;
+    }
+
+    index++;
+  }
+
+  if (value.charAt(index) !== C_GT) {
+    return;
+  }
+
+  if (silent) {
+    return true;
+  }
+
+  index = 0;
+
+  while (index < length) {
+    nextIndex = value.indexOf(C_NEWLINE, index);
+    startIndex = index;
+    prefixed = false;
+
+    if (nextIndex === -1) {
+      nextIndex = length;
+    }
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character !== C_SPACE && character !== C_TAB) {
+        break;
+      }
+
+      index++;
+    }
+
+    if (value.charAt(index) === C_GT) {
+      index++;
+      prefixed = true;
+
+      if (value.charAt(index) === C_SPACE) {
+        index++;
+      }
+    } else {
+      index = startIndex;
+    }
+
+    content = value.slice(index, nextIndex);
+
+    if (!prefixed && !trim(content)) {
+      index = startIndex;
+      break;
+    }
+
+    if (!prefixed) {
+      rest = value.slice(index);
+
+      /* Check if the following code contains a possible
+       * block. */
+      if (interrupt(interruptors, tokenizers, self, [eat, rest, true])) {
+        break;
+      }
+    }
+
+    line = startIndex === index ? content : value.slice(startIndex, nextIndex);
+
+    indents.push(index - startIndex);
+    values.push(line);
+    contents.push(content);
+
+    index = nextIndex + 1;
+  }
+
+  index = -1;
+  length = indents.length;
+  add = eat(values.join(C_NEWLINE));
+
+  while (++index < length) {
+    offsets[currentLine] = (offsets[currentLine] || 0) + indents[index];
+    currentLine++;
+  }
+
+  exit = self.enterBlock();
+  contents = self.tokenizeBlock(contents.join(C_NEWLINE), now);
+  exit();
+
+  return add({
+    type: 'blockquote',
+    children: contents
+  });
+}
+
+},{"../util/interrupt":392,"trim":777}],365:[function(require,module,exports){
+'use strict';
+
+var locate = require('../locate/break');
+
+module.exports = hardBreak;
+hardBreak.locator = locate;
+
+var MIN_BREAK_LENGTH = 2;
+
+function hardBreak(eat, value, silent) {
+  var length = value.length;
+  var index = -1;
+  var queue = '';
+  var character;
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character === '\n') {
+      if (index < MIN_BREAK_LENGTH) {
+        return;
+      }
+
+      /* istanbul ignore if - never used (yet) */
+      if (silent) {
+        return true;
+      }
+
+      queue += character;
+
+      return eat(queue)({type: 'break'});
+    }
+
+    if (character !== ' ') {
+      return;
+    }
+
+    queue += character;
+  }
+}
+
+},{"../locate/break":351}],366:[function(require,module,exports){
+'use strict';
+
+var trim = require('trim-trailing-lines');
+
+module.exports = fencedCode;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_TILDE = '~';
+var C_TICK = '`';
+
+var MIN_FENCE_COUNT = 3;
+var CODE_INDENT_COUNT = 4;
+
+function fencedCode(eat, value, silent) {
+  var self = this;
+  var settings = self.options;
+  var length = value.length + 1;
+  var index = 0;
+  var subvalue = '';
+  var fenceCount;
+  var marker;
+  var character;
+  var flag;
+  var queue;
+  var content;
+  var exdentedContent;
+  var closing;
+  var exdentedClosing;
+  var indent;
+  var now;
+
+  if (!settings.gfm) {
+    return;
+  }
+
+  /* Eat initial spacing. */
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE && character !== C_TAB) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  indent = index;
+
+  /* Eat the fence. */
+  character = value.charAt(index);
+
+  if (character !== C_TILDE && character !== C_TICK) {
+    return;
+  }
+
+  index++;
+  marker = character;
+  fenceCount = 1;
+  subvalue += character;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== marker) {
+      break;
+    }
+
+    subvalue += character;
+    fenceCount++;
+    index++;
+  }
+
+  if (fenceCount < MIN_FENCE_COUNT) {
+    return;
+  }
+
+  /* Eat spacing before flag. */
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE && character !== C_TAB) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  /* Eat flag. */
+  flag = '';
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (
+      character === C_NEWLINE ||
+      character === C_TILDE ||
+      character === C_TICK
+    ) {
+      break;
+    }
+
+    if (character === C_SPACE || character === C_TAB) {
+      queue += character;
+    } else {
+      flag += queue + character;
+      queue = '';
+    }
+
+    index++;
+  }
+
+  character = value.charAt(index);
+
+  if (character && character !== C_NEWLINE) {
+    return;
+  }
+
+  if (silent) {
+    return true;
+  }
+
+  now = eat.now();
+  now.column += subvalue.length;
+  now.offset += subvalue.length;
+
+  subvalue += flag;
+  flag = self.decode.raw(self.unescape(flag), now);
+
+  if (queue) {
+    subvalue += queue;
+  }
+
+  queue = '';
+  closing = '';
+  exdentedClosing = '';
+  content = '';
+  exdentedContent = '';
+
+  /* Eat content. */
+  while (index < length) {
+    character = value.charAt(index);
+    content += closing;
+    exdentedContent += exdentedClosing;
+    closing = '';
+    exdentedClosing = '';
+
+    if (character !== C_NEWLINE) {
+      content += character;
+      exdentedClosing += character;
+      index++;
+      continue;
+    }
+
+    /* Add the newline to `subvalue` if its the first
+     * character.  Otherwise, add it to the `closing`
+     * queue. */
+    if (content) {
+      closing += character;
+      exdentedClosing += character;
+    } else {
+      subvalue += character;
+    }
+
+    queue = '';
+    index++;
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character !== C_SPACE) {
+        break;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    closing += queue;
+    exdentedClosing += queue.slice(indent);
+
+    if (queue.length >= CODE_INDENT_COUNT) {
+      continue;
+    }
+
+    queue = '';
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character !== marker) {
+        break;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    closing += queue;
+    exdentedClosing += queue;
+
+    if (queue.length < fenceCount) {
+      continue;
+    }
+
+    queue = '';
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character !== C_SPACE && character !== C_TAB) {
+        break;
+      }
+
+      closing += character;
+      exdentedClosing += character;
+      index++;
+    }
+
+    if (!character || character === C_NEWLINE) {
+      break;
+    }
+  }
+
+  subvalue += content + closing;
+
+  return eat(subvalue)({
+    type: 'code',
+    lang: flag || null,
+    value: trim(exdentedContent)
+  });
+}
+
+},{"trim-trailing-lines":776}],367:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+var trim = require('trim-trailing-lines');
+
+module.exports = indentedCode;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+
+var CODE_INDENT_COUNT = 4;
+var CODE_INDENT = repeat(C_SPACE, CODE_INDENT_COUNT);
+
+/* Tokenise indented code. */
+function indentedCode(eat, value, silent) {
+  var index = -1;
+  var length = value.length;
+  var subvalue = '';
+  var content = '';
+  var subvalueQueue = '';
+  var contentQueue = '';
+  var character;
+  var blankQueue;
+  var indent;
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (indent) {
+      indent = false;
+
+      subvalue += subvalueQueue;
+      content += contentQueue;
+      subvalueQueue = '';
+      contentQueue = '';
+
+      if (character === C_NEWLINE) {
+        subvalueQueue = character;
+        contentQueue = character;
+      } else {
+        subvalue += character;
+        content += character;
+
+        while (++index < length) {
+          character = value.charAt(index);
+
+          if (!character || character === C_NEWLINE) {
+            contentQueue = character;
+            subvalueQueue = character;
+            break;
+          }
+
+          subvalue += character;
+          content += character;
+        }
+      }
+    } else if (
+      character === C_SPACE &&
+      value.charAt(index + 1) === character &&
+      value.charAt(index + 2) === character &&
+      value.charAt(index + 3) === character
+    ) {
+      subvalueQueue += CODE_INDENT;
+      index += 3;
+      indent = true;
+    } else if (character === C_TAB) {
+      subvalueQueue += character;
+      indent = true;
+    } else {
+      blankQueue = '';
+
+      while (character === C_TAB || character === C_SPACE) {
+        blankQueue += character;
+        character = value.charAt(++index);
+      }
+
+      if (character !== C_NEWLINE) {
+        break;
+      }
+
+      subvalueQueue += blankQueue + character;
+      contentQueue += character;
+    }
+  }
+
+  if (content) {
+    if (silent) {
+      return true;
+    }
+
+    return eat(subvalue)({
+      type: 'code',
+      lang: null,
+      value: trim(content)
+    });
+  }
+}
+
+},{"repeat-string":442,"trim-trailing-lines":776}],368:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/code-inline');
+
+module.exports = inlineCode;
+inlineCode.locator = locate;
+
+var C_TICK = '`';
+
+/* Tokenise inline code. */
+function inlineCode(eat, value, silent) {
+  var length = value.length;
+  var index = 0;
+  var queue = '';
+  var tickQueue = '';
+  var contentQueue;
+  var subqueue;
+  var count;
+  var openingCount;
+  var subvalue;
+  var character;
+  var found;
+  var next;
+
+  while (index < length) {
+    if (value.charAt(index) !== C_TICK) {
+      break;
+    }
+
+    queue += C_TICK;
+    index++;
+  }
+
+  if (!queue) {
+    return;
+  }
+
+  subvalue = queue;
+  openingCount = index;
+  queue = '';
+  next = value.charAt(index);
+  count = 0;
+
+  while (index < length) {
+    character = next;
+    next = value.charAt(index + 1);
+
+    if (character === C_TICK) {
+      count++;
+      tickQueue += character;
+    } else {
+      count = 0;
+      queue += character;
+    }
+
+    if (count && next !== C_TICK) {
+      if (count === openingCount) {
+        subvalue += queue + tickQueue;
+        found = true;
+        break;
+      }
+
+      queue += tickQueue;
+      tickQueue = '';
+    }
+
+    index++;
+  }
+
+  if (!found) {
+    if (openingCount % 2 !== 0) {
+      return;
+    }
+
+    queue = '';
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  contentQueue = '';
+  subqueue = '';
+  length = queue.length;
+  index = -1;
+
+  while (++index < length) {
+    character = queue.charAt(index);
+
+    if (whitespace(character)) {
+      subqueue += character;
+      continue;
+    }
+
+    if (subqueue) {
+      if (contentQueue) {
+        contentQueue += subqueue;
+      }
+
+      subqueue = '';
+    }
+
+    contentQueue += character;
+  }
+
+  return eat(subvalue)({
+    type: 'inlineCode',
+    value: contentQueue
+  });
+}
+
+},{"../locate/code-inline":352,"is-whitespace-character":135}],369:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var normalize = require('../util/normalize');
+
+module.exports = definition;
+definition.notInList = true;
+definition.notInBlock = true;
+
+var C_DOUBLE_QUOTE = '"';
+var C_SINGLE_QUOTE = '\'';
+var C_BACKSLASH = '\\';
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_BRACKET_OPEN = '[';
+var C_BRACKET_CLOSE = ']';
+var C_PAREN_OPEN = '(';
+var C_PAREN_CLOSE = ')';
+var C_COLON = ':';
+var C_LT = '<';
+var C_GT = '>';
+
+function definition(eat, value, silent) {
+  var self = this;
+  var commonmark = self.options.commonmark;
+  var index = 0;
+  var length = value.length;
+  var subvalue = '';
+  var beforeURL;
+  var beforeTitle;
+  var queue;
+  var character;
+  var test;
+  var identifier;
+  var url;
+  var title;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE && character !== C_TAB) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+
+  if (character !== C_BRACKET_OPEN) {
+    return;
+  }
+
+  index++;
+  subvalue += character;
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character === C_BRACKET_CLOSE) {
+      break;
+    } else if (character === C_BACKSLASH) {
+      queue += character;
+      index++;
+      character = value.charAt(index);
+    }
+
+    queue += character;
+    index++;
+  }
+
+  if (
+    !queue ||
+    value.charAt(index) !== C_BRACKET_CLOSE ||
+    value.charAt(index + 1) !== C_COLON
+  ) {
+    return;
+  }
+
+  identifier = queue;
+  subvalue += queue + C_BRACKET_CLOSE + C_COLON;
+  index = subvalue.length;
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (
+      character !== C_TAB &&
+      character !== C_SPACE &&
+      character !== C_NEWLINE
+    ) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+  queue = '';
+  beforeURL = subvalue;
+
+  if (character === C_LT) {
+    index++;
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (!isEnclosedURLCharacter(character)) {
+        break;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    character = value.charAt(index);
+
+    if (character === isEnclosedURLCharacter.delimiter) {
+      subvalue += C_LT + queue + character;
+      index++;
+    } else {
+      if (commonmark) {
+        return;
+      }
+
+      index -= queue.length + 1;
+      queue = '';
+    }
+  }
+
+  if (!queue) {
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (!isUnclosedURLCharacter(character)) {
+        break;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    subvalue += queue;
+  }
+
+  if (!queue) {
+    return;
+  }
+
+  url = queue;
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (
+      character !== C_TAB &&
+      character !== C_SPACE &&
+      character !== C_NEWLINE
+    ) {
+      break;
+    }
+
+    queue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+  test = null;
+
+  if (character === C_DOUBLE_QUOTE) {
+    test = C_DOUBLE_QUOTE;
+  } else if (character === C_SINGLE_QUOTE) {
+    test = C_SINGLE_QUOTE;
+  } else if (character === C_PAREN_OPEN) {
+    test = C_PAREN_CLOSE;
+  }
+
+  if (!test) {
+    queue = '';
+    index = subvalue.length;
+  } else if (queue) {
+    subvalue += queue + character;
+    index = subvalue.length;
+    queue = '';
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character === test) {
+        break;
+      }
+
+      if (character === C_NEWLINE) {
+        index++;
+        character = value.charAt(index);
+
+        if (character === C_NEWLINE || character === test) {
+          return;
+        }
+
+        queue += C_NEWLINE;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    character = value.charAt(index);
+
+    if (character !== test) {
+      return;
+    }
+
+    beforeTitle = subvalue;
+    subvalue += queue + character;
+    index++;
+    title = queue;
+    queue = '';
+  } else {
+    return;
+  }
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_TAB && character !== C_SPACE) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+
+  if (!character || character === C_NEWLINE) {
+    if (silent) {
+      return true;
+    }
+
+    beforeURL = eat(beforeURL).test().end;
+    url = self.decode.raw(self.unescape(url), beforeURL);
+
+    if (title) {
+      beforeTitle = eat(beforeTitle).test().end;
+      title = self.decode.raw(self.unescape(title), beforeTitle);
+    }
+
+    return eat(subvalue)({
+      type: 'definition',
+      identifier: normalize(identifier),
+      title: title || null,
+      url: url
+    });
+  }
+}
+
+/* Check if `character` can be inside an enclosed URI. */
+function isEnclosedURLCharacter(character) {
+  return character !== C_GT &&
+    character !== C_BRACKET_OPEN &&
+    character !== C_BRACKET_CLOSE;
+}
+
+isEnclosedURLCharacter.delimiter = C_GT;
+
+/* Check if `character` can be inside an unclosed URI. */
+function isUnclosedURLCharacter(character) {
+  return character !== C_BRACKET_OPEN &&
+    character !== C_BRACKET_CLOSE &&
+    !whitespace(character);
+}
+
+},{"../util/normalize":393,"is-whitespace-character":135}],370:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/delete');
+
+module.exports = strikethrough;
+strikethrough.locator = locate;
+
+var C_TILDE = '~';
+var DOUBLE = '~~';
+
+function strikethrough(eat, value, silent) {
+  var self = this;
+  var character = '';
+  var previous = '';
+  var preceding = '';
+  var subvalue = '';
+  var index;
+  var length;
+  var now;
+
+  if (
+    !self.options.gfm ||
+    value.charAt(0) !== C_TILDE ||
+    value.charAt(1) !== C_TILDE ||
+    whitespace(value.charAt(2))
+  ) {
+    return;
+  }
+
+  index = 1;
+  length = value.length;
+  now = eat.now();
+  now.column += 2;
+  now.offset += 2;
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (
+      character === C_TILDE &&
+      previous === C_TILDE &&
+      (!preceding || !whitespace(preceding))
+    ) {
+      /* istanbul ignore if - never used (yet) */
+      if (silent) {
+        return true;
+      }
+
+      return eat(DOUBLE + subvalue + DOUBLE)({
+        type: 'delete',
+        children: self.tokenizeInline(subvalue, now)
+      });
+    }
+
+    subvalue += previous;
+    preceding = previous;
+    previous = character;
+  }
+}
+
+},{"../locate/delete":353,"is-whitespace-character":135}],371:[function(require,module,exports){
+'use strict';
+
+var trim = require('trim');
+var word = require('is-word-character');
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/emphasis');
+
+module.exports = emphasis;
+emphasis.locator = locate;
+
+var C_ASTERISK = '*';
+var C_UNDERSCORE = '_';
+
+function emphasis(eat, value, silent) {
+  var self = this;
+  var index = 0;
+  var character = value.charAt(index);
+  var now;
+  var pedantic;
+  var marker;
+  var queue;
+  var subvalue;
+  var length;
+  var prev;
+
+  if (character !== C_ASTERISK && character !== C_UNDERSCORE) {
+    return;
+  }
+
+  pedantic = self.options.pedantic;
+  subvalue = character;
+  marker = character;
+  length = value.length;
+  index++;
+  queue = '';
+  character = '';
+
+  if (pedantic && whitespace(value.charAt(index))) {
+    return;
+  }
+
+  while (index < length) {
+    prev = character;
+    character = value.charAt(index);
+
+    if (character === marker && (!pedantic || !whitespace(prev))) {
+      character = value.charAt(++index);
+
+      if (character !== marker) {
+        if (!trim(queue) || prev === marker) {
+          return;
+        }
+
+        if (!pedantic && marker === C_UNDERSCORE && word(character)) {
+          queue += marker;
+          continue;
+        }
+
+        /* istanbul ignore if - never used (yet) */
+        if (silent) {
+          return true;
+        }
+
+        now = eat.now();
+        now.column++;
+        now.offset++;
+
+        return eat(subvalue + queue + marker)({
+          type: 'emphasis',
+          children: self.tokenizeInline(queue, now)
+        });
+      }
+
+      queue += marker;
+    }
+
+    if (!pedantic && character === '\\') {
+      queue += character;
+      character = value.charAt(++index);
+    }
+
+    queue += character;
+    index++;
+  }
+}
+
+},{"../locate/emphasis":354,"is-whitespace-character":135,"is-word-character":136,"trim":777}],372:[function(require,module,exports){
+'use strict';
+
+var locate = require('../locate/escape');
+
+module.exports = escape;
+escape.locator = locate;
+
+function escape(eat, value, silent) {
+  var self = this;
+  var character;
+  var node;
+
+  if (value.charAt(0) === '\\') {
+    character = value.charAt(1);
+
+    if (self.escape.indexOf(character) !== -1) {
+      /* istanbul ignore if - never used (yet) */
+      if (silent) {
+        return true;
+      }
+
+      if (character === '\n') {
+        node = {type: 'break'};
+      } else {
+        node = {
+          type: 'text',
+          value: character
+        };
+      }
+
+      return eat('\\' + character)(node);
+    }
+  }
+}
+
+},{"../locate/escape":355}],373:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var normalize = require('../util/normalize');
+
+module.exports = footnoteDefinition;
+footnoteDefinition.notInList = true;
+footnoteDefinition.notInBlock = true;
+
+var C_BACKSLASH = '\\';
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_BRACKET_OPEN = '[';
+var C_BRACKET_CLOSE = ']';
+var C_CARET = '^';
+var C_COLON = ':';
+
+var EXPRESSION_INITIAL_TAB = /^( {4}|\t)?/gm;
+
+function footnoteDefinition(eat, value, silent) {
+  var self = this;
+  var offsets = self.offset;
+  var index;
+  var length;
+  var subvalue;
+  var now;
+  var currentLine;
+  var content;
+  var queue;
+  var subqueue;
+  var character;
+  var identifier;
+  var add;
+  var exit;
+
+  if (!self.options.footnotes) {
+    return;
+  }
+
+  index = 0;
+  length = value.length;
+  subvalue = '';
+  now = eat.now();
+  currentLine = now.line;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (!whitespace(character)) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  if (
+    value.charAt(index) !== C_BRACKET_OPEN ||
+    value.charAt(index + 1) !== C_CARET
+  ) {
+    return;
+  }
+
+  subvalue += C_BRACKET_OPEN + C_CARET;
+  index = subvalue.length;
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character === C_BRACKET_CLOSE) {
+      break;
+    } else if (character === C_BACKSLASH) {
+      queue += character;
+      index++;
+      character = value.charAt(index);
+    }
+
+    queue += character;
+    index++;
+  }
+
+  if (
+    !queue ||
+    value.charAt(index) !== C_BRACKET_CLOSE ||
+    value.charAt(index + 1) !== C_COLON
+  ) {
+    return;
+  }
+
+  if (silent) {
+    return true;
+  }
+
+  identifier = normalize(queue);
+  subvalue += queue + C_BRACKET_CLOSE + C_COLON;
+  index = subvalue.length;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_TAB && character !== C_SPACE) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  now.column += subvalue.length;
+  now.offset += subvalue.length;
+  queue = '';
+  content = '';
+  subqueue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character === C_NEWLINE) {
+      subqueue = character;
+      index++;
+
+      while (index < length) {
+        character = value.charAt(index);
+
+        if (character !== C_NEWLINE) {
+          break;
+        }
+
+        subqueue += character;
+        index++;
+      }
+
+      queue += subqueue;
+      subqueue = '';
+
+      while (index < length) {
+        character = value.charAt(index);
+
+        if (character !== C_SPACE) {
+          break;
+        }
+
+        subqueue += character;
+        index++;
+      }
+
+      if (subqueue.length === 0) {
+        break;
+      }
+
+      queue += subqueue;
+    }
+
+    if (queue) {
+      content += queue;
+      queue = '';
+    }
+
+    content += character;
+    index++;
+  }
+
+  subvalue += content;
+
+  content = content.replace(EXPRESSION_INITIAL_TAB, function (line) {
+    offsets[currentLine] = (offsets[currentLine] || 0) + line.length;
+    currentLine++;
+
+    return '';
+  });
+
+  add = eat(subvalue);
+
+  exit = self.enterBlock();
+  content = self.tokenizeBlock(content, now);
+  exit();
+
+  return add({
+    type: 'footnoteDefinition',
+    identifier: identifier,
+    children: content
+  });
+}
+
+},{"../util/normalize":393,"is-whitespace-character":135}],374:[function(require,module,exports){
+'use strict';
+
+module.exports = atxHeading;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_HASH = '#';
+
+var MAX_ATX_COUNT = 6;
+
+function atxHeading(eat, value, silent) {
+  var self = this;
+  var settings = self.options;
+  var length = value.length + 1;
+  var index = -1;
+  var now = eat.now();
+  var subvalue = '';
+  var content = '';
+  var character;
+  var queue;
+  var depth;
+
+  /* Eat initial spacing. */
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE && character !== C_TAB) {
+      index--;
+      break;
+    }
+
+    subvalue += character;
+  }
+
+  /* Eat hashes. */
+  depth = 0;
+
+  while (++index <= length) {
+    character = value.charAt(index);
+
+    if (character !== C_HASH) {
+      index--;
+      break;
+    }
+
+    subvalue += character;
+    depth++;
+  }
+
+  if (depth > MAX_ATX_COUNT) {
+    return;
+  }
+
+  if (
+    !depth ||
+    (!settings.pedantic && value.charAt(index + 1) === C_HASH)
+  ) {
+    return;
+  }
+
+  length = value.length + 1;
+
+  /* Eat intermediate white-space. */
+  queue = '';
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE && character !== C_TAB) {
+      index--;
+      break;
+    }
+
+    queue += character;
+  }
+
+  /* Exit when not in pedantic mode without spacing. */
+  if (
+    !settings.pedantic &&
+    queue.length === 0 &&
+    character &&
+    character !== C_NEWLINE
+  ) {
+    return;
+  }
+
+  if (silent) {
+    return true;
+  }
+
+  /* Eat content. */
+  subvalue += queue;
+  queue = '';
+  content = '';
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (!character || character === C_NEWLINE) {
+      break;
+    }
+
+    if (
+      character !== C_SPACE &&
+      character !== C_TAB &&
+      character !== C_HASH
+    ) {
+      content += queue + character;
+      queue = '';
+      continue;
+    }
+
+    while (character === C_SPACE || character === C_TAB) {
+      queue += character;
+      character = value.charAt(++index);
+    }
+
+    while (character === C_HASH) {
+      queue += character;
+      character = value.charAt(++index);
+    }
+
+    while (character === C_SPACE || character === C_TAB) {
+      queue += character;
+      character = value.charAt(++index);
+    }
+
+    index--;
+  }
+
+  now.column += subvalue.length;
+  now.offset += subvalue.length;
+  subvalue += content + queue;
+
+  return eat(subvalue)({
+    type: 'heading',
+    depth: depth,
+    children: self.tokenizeInline(content, now)
+  });
+}
+
+},{}],375:[function(require,module,exports){
+'use strict';
+
+module.exports = setextHeading;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_EQUALS = '=';
+var C_DASH = '-';
+
+var MAX_HEADING_INDENT = 3;
+
+/* Map of characters which can be used to mark setext
+ * headers, mapping to their corresponding depth. */
+var SETEXT_MARKERS = {};
+
+SETEXT_MARKERS[C_EQUALS] = 1;
+SETEXT_MARKERS[C_DASH] = 2;
+
+function setextHeading(eat, value, silent) {
+  var self = this;
+  var now = eat.now();
+  var length = value.length;
+  var index = -1;
+  var subvalue = '';
+  var content;
+  var queue;
+  var character;
+  var marker;
+  var depth;
+
+  /* Eat initial indentation. */
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_SPACE || index >= MAX_HEADING_INDENT) {
+      index--;
+      break;
+    }
+
+    subvalue += character;
+  }
+
+  /* Eat content. */
+  content = '';
+  queue = '';
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character === C_NEWLINE) {
+      index--;
+      break;
+    }
+
+    if (character === C_SPACE || character === C_TAB) {
+      queue += character;
+    } else {
+      content += queue + character;
+      queue = '';
+    }
+  }
+
+  now.column += subvalue.length;
+  now.offset += subvalue.length;
+  subvalue += content + queue;
+
+  /* Ensure the content is followed by a newline and a
+   * valid marker. */
+  character = value.charAt(++index);
+  marker = value.charAt(++index);
+
+  if (character !== C_NEWLINE || !SETEXT_MARKERS[marker]) {
+    return;
+  }
+
+  subvalue += character;
+
+  /* Eat Setext-line. */
+  queue = marker;
+  depth = SETEXT_MARKERS[marker];
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character !== marker) {
+      if (character !== C_NEWLINE) {
+        return;
+      }
+
+      index--;
+      break;
+    }
+
+    queue += character;
+  }
+
+  if (silent) {
+    return true;
+  }
+
+  return eat(subvalue + queue)({
+    type: 'heading',
+    depth: depth,
+    children: self.tokenizeInline(content, now)
+  });
+}
+
+},{}],376:[function(require,module,exports){
+'use strict';
+
+var openCloseTag = require('../util/html').openCloseTag;
+
+module.exports = blockHTML;
+
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_NEWLINE = '\n';
+var C_LT = '<';
+
+function blockHTML(eat, value, silent) {
+  var self = this;
+  var blocks = self.options.blocks;
+  var length = value.length;
+  var index = 0;
+  var next;
+  var line;
+  var offset;
+  var character;
+  var count;
+  var sequence;
+  var subvalue;
+
+  var sequences = [
+    [/^<(script|pre|style)(?=(\s|>|$))/i, /<\/(script|pre|style)>/i, true],
+    [/^<!--/, /-->/, true],
+    [/^<\?/, /\?>/, true],
+    [/^<![A-Za-z]/, />/, true],
+    [/^<!\[CDATA\[/, /\]\]>/, true],
+    [new RegExp('^</?(' + blocks.join('|') + ')(?=(\\s|/?>|$))', 'i'), /^$/, true],
+    [new RegExp(openCloseTag.source + '\\s*$'), /^$/, false]
+  ];
+
+  /* Eat initial spacing. */
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_TAB && character !== C_SPACE) {
+      break;
+    }
+
+    index++;
+  }
+
+  if (value.charAt(index) !== C_LT) {
+    return;
+  }
+
+  next = value.indexOf(C_NEWLINE, index + 1);
+  next = next === -1 ? length : next;
+  line = value.slice(index, next);
+  offset = -1;
+  count = sequences.length;
+
+  while (++offset < count) {
+    if (sequences[offset][0].test(line)) {
+      sequence = sequences[offset];
+      break;
+    }
+  }
+
+  if (!sequence) {
+    return;
+  }
+
+  if (silent) {
+    return sequence[2];
+  }
+
+  index = next;
+
+  if (!sequence[1].test(line)) {
+    while (index < length) {
+      next = value.indexOf(C_NEWLINE, index + 1);
+      next = next === -1 ? length : next;
+      line = value.slice(index + 1, next);
+
+      if (sequence[1].test(line)) {
+        if (line) {
+          index = next;
+        }
+
+        break;
+      }
+
+      index = next;
+    }
+  }
+
+  subvalue = value.slice(0, index);
+
+  return eat(subvalue)({type: 'html', value: subvalue});
+}
+
+},{"../util/html":391}],377:[function(require,module,exports){
+'use strict';
+
+var alphabetical = require('is-alphabetical');
+var locate = require('../locate/tag');
+var tag = require('../util/html').tag;
+
+module.exports = inlineHTML;
+inlineHTML.locator = locate;
+
+var EXPRESSION_HTML_LINK_OPEN = /^<a /i;
+var EXPRESSION_HTML_LINK_CLOSE = /^<\/a>/i;
+
+function inlineHTML(eat, value, silent) {
+  var self = this;
+  var length = value.length;
+  var character;
+  var subvalue;
+
+  if (value.charAt(0) !== '<' || length < 3) {
+    return;
+  }
+
+  character = value.charAt(1);
+
+  if (
+    !alphabetical(character) &&
+    character !== '?' &&
+    character !== '!' &&
+    character !== '/'
+  ) {
+    return;
+  }
+
+  subvalue = value.match(tag);
+
+  if (!subvalue) {
+    return;
+  }
+
+  /* istanbul ignore if - not used yet. */
+  if (silent) {
+    return true;
+  }
+
+  subvalue = subvalue[0];
+
+  if (!self.inLink && EXPRESSION_HTML_LINK_OPEN.test(subvalue)) {
+    self.inLink = true;
+  } else if (self.inLink && EXPRESSION_HTML_LINK_CLOSE.test(subvalue)) {
+    self.inLink = false;
+  }
+
+  return eat(subvalue)({type: 'html', value: subvalue});
+}
+
+},{"../locate/tag":358,"../util/html":391,"is-alphabetical":112}],378:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/link');
+
+module.exports = link;
+link.locator = locate;
+
+var own = {}.hasOwnProperty;
+
+var C_BACKSLASH = '\\';
+var C_BRACKET_OPEN = '[';
+var C_BRACKET_CLOSE = ']';
+var C_PAREN_OPEN = '(';
+var C_PAREN_CLOSE = ')';
+var C_LT = '<';
+var C_GT = '>';
+var C_TICK = '`';
+var C_DOUBLE_QUOTE = '"';
+var C_SINGLE_QUOTE = '\'';
+
+/* Map of characters, which can be used to mark link
+ * and image titles. */
+var LINK_MARKERS = {};
+
+LINK_MARKERS[C_DOUBLE_QUOTE] = C_DOUBLE_QUOTE;
+LINK_MARKERS[C_SINGLE_QUOTE] = C_SINGLE_QUOTE;
+
+/* Map of characters, which can be used to mark link
+ * and image titles in commonmark-mode. */
+var COMMONMARK_LINK_MARKERS = {};
+
+COMMONMARK_LINK_MARKERS[C_DOUBLE_QUOTE] = C_DOUBLE_QUOTE;
+COMMONMARK_LINK_MARKERS[C_SINGLE_QUOTE] = C_SINGLE_QUOTE;
+COMMONMARK_LINK_MARKERS[C_PAREN_OPEN] = C_PAREN_CLOSE;
+
+function link(eat, value, silent) {
+  var self = this;
+  var subvalue = '';
+  var index = 0;
+  var character = value.charAt(0);
+  var pedantic = self.options.pedantic;
+  var commonmark = self.options.commonmark;
+  var gfm = self.options.gfm;
+  var closed;
+  var count;
+  var opening;
+  var beforeURL;
+  var beforeTitle;
+  var subqueue;
+  var hasMarker;
+  var markers;
+  var isImage;
+  var content;
+  var marker;
+  var length;
+  var title;
+  var depth;
+  var queue;
+  var url;
+  var now;
+  var exit;
+  var node;
+
+  /* Detect whether this is an image. */
+  if (character === '!') {
+    isImage = true;
+    subvalue = character;
+    character = value.charAt(++index);
+  }
+
+  /* Eat the opening. */
+  if (character !== C_BRACKET_OPEN) {
+    return;
+  }
+
+  /* Exit when this is a link and we’re already inside
+   * a link. */
+  if (!isImage && self.inLink) {
+    return;
+  }
+
+  subvalue += character;
+  queue = '';
+  index++;
+
+  /* Eat the content. */
+  length = value.length;
+  now = eat.now();
+  depth = 0;
+
+  now.column += index;
+  now.offset += index;
+
+  while (index < length) {
+    character = value.charAt(index);
+    subqueue = character;
+
+    if (character === C_TICK) {
+      /* Inline-code in link content. */
+      count = 1;
+
+      while (value.charAt(index + 1) === C_TICK) {
+        subqueue += character;
+        index++;
+        count++;
+      }
+
+      if (!opening) {
+        opening = count;
+      } else if (count >= opening) {
+        opening = 0;
+      }
+    } else if (character === C_BACKSLASH) {
+      /* Allow brackets to be escaped. */
+      index++;
+      subqueue += value.charAt(index);
+    /* In GFM mode, brackets in code still count.
+     * In all other modes, they don’t.  This empty
+     * block prevents the next statements are
+     * entered. */
+    } else if ((!opening || gfm) && character === C_BRACKET_OPEN) {
+      depth++;
+    } else if ((!opening || gfm) && character === C_BRACKET_CLOSE) {
+      if (depth) {
+        depth--;
+      } else {
+        /* Allow white-space between content and
+         * url in GFM mode. */
+        if (!pedantic) {
+          while (index < length) {
+            character = value.charAt(index + 1);
+
+            if (!whitespace(character)) {
+              break;
+            }
+
+            subqueue += character;
+            index++;
+          }
+        }
+
+        if (value.charAt(index + 1) !== C_PAREN_OPEN) {
+          return;
+        }
+
+        subqueue += C_PAREN_OPEN;
+        closed = true;
+        index++;
+
+        break;
+      }
+    }
+
+    queue += subqueue;
+    subqueue = '';
+    index++;
+  }
+
+  /* Eat the content closing. */
+  if (!closed) {
+    return;
+  }
+
+  content = queue;
+  subvalue += queue + subqueue;
+  index++;
+
+  /* Eat white-space. */
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (!whitespace(character)) {
+      break;
+    }
+
+    subvalue += character;
+    index++;
+  }
+
+  /* Eat the URL. */
+  character = value.charAt(index);
+  markers = commonmark ? COMMONMARK_LINK_MARKERS : LINK_MARKERS;
+  queue = '';
+  beforeURL = subvalue;
+
+  if (character === C_LT) {
+    index++;
+    beforeURL += C_LT;
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character === C_GT) {
+        break;
+      }
+
+      if (commonmark && character === '\n') {
+        return;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    if (value.charAt(index) !== C_GT) {
+      return;
+    }
+
+    subvalue += C_LT + queue + C_GT;
+    url = queue;
+    index++;
+  } else {
+    character = null;
+    subqueue = '';
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (subqueue && own.call(markers, character)) {
+        break;
+      }
+
+      if (whitespace(character)) {
+        if (!pedantic) {
+          break;
+        }
+
+        subqueue += character;
+      } else {
+        if (character === C_PAREN_OPEN) {
+          depth++;
+        } else if (character === C_PAREN_CLOSE) {
+          if (depth === 0) {
+            break;
+          }
+
+          depth--;
+        }
+
+        queue += subqueue;
+        subqueue = '';
+
+        if (character === C_BACKSLASH) {
+          queue += C_BACKSLASH;
+          character = value.charAt(++index);
+        }
+
+        queue += character;
+      }
+
+      index++;
+    }
+
+    subvalue += queue;
+    url = queue;
+    index = subvalue.length;
+  }
+
+  /* Eat white-space. */
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (!whitespace(character)) {
+      break;
+    }
+
+    queue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+  subvalue += queue;
+
+  /* Eat the title. */
+  if (queue && own.call(markers, character)) {
+    index++;
+    subvalue += character;
+    queue = '';
+    marker = markers[character];
+    beforeTitle = subvalue;
+
+    /* In commonmark-mode, things are pretty easy: the
+     * marker cannot occur inside the title.
+     *
+     * Non-commonmark does, however, support nested
+     * delimiters. */
+    if (commonmark) {
+      while (index < length) {
+        character = value.charAt(index);
+
+        if (character === marker) {
+          break;
+        }
+
+        if (character === C_BACKSLASH) {
+          queue += C_BACKSLASH;
+          character = value.charAt(++index);
+        }
+
+        index++;
+        queue += character;
+      }
+
+      character = value.charAt(index);
+
+      if (character !== marker) {
+        return;
+      }
+
+      title = queue;
+      subvalue += queue + character;
+      index++;
+
+      while (index < length) {
+        character = value.charAt(index);
+
+        if (!whitespace(character)) {
+          break;
+        }
+
+        subvalue += character;
+        index++;
+      }
+    } else {
+      subqueue = '';
+
+      while (index < length) {
+        character = value.charAt(index);
+
+        if (character === marker) {
+          if (hasMarker) {
+            queue += marker + subqueue;
+            subqueue = '';
+          }
+
+          hasMarker = true;
+        } else if (!hasMarker) {
+          queue += character;
+        } else if (character === C_PAREN_CLOSE) {
+          subvalue += queue + marker + subqueue;
+          title = queue;
+          break;
+        } else if (whitespace(character)) {
+          subqueue += character;
+        } else {
+          queue += marker + subqueue + character;
+          subqueue = '';
+          hasMarker = false;
+        }
+
+        index++;
+      }
+    }
+  }
+
+  if (value.charAt(index) !== C_PAREN_CLOSE) {
+    return;
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  subvalue += C_PAREN_CLOSE;
+
+  url = self.decode.raw(self.unescape(url), eat(beforeURL).test().end);
+
+  if (title) {
+    beforeTitle = eat(beforeTitle).test().end;
+    title = self.decode.raw(self.unescape(title), beforeTitle);
+  }
+
+  node = {
+    type: isImage ? 'image' : 'link',
+    title: title || null,
+    url: url
+  };
+
+  if (isImage) {
+    node.alt = self.decode.raw(self.unescape(content), now) || null;
+  } else {
+    exit = self.enterLink();
+    node.children = self.tokenizeInline(content, now);
+    exit();
+  }
+
+  return eat(subvalue)(node);
+}
+
+},{"../locate/link":356,"is-whitespace-character":135}],379:[function(require,module,exports){
+'use strict';
+
+/* eslint-disable max-params */
+
+var trim = require('trim');
+var repeat = require('repeat-string');
+var decimal = require('is-decimal');
+var getIndent = require('../util/get-indentation');
+var removeIndent = require('../util/remove-indentation');
+var interrupt = require('../util/interrupt');
+
+module.exports = list;
+
+var C_ASTERISK = '*';
+var C_UNDERSCORE = '_';
+var C_PLUS = '+';
+var C_DASH = '-';
+var C_DOT = '.';
+var C_SPACE = ' ';
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_PAREN_CLOSE = ')';
+var C_X_LOWER = 'x';
+
+var TAB_SIZE = 4;
+var EXPRESSION_LOOSE_LIST_ITEM = /\n\n(?!\s*$)/;
+var EXPRESSION_TASK_ITEM = /^\[([ \t]|x|X)][ \t]/;
+var EXPRESSION_BULLET = /^([ \t]*)([*+-]|\d+[.)])( {1,4}(?! )| |\t|$|(?=\n))([^\n]*)/;
+var EXPRESSION_PEDANTIC_BULLET = /^([ \t]*)([*+-]|\d+[.)])([ \t]+)/;
+var EXPRESSION_INITIAL_INDENT = /^( {1,4}|\t)?/gm;
+
+/* Map of characters which can be used to mark
+ * list-items. */
+var LIST_UNORDERED_MARKERS = {};
+
+LIST_UNORDERED_MARKERS[C_ASTERISK] = true;
+LIST_UNORDERED_MARKERS[C_PLUS] = true;
+LIST_UNORDERED_MARKERS[C_DASH] = true;
+
+/* Map of characters which can be used to mark
+ * list-items after a digit. */
+var LIST_ORDERED_MARKERS = {};
+
+LIST_ORDERED_MARKERS[C_DOT] = true;
+
+/* Map of characters which can be used to mark
+ * list-items after a digit. */
+var LIST_ORDERED_COMMONMARK_MARKERS = {};
+
+LIST_ORDERED_COMMONMARK_MARKERS[C_DOT] = true;
+LIST_ORDERED_COMMONMARK_MARKERS[C_PAREN_CLOSE] = true;
+
+function list(eat, value, silent) {
+  var self = this;
+  var commonmark = self.options.commonmark;
+  var pedantic = self.options.pedantic;
+  var tokenizers = self.blockTokenizers;
+  var interuptors = self.interruptList;
+  var markers;
+  var index = 0;
+  var length = value.length;
+  var start = null;
+  var size = 0;
+  var queue;
+  var ordered;
+  var character;
+  var marker;
+  var nextIndex;
+  var startIndex;
+  var prefixed;
+  var currentMarker;
+  var content;
+  var line;
+  var prevEmpty;
+  var empty;
+  var items;
+  var allLines;
+  var emptyLines;
+  var item;
+  var enterTop;
+  var exitBlockquote;
+  var isLoose;
+  var node;
+  var now;
+  var end;
+  var indented;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character === C_TAB) {
+      size += TAB_SIZE - (size % TAB_SIZE);
+    } else if (character === C_SPACE) {
+      size++;
+    } else {
+      break;
+    }
+
+    index++;
+  }
+
+  if (size >= TAB_SIZE) {
+    return;
+  }
+
+  character = value.charAt(index);
+
+  markers = commonmark ?
+    LIST_ORDERED_COMMONMARK_MARKERS :
+    LIST_ORDERED_MARKERS;
+
+  if (LIST_UNORDERED_MARKERS[character] === true) {
+    marker = character;
+    ordered = false;
+  } else {
+    ordered = true;
+    queue = '';
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (!decimal(character)) {
+        break;
+      }
+
+      queue += character;
+      index++;
+    }
+
+    character = value.charAt(index);
+
+    if (!queue || markers[character] !== true) {
+      return;
+    }
+
+    start = parseInt(queue, 10);
+    marker = character;
+  }
+
+  character = value.charAt(++index);
+
+  if (character !== C_SPACE && character !== C_TAB) {
+    return;
+  }
+
+  if (silent) {
+    return true;
+  }
+
+  index = 0;
+  items = [];
+  allLines = [];
+  emptyLines = [];
+
+  while (index < length) {
+    nextIndex = value.indexOf(C_NEWLINE, index);
+    startIndex = index;
+    prefixed = false;
+    indented = false;
+
+    if (nextIndex === -1) {
+      nextIndex = length;
+    }
+
+    end = index + TAB_SIZE;
+    size = 0;
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character === C_TAB) {
+        size += TAB_SIZE - (size % TAB_SIZE);
+      } else if (character === C_SPACE) {
+        size++;
+      } else {
+        break;
+      }
+
+      index++;
+    }
+
+    if (size >= TAB_SIZE) {
+      indented = true;
+    }
+
+    if (item && size >= item.indent) {
+      indented = true;
+    }
+
+    character = value.charAt(index);
+    currentMarker = null;
+
+    if (!indented) {
+      if (LIST_UNORDERED_MARKERS[character] === true) {
+        currentMarker = character;
+        index++;
+        size++;
+      } else {
+        queue = '';
+
+        while (index < length) {
+          character = value.charAt(index);
+
+          if (!decimal(character)) {
+            break;
+          }
+
+          queue += character;
+          index++;
+        }
+
+        character = value.charAt(index);
+        index++;
+
+        if (queue && markers[character] === true) {
+          currentMarker = character;
+          size += queue.length + 1;
+        }
+      }
+
+      if (currentMarker) {
+        character = value.charAt(index);
+
+        if (character === C_TAB) {
+          size += TAB_SIZE - (size % TAB_SIZE);
+          index++;
+        } else if (character === C_SPACE) {
+          end = index + TAB_SIZE;
+
+          while (index < end) {
+            if (value.charAt(index) !== C_SPACE) {
+              break;
+            }
+
+            index++;
+            size++;
+          }
+
+          if (index === end && value.charAt(index) === C_SPACE) {
+            index -= TAB_SIZE - 1;
+            size -= TAB_SIZE - 1;
+          }
+        } else if (character !== C_NEWLINE && character !== '') {
+          currentMarker = null;
+        }
+      }
+    }
+
+    if (currentMarker) {
+      if (!pedantic && marker !== currentMarker) {
+        break;
+      }
+
+      prefixed = true;
+    } else {
+      if (!commonmark && !indented && value.charAt(startIndex) === C_SPACE) {
+        indented = true;
+      } else if (commonmark && item) {
+        indented = size >= item.indent || size > TAB_SIZE;
+      }
+
+      prefixed = false;
+      index = startIndex;
+    }
+
+    line = value.slice(startIndex, nextIndex);
+    content = startIndex === index ? line : value.slice(index, nextIndex);
+
+    if (
+      currentMarker === C_ASTERISK ||
+      currentMarker === C_UNDERSCORE ||
+      currentMarker === C_DASH
+    ) {
+      if (tokenizers.thematicBreak.call(self, eat, line, true)) {
+        break;
+      }
+    }
+
+    prevEmpty = empty;
+    empty = !trim(content).length;
+
+    if (indented && item) {
+      item.value = item.value.concat(emptyLines, line);
+      allLines = allLines.concat(emptyLines, line);
+      emptyLines = [];
+    } else if (prefixed) {
+      if (emptyLines.length !== 0) {
+        item.value.push('');
+        item.trail = emptyLines.concat();
+      }
+
+      item = {
+        value: [line],
+        indent: size,
+        trail: []
+      };
+
+      items.push(item);
+      allLines = allLines.concat(emptyLines, line);
+      emptyLines = [];
+    } else if (empty) {
+      if (prevEmpty) {
+        break;
+      }
+
+      emptyLines.push(line);
+    } else {
+      if (prevEmpty) {
+        break;
+      }
+
+      if (interrupt(interuptors, tokenizers, self, [eat, line, true])) {
+        break;
+      }
+
+      item.value = item.value.concat(emptyLines, line);
+      allLines = allLines.concat(emptyLines, line);
+      emptyLines = [];
+    }
+
+    index = nextIndex + 1;
+  }
+
+  node = eat(allLines.join(C_NEWLINE)).reset({
+    type: 'list',
+    ordered: ordered,
+    start: start,
+    loose: null,
+    children: []
+  });
+
+  enterTop = self.enterList();
+  exitBlockquote = self.enterBlock();
+  isLoose = false;
+  index = -1;
+  length = items.length;
+
+  while (++index < length) {
+    item = items[index].value.join(C_NEWLINE);
+    now = eat.now();
+
+    item = eat(item)(listItem(self, item, now), node);
+
+    if (item.loose) {
+      isLoose = true;
+    }
+
+    item = items[index].trail.join(C_NEWLINE);
+
+    if (index !== length - 1) {
+      item += C_NEWLINE;
+    }
+
+    eat(item);
+  }
+
+  enterTop();
+  exitBlockquote();
+
+  node.loose = isLoose;
+
+  return node;
+}
+
+function listItem(ctx, value, position) {
+  var offsets = ctx.offset;
+  var fn = ctx.options.pedantic ? pedanticListItem : normalListItem;
+  var checked = null;
+  var task;
+  var indent;
+
+  value = fn.apply(null, arguments);
+
+  if (ctx.options.gfm) {
+    task = value.match(EXPRESSION_TASK_ITEM);
+
+    if (task) {
+      indent = task[0].length;
+      checked = task[1].toLowerCase() === C_X_LOWER;
+      offsets[position.line] += indent;
+      value = value.slice(indent);
+    }
+  }
+
+  return {
+    type: 'listItem',
+    loose: EXPRESSION_LOOSE_LIST_ITEM.test(value) ||
+      value.charAt(value.length - 1) === C_NEWLINE,
+    checked: checked,
+    children: ctx.tokenizeBlock(value, position)
+  };
+}
+
+/* Create a list-item using overly simple mechanics. */
+function pedanticListItem(ctx, value, position) {
+  var offsets = ctx.offset;
+  var line = position.line;
+
+  /* Remove the list-item’s bullet. */
+  value = value.replace(EXPRESSION_PEDANTIC_BULLET, replacer);
+
+  /* The initial line was also matched by the below, so
+   * we reset the `line`. */
+  line = position.line;
+
+  return value.replace(EXPRESSION_INITIAL_INDENT, replacer);
+
+  /* A simple replacer which removed all matches,
+   * and adds their length to `offset`. */
+  function replacer($0) {
+    offsets[line] = (offsets[line] || 0) + $0.length;
+    line++;
+
+    return '';
+  }
+}
+
+/* Create a list-item using sane mechanics. */
+function normalListItem(ctx, value, position) {
+  var offsets = ctx.offset;
+  var line = position.line;
+  var max;
+  var bullet;
+  var rest;
+  var lines;
+  var trimmedLines;
+  var index;
+  var length;
+
+  /* Remove the list-item’s bullet. */
+  value = value.replace(EXPRESSION_BULLET, replacer);
+
+  lines = value.split(C_NEWLINE);
+
+  trimmedLines = removeIndent(value, getIndent(max).indent).split(C_NEWLINE);
+
+  /* We replaced the initial bullet with something
+   * else above, which was used to trick
+   * `removeIndentation` into removing some more
+   * characters when possible.  However, that could
+   * result in the initial line to be stripped more
+   * than it should be. */
+  trimmedLines[0] = rest;
+
+  offsets[line] = (offsets[line] || 0) + bullet.length;
+  line++;
+
+  index = 0;
+  length = lines.length;
+
+  while (++index < length) {
+    offsets[line] = (offsets[line] || 0) +
+      lines[index].length - trimmedLines[index].length;
+    line++;
+  }
+
+  return trimmedLines.join(C_NEWLINE);
+
+  function replacer($0, $1, $2, $3, $4) {
+    bullet = $1 + $2 + $3;
+    rest = $4;
+
+    /* Make sure that the first nine numbered list items
+     * can indent with an extra space.  That is, when
+     * the bullet did not receive an extra final space. */
+    if (Number($2) < 10 && bullet.length % 2 === 1) {
+      $2 = C_SPACE + $2;
+    }
+
+    max = $1 + repeat(C_SPACE, $2.length) + $3;
+
+    return max + rest;
+  }
+}
+
+},{"../util/get-indentation":390,"../util/interrupt":392,"../util/remove-indentation":394,"is-decimal":117,"repeat-string":442,"trim":777}],380:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+
+module.exports = newline;
+
+/* Tokenise newline. */
+function newline(eat, value, silent) {
+  var character = value.charAt(0);
+  var length;
+  var subvalue;
+  var queue;
+  var index;
+
+  if (character !== '\n') {
+    return;
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  index = 1;
+  length = value.length;
+  subvalue = character;
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (!whitespace(character)) {
+      break;
+    }
+
+    queue += character;
+
+    if (character === '\n') {
+      subvalue += queue;
+      queue = '';
+    }
+
+    index++;
+  }
+
+  eat(subvalue);
+}
+
+},{"is-whitespace-character":135}],381:[function(require,module,exports){
+'use strict';
+
+var trim = require('trim');
+var decimal = require('is-decimal');
+var trimTrailingLines = require('trim-trailing-lines');
+var interrupt = require('../util/interrupt');
+
+module.exports = paragraph;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+
+var TAB_SIZE = 4;
+
+/* Tokenise paragraph. */
+function paragraph(eat, value, silent) {
+  var self = this;
+  var settings = self.options;
+  var commonmark = settings.commonmark;
+  var gfm = settings.gfm;
+  var tokenizers = self.blockTokenizers;
+  var interruptors = self.interruptParagraph;
+  var index = value.indexOf(C_NEWLINE);
+  var length = value.length;
+  var position;
+  var subvalue;
+  var character;
+  var size;
+  var now;
+
+  while (index < length) {
+    /* Eat everything if there’s no following newline. */
+    if (index === -1) {
+      index = length;
+      break;
+    }
+
+    /* Stop if the next character is NEWLINE. */
+    if (value.charAt(index + 1) === C_NEWLINE) {
+      break;
+    }
+
+    /* In commonmark-mode, following indented lines
+     * are part of the paragraph. */
+    if (commonmark) {
+      size = 0;
+      position = index + 1;
+
+      while (position < length) {
+        character = value.charAt(position);
+
+        if (character === C_TAB) {
+          size = TAB_SIZE;
+          break;
+        } else if (character === C_SPACE) {
+          size++;
+        } else {
+          break;
+        }
+
+        position++;
+      }
+
+      if (size >= TAB_SIZE) {
+        index = value.indexOf(C_NEWLINE, index + 1);
+        continue;
+      }
+    }
+
+    subvalue = value.slice(index + 1);
+
+    /* Check if the following code contains a possible
+     * block. */
+    if (interrupt(interruptors, tokenizers, self, [eat, subvalue, true])) {
+      break;
+    }
+
+    /* Break if the following line starts a list, when
+     * already in a list, or when in commonmark, or when
+     * in gfm mode and the bullet is *not* numeric. */
+    if (
+      tokenizers.list.call(self, eat, subvalue, true) &&
+      (
+        self.inList ||
+        commonmark ||
+        (gfm && !decimal(trim.left(subvalue).charAt(0)))
+      )
+    ) {
+      break;
+    }
+
+    position = index;
+    index = value.indexOf(C_NEWLINE, index + 1);
+
+    if (index !== -1 && trim(value.slice(position, index)) === '') {
+      index = position;
+      break;
+    }
+  }
+
+  subvalue = value.slice(0, index);
+
+  if (trim(subvalue) === '') {
+    eat(subvalue);
+
+    return null;
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  now = eat.now();
+  subvalue = trimTrailingLines(subvalue);
+
+  return eat(subvalue)({
+    type: 'paragraph',
+    children: self.tokenizeInline(subvalue, now)
+  });
+}
+
+},{"../util/interrupt":392,"is-decimal":117,"trim":777,"trim-trailing-lines":776}],382:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/link');
+var normalize = require('../util/normalize');
+
+module.exports = reference;
+reference.locator = locate;
+
+var T_LINK = 'link';
+var T_IMAGE = 'image';
+var T_FOOTNOTE = 'footnote';
+var REFERENCE_TYPE_SHORTCUT = 'shortcut';
+var REFERENCE_TYPE_COLLAPSED = 'collapsed';
+var REFERENCE_TYPE_FULL = 'full';
+var C_CARET = '^';
+var C_BACKSLASH = '\\';
+var C_BRACKET_OPEN = '[';
+var C_BRACKET_CLOSE = ']';
+
+function reference(eat, value, silent) {
+  var self = this;
+  var character = value.charAt(0);
+  var index = 0;
+  var length = value.length;
+  var subvalue = '';
+  var intro = '';
+  var type = T_LINK;
+  var referenceType = REFERENCE_TYPE_SHORTCUT;
+  var content;
+  var identifier;
+  var now;
+  var node;
+  var exit;
+  var queue;
+  var bracketed;
+  var depth;
+
+  /* Check whether we’re eating an image. */
+  if (character === '!') {
+    type = T_IMAGE;
+    intro = character;
+    character = value.charAt(++index);
+  }
+
+  if (character !== C_BRACKET_OPEN) {
+    return;
+  }
+
+  index++;
+  intro += character;
+  queue = '';
+
+  /* Check whether we’re eating a footnote. */
+  if (
+    self.options.footnotes &&
+    type === T_LINK &&
+    value.charAt(index) === C_CARET
+  ) {
+    intro += C_CARET;
+    index++;
+    type = T_FOOTNOTE;
+  }
+
+  /* Eat the text. */
+  depth = 0;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (character === C_BRACKET_OPEN) {
+      bracketed = true;
+      depth++;
+    } else if (character === C_BRACKET_CLOSE) {
+      if (!depth) {
+        break;
+      }
+
+      depth--;
+    }
+
+    if (character === C_BACKSLASH) {
+      queue += C_BACKSLASH;
+      character = value.charAt(++index);
+    }
+
+    queue += character;
+    index++;
+  }
+
+  subvalue = queue;
+  content = queue;
+  character = value.charAt(index);
+
+  if (character !== C_BRACKET_CLOSE) {
+    return;
+  }
+
+  index++;
+  subvalue += character;
+  queue = '';
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (!whitespace(character)) {
+      break;
+    }
+
+    queue += character;
+    index++;
+  }
+
+  character = value.charAt(index);
+
+  /* Inline footnotes cannot have an identifier. */
+  if (type !== T_FOOTNOTE && character === C_BRACKET_OPEN) {
+    identifier = '';
+    queue += character;
+    index++;
+
+    while (index < length) {
+      character = value.charAt(index);
+
+      if (character === C_BRACKET_OPEN || character === C_BRACKET_CLOSE) {
+        break;
+      }
+
+      if (character === C_BACKSLASH) {
+        identifier += C_BACKSLASH;
+        character = value.charAt(++index);
+      }
+
+      identifier += character;
+      index++;
+    }
+
+    character = value.charAt(index);
+
+    if (character === C_BRACKET_CLOSE) {
+      referenceType = identifier ? REFERENCE_TYPE_FULL : REFERENCE_TYPE_COLLAPSED;
+      queue += identifier + character;
+      index++;
+    } else {
+      identifier = '';
+    }
+
+    subvalue += queue;
+    queue = '';
+  } else {
+    if (!content) {
+      return;
+    }
+
+    identifier = content;
+  }
+
+  /* Brackets cannot be inside the identifier. */
+  if (referenceType !== REFERENCE_TYPE_FULL && bracketed) {
+    return;
+  }
+
+  subvalue = intro + subvalue;
+
+  if (type === T_LINK && self.inLink) {
+    return null;
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  if (type === T_FOOTNOTE && content.indexOf(' ') !== -1) {
+    return eat(subvalue)({
+      type: 'footnote',
+      children: this.tokenizeInline(content, eat.now())
+    });
+  }
+
+  now = eat.now();
+  now.column += intro.length;
+  now.offset += intro.length;
+  identifier = referenceType === REFERENCE_TYPE_FULL ? identifier : content;
+
+  node = {
+    type: type + 'Reference',
+    identifier: normalize(identifier)
+  };
+
+  if (type === T_LINK || type === T_IMAGE) {
+    node.referenceType = referenceType;
+  }
+
+  if (type === T_LINK) {
+    exit = self.enterLink();
+    node.children = self.tokenizeInline(content, now);
+    exit();
+  } else if (type === T_IMAGE) {
+    node.alt = self.decode.raw(self.unescape(content), now) || null;
+  }
+
+  return eat(subvalue)(node);
+}
+
+},{"../locate/link":356,"../util/normalize":393,"is-whitespace-character":135}],383:[function(require,module,exports){
+'use strict';
+
+var trim = require('trim');
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/strong');
+
+module.exports = strong;
+strong.locator = locate;
+
+var C_ASTERISK = '*';
+var C_UNDERSCORE = '_';
+
+function strong(eat, value, silent) {
+  var self = this;
+  var index = 0;
+  var character = value.charAt(index);
+  var now;
+  var pedantic;
+  var marker;
+  var queue;
+  var subvalue;
+  var length;
+  var prev;
+
+  if (
+    (character !== C_ASTERISK && character !== C_UNDERSCORE) ||
+    value.charAt(++index) !== character
+  ) {
+    return;
+  }
+
+  pedantic = self.options.pedantic;
+  marker = character;
+  subvalue = marker + marker;
+  length = value.length;
+  index++;
+  queue = '';
+  character = '';
+
+  if (pedantic && whitespace(value.charAt(index))) {
+    return;
+  }
+
+  while (index < length) {
+    prev = character;
+    character = value.charAt(index);
+
+    if (
+      character === marker &&
+      value.charAt(index + 1) === marker &&
+      (!pedantic || !whitespace(prev))
+    ) {
+      character = value.charAt(index + 2);
+
+      if (character !== marker) {
+        if (!trim(queue)) {
+          return;
+        }
+
+        /* istanbul ignore if - never used (yet) */
+        if (silent) {
+          return true;
+        }
+
+        now = eat.now();
+        now.column += 2;
+        now.offset += 2;
+
+        return eat(subvalue + queue + subvalue)({
+          type: 'strong',
+          children: self.tokenizeInline(queue, now)
+        });
+      }
+    }
+
+    if (!pedantic && character === '\\') {
+      queue += character;
+      character = value.charAt(++index);
+    }
+
+    queue += character;
+    index++;
+  }
+}
+
+},{"../locate/strong":357,"is-whitespace-character":135,"trim":777}],384:[function(require,module,exports){
+'use strict';
+
+var whitespace = require('is-whitespace-character');
+
+module.exports = table;
+
+var C_BACKSLASH = '\\';
+var C_TICK = '`';
+var C_DASH = '-';
+var C_PIPE = '|';
+var C_COLON = ':';
+var C_SPACE = ' ';
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+
+var MIN_TABLE_COLUMNS = 1;
+var MIN_TABLE_ROWS = 2;
+
+var TABLE_ALIGN_LEFT = 'left';
+var TABLE_ALIGN_CENTER = 'center';
+var TABLE_ALIGN_RIGHT = 'right';
+var TABLE_ALIGN_NONE = null;
+
+function table(eat, value, silent) {
+  var self = this;
+  var index;
+  var alignments;
+  var alignment;
+  var subvalue;
+  var row;
+  var length;
+  var lines;
+  var queue;
+  var character;
+  var hasDash;
+  var align;
+  var cell;
+  var preamble;
+  var count;
+  var opening;
+  var now;
+  var position;
+  var lineCount;
+  var line;
+  var rows;
+  var table;
+  var lineIndex;
+  var pipeIndex;
+  var first;
+
+  /* Exit when not in gfm-mode. */
+  if (!self.options.gfm) {
+    return;
+  }
+
+  /* Get the rows.
+   * Detecting tables soon is hard, so there are some
+   * checks for performance here, such as the minimum
+   * number of rows, and allowed characters in the
+   * alignment row. */
+  index = 0;
+  lineCount = 0;
+  length = value.length + 1;
+  lines = [];
+
+  while (index < length) {
+    lineIndex = value.indexOf(C_NEWLINE, index);
+    pipeIndex = value.indexOf(C_PIPE, index + 1);
+
+    if (lineIndex === -1) {
+      lineIndex = value.length;
+    }
+
+    if (pipeIndex === -1 || pipeIndex > lineIndex) {
+      if (lineCount < MIN_TABLE_ROWS) {
+        return;
+      }
+
+      break;
+    }
+
+    lines.push(value.slice(index, lineIndex));
+    lineCount++;
+    index = lineIndex + 1;
+  }
+
+  /* Parse the alignment row. */
+  subvalue = lines.join(C_NEWLINE);
+  alignments = lines.splice(1, 1)[0] || [];
+  index = 0;
+  length = alignments.length;
+  lineCount--;
+  alignment = false;
+  align = [];
+
+  while (index < length) {
+    character = alignments.charAt(index);
+
+    if (character === C_PIPE) {
+      hasDash = null;
+
+      if (alignment === false) {
+        if (first === false) {
+          return;
+        }
+      } else {
+        align.push(alignment);
+        alignment = false;
+      }
+
+      first = false;
+    } else if (character === C_DASH) {
+      hasDash = true;
+      alignment = alignment || TABLE_ALIGN_NONE;
+    } else if (character === C_COLON) {
+      if (alignment === TABLE_ALIGN_LEFT) {
+        alignment = TABLE_ALIGN_CENTER;
+      } else if (hasDash && alignment === TABLE_ALIGN_NONE) {
+        alignment = TABLE_ALIGN_RIGHT;
+      } else {
+        alignment = TABLE_ALIGN_LEFT;
+      }
+    } else if (!whitespace(character)) {
+      return;
+    }
+
+    index++;
+  }
+
+  if (alignment !== false) {
+    align.push(alignment);
+  }
+
+  /* Exit when without enough columns. */
+  if (align.length < MIN_TABLE_COLUMNS) {
+    return;
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  /* Parse the rows. */
+  position = -1;
+  rows = [];
+
+  table = eat(subvalue).reset({
+    type: 'table',
+    align: align,
+    children: rows
+  });
+
+  while (++position < lineCount) {
+    line = lines[position];
+    row = {type: 'tableRow', children: []};
+
+    /* Eat a newline character when this is not the
+     * first row. */
+    if (position) {
+      eat(C_NEWLINE);
+    }
+
+    /* Eat the row. */
+    eat(line).reset(row, table);
+
+    length = line.length + 1;
+    index = 0;
+    queue = '';
+    cell = '';
+    preamble = true;
+    count = null;
+    opening = null;
+
+    while (index < length) {
+      character = line.charAt(index);
+
+      if (character === C_TAB || character === C_SPACE) {
+        if (cell) {
+          queue += character;
+        } else {
+          eat(character);
+        }
+
+        index++;
+        continue;
+      }
+
+      if (character === '' || character === C_PIPE) {
+        if (preamble) {
+          eat(character);
+        } else {
+          if (character && opening) {
+            queue += character;
+            index++;
+            continue;
+          }
+
+          if ((cell || character) && !preamble) {
+            subvalue = cell;
+
+            if (queue.length > 1) {
+              if (character) {
+                subvalue += queue.slice(0, queue.length - 1);
+                queue = queue.charAt(queue.length - 1);
+              } else {
+                subvalue += queue;
+                queue = '';
+              }
+            }
+
+            now = eat.now();
+
+            eat(subvalue)({
+              type: 'tableCell',
+              children: self.tokenizeInline(cell, now)
+            }, row);
+          }
+
+          eat(queue + character);
+
+          queue = '';
+          cell = '';
+        }
+      } else {
+        if (queue) {
+          cell += queue;
+          queue = '';
+        }
+
+        cell += character;
+
+        if (character === C_BACKSLASH && index !== length - 2) {
+          cell += line.charAt(index + 1);
+          index++;
+        }
+
+        if (character === C_TICK) {
+          count = 1;
+
+          while (line.charAt(index + 1) === character) {
+            cell += character;
+            index++;
+            count++;
+          }
+
+          if (!opening) {
+            opening = count;
+          } else if (count >= opening) {
+            opening = 0;
+          }
+        }
+      }
+
+      preamble = false;
+      index++;
+    }
+
+    /* Eat the alignment row. */
+    if (!position) {
+      eat(C_NEWLINE + alignments);
+    }
+  }
+
+  return table;
+}
+
+},{"is-whitespace-character":135}],385:[function(require,module,exports){
+'use strict';
+
+module.exports = text;
+
+function text(eat, value, silent) {
+  var self = this;
+  var methods;
+  var tokenizers;
+  var index;
+  var length;
+  var subvalue;
+  var position;
+  var tokenizer;
+  var name;
+  var min;
+  var now;
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  methods = self.inlineMethods;
+  length = methods.length;
+  tokenizers = self.inlineTokenizers;
+  index = -1;
+  min = value.length;
+
+  while (++index < length) {
+    name = methods[index];
+
+    if (name === 'text' || !tokenizers[name]) {
+      continue;
+    }
+
+    tokenizer = tokenizers[name].locator;
+
+    if (!tokenizer) {
+      eat.file.fail('Missing locator: `' + name + '`');
+    }
+
+    position = tokenizer.call(self, value, 1);
+
+    if (position !== -1 && position < min) {
+      min = position;
+    }
+  }
+
+  subvalue = value.slice(0, min);
+  now = eat.now();
+
+  self.decode(subvalue, now, function (content, position, source) {
+    eat(source || content)({
+      type: 'text',
+      value: content
+    });
+  });
+}
+
+},{}],386:[function(require,module,exports){
+'use strict';
+
+module.exports = thematicBreak;
+
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+var C_SPACE = ' ';
+var C_ASTERISK = '*';
+var C_UNDERSCORE = '_';
+var C_DASH = '-';
+
+var THEMATIC_BREAK_MARKER_COUNT = 3;
+
+function thematicBreak(eat, value, silent) {
+  var index = -1;
+  var length = value.length + 1;
+  var subvalue = '';
+  var character;
+  var marker;
+  var markerCount;
+  var queue;
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character !== C_TAB && character !== C_SPACE) {
+      break;
+    }
+
+    subvalue += character;
+  }
+
+  if (
+    character !== C_ASTERISK &&
+    character !== C_DASH &&
+    character !== C_UNDERSCORE
+  ) {
+    return;
+  }
+
+  marker = character;
+  subvalue += character;
+  markerCount = 1;
+  queue = '';
+
+  while (++index < length) {
+    character = value.charAt(index);
+
+    if (character === marker) {
+      markerCount++;
+      subvalue += queue + marker;
+      queue = '';
+    } else if (character === C_SPACE) {
+      queue += character;
+    } else if (
+      markerCount >= THEMATIC_BREAK_MARKER_COUNT &&
+      (!character || character === C_NEWLINE)
+    ) {
+      subvalue += queue;
+
+      if (silent) {
+        return true;
+      }
+
+      return eat(subvalue)({type: 'thematicBreak'});
+    } else {
+      return;
+    }
+  }
+}
+
+},{}],387:[function(require,module,exports){
+'use strict';
+
+var decode = require('parse-entities');
+var whitespace = require('is-whitespace-character');
+var locate = require('../locate/url');
+
+module.exports = url;
+url.locator = locate;
+url.notInLink = true;
+
+var C_BRACKET_OPEN = '[';
+var C_BRACKET_CLOSE = ']';
+var C_PAREN_OPEN = '(';
+var C_PAREN_CLOSE = ')';
+var C_LT = '<';
+var C_AT_SIGN = '@';
+
+var HTTP_PROTOCOL = 'http://';
+var HTTPS_PROTOCOL = 'https://';
+var MAILTO_PROTOCOL = 'mailto:';
+
+var PROTOCOLS = [
+  HTTP_PROTOCOL,
+  HTTPS_PROTOCOL,
+  MAILTO_PROTOCOL
+];
+
+var PROTOCOLS_LENGTH = PROTOCOLS.length;
+
+function url(eat, value, silent) {
+  var self = this;
+  var subvalue;
+  var content;
+  var character;
+  var index;
+  var position;
+  var protocol;
+  var match;
+  var length;
+  var queue;
+  var parenCount;
+  var nextCharacter;
+  var exit;
+
+  if (!self.options.gfm) {
+    return;
+  }
+
+  subvalue = '';
+  index = -1;
+  length = PROTOCOLS_LENGTH;
+
+  while (++index < length) {
+    protocol = PROTOCOLS[index];
+    match = value.slice(0, protocol.length);
+
+    if (match.toLowerCase() === protocol) {
+      subvalue = match;
+      break;
+    }
+  }
+
+  if (!subvalue) {
+    return;
+  }
+
+  index = subvalue.length;
+  length = value.length;
+  queue = '';
+  parenCount = 0;
+
+  while (index < length) {
+    character = value.charAt(index);
+
+    if (whitespace(character) || character === C_LT) {
+      break;
+    }
+
+    if (
+      character === '.' ||
+      character === ',' ||
+      character === ':' ||
+      character === ';' ||
+      character === '"' ||
+      character === '\'' ||
+      character === ')' ||
+      character === ']'
+    ) {
+      nextCharacter = value.charAt(index + 1);
+
+      if (!nextCharacter || whitespace(nextCharacter)) {
+        break;
+      }
+    }
+
+    if (character === C_PAREN_OPEN || character === C_BRACKET_OPEN) {
+      parenCount++;
+    }
+
+    if (character === C_PAREN_CLOSE || character === C_BRACKET_CLOSE) {
+      parenCount--;
+
+      if (parenCount < 0) {
+        break;
+      }
+    }
+
+    queue += character;
+    index++;
+  }
+
+  if (!queue) {
+    return;
+  }
+
+  subvalue += queue;
+  content = subvalue;
+
+  if (protocol === MAILTO_PROTOCOL) {
+    position = queue.indexOf(C_AT_SIGN);
+
+    if (position === -1 || position === length - 1) {
+      return;
+    }
+
+    content = content.substr(MAILTO_PROTOCOL.length);
+  }
+
+  /* istanbul ignore if - never used (yet) */
+  if (silent) {
+    return true;
+  }
+
+  exit = self.enterLink();
+  content = self.tokenizeInline(content, eat.now());
+  exit();
+
+  return eat(subvalue)({
+    type: 'link',
+    title: null,
+    url: decode(subvalue),
+    children: content
+  });
+}
+
+},{"../locate/url":359,"is-whitespace-character":135,"parse-entities":193}],388:[function(require,module,exports){
+'use strict';
+
+module.exports = factory;
+
+var MERGEABLE_NODES = {
+  text: mergeText,
+  blockquote: mergeBlockquote
+};
+
+/* Check whether a node is mergeable with adjacent nodes. */
+function mergeable(node) {
+  var start;
+  var end;
+
+  if (node.type !== 'text' || !node.position) {
+    return true;
+  }
+
+  start = node.position.start;
+  end = node.position.end;
+
+  /* Only merge nodes which occupy the same size as their
+   * `value`. */
+  return start.line !== end.line ||
+      end.column - start.column === node.value.length;
+}
+
+/* Merge two text nodes: `node` into `prev`. */
+function mergeText(prev, node) {
+  prev.value += node.value;
+
+  return prev;
+}
+
+/* Merge two blockquotes: `node` into `prev`, unless in
+ * CommonMark mode. */
+function mergeBlockquote(prev, node) {
+  if (this.options.commonmark) {
+    return node;
+  }
+
+  prev.children = prev.children.concat(node.children);
+
+  return prev;
+}
+
+/* Construct a tokenizer.  This creates both
+ * `tokenizeInline` and `tokenizeBlock`. */
+function factory(type) {
+  return tokenize;
+
+  /* Tokenizer for a bound `type`. */
+  function tokenize(value, location) {
+    var self = this;
+    var offset = self.offset;
+    var tokens = [];
+    var methods = self[type + 'Methods'];
+    var tokenizers = self[type + 'Tokenizers'];
+    var line = location.line;
+    var column = location.column;
+    var index;
+    var length;
+    var method;
+    var name;
+    var matched;
+    var valueLength;
+
+    /* Trim white space only lines. */
+    if (!value) {
+      return tokens;
+    }
+
+    /* Expose on `eat`. */
+    eat.now = now;
+    eat.file = self.file;
+
+    /* Sync initial offset. */
+    updatePosition('');
+
+    /* Iterate over `value`, and iterate over all
+     * tokenizers.  When one eats something, re-iterate
+     * with the remaining value.  If no tokenizer eats,
+     * something failed (should not happen) and an
+     * exception is thrown. */
+    while (value) {
+      index = -1;
+      length = methods.length;
+      matched = false;
+
+      while (++index < length) {
+        name = methods[index];
+        method = tokenizers[name];
+
+        if (
+          method &&
+          /* istanbul ignore next */ (!method.onlyAtStart || self.atStart) &&
+          (!method.notInList || !self.inList) &&
+          (!method.notInBlock || !self.inBlock) &&
+          (!method.notInLink || !self.inLink)
+        ) {
+          valueLength = value.length;
+
+          method.apply(self, [eat, value]);
+
+          matched = valueLength !== value.length;
+
+          if (matched) {
+            break;
+          }
+        }
+      }
+
+      /* istanbul ignore if */
+      if (!matched) {
+        self.file.fail(new Error('Infinite loop'), eat.now());
+      }
+    }
+
+    self.eof = now();
+
+    return tokens;
+
+    /* Update line, column, and offset based on
+     * `value`. */
+    function updatePosition(subvalue) {
+      var lastIndex = -1;
+      var index = subvalue.indexOf('\n');
+
+      while (index !== -1) {
+        line++;
+        lastIndex = index;
+        index = subvalue.indexOf('\n', index + 1);
+      }
+
+      if (lastIndex === -1) {
+        column += subvalue.length;
+      } else {
+        column = subvalue.length - lastIndex;
+      }
+
+      if (line in offset) {
+        if (lastIndex !== -1) {
+          column += offset[line];
+        } else if (column <= offset[line]) {
+          column = offset[line] + 1;
+        }
+      }
+    }
+
+    /* Get offset.  Called before the first character is
+     * eaten to retrieve the range's offsets. */
+    function getOffset() {
+      var indentation = [];
+      var pos = line + 1;
+
+      /* Done.  Called when the last character is
+       * eaten to retrieve the range’s offsets. */
+      return function () {
+        var last = line + 1;
+
+        while (pos < last) {
+          indentation.push((offset[pos] || 0) + 1);
+
+          pos++;
+        }
+
+        return indentation;
+      };
+    }
+
+    /* Get the current position. */
+    function now() {
+      var pos = {line: line, column: column};
+
+      pos.offset = self.toOffset(pos);
+
+      return pos;
+    }
+
+    /* Store position information for a node. */
+    function Position(start) {
+      this.start = start;
+      this.end = now();
+    }
+
+    /* Throw when a value is incorrectly eaten.
+     * This shouldn’t happen but will throw on new,
+     * incorrect rules. */
+    function validateEat(subvalue) {
+      /* istanbul ignore if */
+      if (value.substring(0, subvalue.length) !== subvalue) {
+        /* Capture stack-trace. */
+        self.file.fail(
+          new Error(
+            'Incorrectly eaten value: please report this ' +
+            'warning on http://git.io/vg5Ft'
+          ),
+          now()
+        );
+      }
+    }
+
+    /* Mark position and patch `node.position`. */
+    function position() {
+      var before = now();
+
+      return update;
+
+      /* Add the position to a node. */
+      function update(node, indent) {
+        var prev = node.position;
+        var start = prev ? prev.start : before;
+        var combined = [];
+        var n = prev && prev.end.line;
+        var l = before.line;
+
+        node.position = new Position(start);
+
+        /* If there was already a `position`, this
+         * node was merged.  Fixing `start` wasn’t
+         * hard, but the indent is different.
+         * Especially because some information, the
+         * indent between `n` and `l` wasn’t
+         * tracked.  Luckily, that space is
+         * (should be?) empty, so we can safely
+         * check for it now. */
+        if (prev && indent && prev.indent) {
+          combined = prev.indent;
+
+          if (n < l) {
+            while (++n < l) {
+              combined.push((offset[n] || 0) + 1);
+            }
+
+            combined.push(before.column);
+          }
+
+          indent = combined.concat(indent);
+        }
+
+        node.position.indent = indent || [];
+
+        return node;
+      }
+    }
+
+    /* Add `node` to `parent`s children or to `tokens`.
+     * Performs merges where possible. */
+    function add(node, parent) {
+      var children = parent ? parent.children : tokens;
+      var prev = children[children.length - 1];
+
+      if (
+        prev &&
+        node.type === prev.type &&
+        node.type in MERGEABLE_NODES &&
+        mergeable(prev) &&
+        mergeable(node)
+      ) {
+        node = MERGEABLE_NODES[node.type].call(self, prev, node);
+      }
+
+      if (node !== prev) {
+        children.push(node);
+      }
+
+      if (self.atStart && tokens.length !== 0) {
+        self.exitStart();
+      }
+
+      return node;
+    }
+
+    /* Remove `subvalue` from `value`.
+     * `subvalue` must be at the start of `value`. */
+    function eat(subvalue) {
+      var indent = getOffset();
+      var pos = position();
+      var current = now();
+
+      validateEat(subvalue);
+
+      apply.reset = reset;
+      reset.test = test;
+      apply.test = test;
+
+      value = value.substring(subvalue.length);
+
+      updatePosition(subvalue);
+
+      indent = indent();
+
+      return apply;
+
+      /* Add the given arguments, add `position` to
+       * the returned node, and return the node. */
+      function apply(node, parent) {
+        return pos(add(pos(node), parent), indent);
+      }
+
+      /* Functions just like apply, but resets the
+       * content:  the line and column are reversed,
+       * and the eaten value is re-added.
+       * This is useful for nodes with a single
+       * type of content, such as lists and tables.
+       * See `apply` above for what parameters are
+       * expected. */
+      function reset() {
+        var node = apply.apply(null, arguments);
+
+        line = current.line;
+        column = current.column;
+        value = subvalue + value;
+
+        return node;
+      }
+
+      /* Test the position, after eating, and reverse
+       * to a not-eaten state. */
+      function test() {
+        var result = pos({});
+
+        line = current.line;
+        column = current.column;
+        value = subvalue + value;
+
+        return result.position;
+      }
+    }
+  }
+}
+
+},{}],389:[function(require,module,exports){
+'use strict';
+
+module.exports = factory;
+
+/* Factory to de-escape a value, based on a list at `key`
+ * in `ctx`. */
+function factory(ctx, key) {
+  return unescape;
+
+  /* De-escape a string using the expression at `key`
+   * in `ctx`. */
+  function unescape(value) {
+    var prev = 0;
+    var index = value.indexOf('\\');
+    var escape = ctx[key];
+    var queue = [];
+    var character;
+
+    while (index !== -1) {
+      queue.push(value.slice(prev, index));
+      prev = index + 1;
+      character = value.charAt(prev);
+
+      /* If the following character is not a valid escape,
+       * add the slash. */
+      if (!character || escape.indexOf(character) === -1) {
+        queue.push('\\');
+      }
+
+      index = value.indexOf('\\', prev);
+    }
+
+    queue.push(value.slice(prev));
+
+    return queue.join('');
+  }
+}
+
+},{}],390:[function(require,module,exports){
+'use strict';
+
+module.exports = indentation;
+
+/* Map of characters, and their column length,
+ * which can be used as indentation. */
+var characters = {' ': 1, '\t': 4};
+
+/* Gets indentation information for a line. */
+function indentation(value) {
+  var index = 0;
+  var indent = 0;
+  var character = value.charAt(index);
+  var stops = {};
+  var size;
+
+  while (character in characters) {
+    size = characters[character];
+
+    indent += size;
+
+    if (size > 1) {
+      indent = Math.floor(indent / size) * size;
+    }
+
+    stops[indent] = index;
+
+    character = value.charAt(++index);
+  }
+
+  return {indent: indent, stops: stops};
+}
+
+},{}],391:[function(require,module,exports){
+'use strict';
+
+var attributeName = '[a-zA-Z_:][a-zA-Z0-9:._-]*';
+var unquoted = '[^"\'=<>`\\u0000-\\u0020]+';
+var singleQuoted = '\'[^\']*\'';
+var doubleQuoted = '"[^"]*"';
+var attributeValue = '(?:' + unquoted + '|' + singleQuoted + '|' + doubleQuoted + ')';
+var attribute = '(?:\\s+' + attributeName + '(?:\\s*=\\s*' + attributeValue + ')?)';
+var openTag = '<[A-Za-z][A-Za-z0-9\\-]*' + attribute + '*\\s*\\/?>';
+var closeTag = '<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>';
+var comment = '<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->';
+var processing = '<[?].*?[?]>';
+var declaration = '<![A-Za-z]+\\s+[^>]*>';
+var cdata = '<!\\[CDATA\\[[\\s\\S]*?\\]\\]>';
+
+exports.openCloseTag = new RegExp('^(?:' + openTag + '|' + closeTag + ')');
+
+exports.tag = new RegExp('^(?:' +
+  openTag + '|' +
+  closeTag + '|' +
+  comment + '|' +
+  processing + '|' +
+  declaration + '|' +
+  cdata +
+')');
+
+},{}],392:[function(require,module,exports){
+'use strict';
+
+module.exports = interrupt;
+
+function interrupt(interruptors, tokenizers, ctx, params) {
+  var bools = ['pedantic', 'commonmark'];
+  var count = bools.length;
+  var length = interruptors.length;
+  var index = -1;
+  var interruptor;
+  var config;
+  var fn;
+  var offset;
+  var bool;
+  var ignore;
+
+  while (++index < length) {
+    interruptor = interruptors[index];
+    config = interruptor[1] || {};
+    fn = interruptor[0];
+    offset = -1;
+    ignore = false;
+
+    while (++offset < count) {
+      bool = bools[offset];
+
+      if (config[bool] !== undefined && config[bool] !== ctx.options[bool]) {
+        ignore = true;
+        break;
+      }
+    }
+
+    if (ignore) {
+      continue;
+    }
+
+    if (tokenizers[fn].apply(ctx, params)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+},{}],393:[function(require,module,exports){
+'use strict';
+
+var collapseWhiteSpace = require('collapse-white-space');
+
+module.exports = normalize;
+
+/* Normalize an identifier.  Collapses multiple white space
+ * characters into a single space, and removes casing. */
+function normalize(value) {
+  return collapseWhiteSpace(value).toLowerCase();
+}
+
+},{"collapse-white-space":25}],394:[function(require,module,exports){
+'use strict';
+
+var trim = require('trim');
+var repeat = require('repeat-string');
+var getIndent = require('./get-indentation');
+
+module.exports = indentation;
+
+var C_SPACE = ' ';
+var C_NEWLINE = '\n';
+var C_TAB = '\t';
+
+/* Remove the minimum indent from every line in `value`.
+ * Supports both tab, spaced, and mixed indentation (as
+ * well as possible). */
+function indentation(value, maximum) {
+  var values = value.split(C_NEWLINE);
+  var position = values.length + 1;
+  var minIndent = Infinity;
+  var matrix = [];
+  var index;
+  var indentation;
+  var stops;
+  var padding;
+
+  values.unshift(repeat(C_SPACE, maximum) + '!');
+
+  while (position--) {
+    indentation = getIndent(values[position]);
+
+    matrix[position] = indentation.stops;
+
+    if (trim(values[position]).length === 0) {
+      continue;
+    }
+
+    if (indentation.indent) {
+      if (indentation.indent > 0 && indentation.indent < minIndent) {
+        minIndent = indentation.indent;
+      }
+    } else {
+      minIndent = Infinity;
+
+      break;
+    }
+  }
+
+  if (minIndent !== Infinity) {
+    position = values.length;
+
+    while (position--) {
+      stops = matrix[position];
+      index = minIndent;
+
+      while (index && !(index in stops)) {
+        index--;
+      }
+
+      if (
+        trim(values[position]).length !== 0 &&
+        minIndent &&
+        index !== minIndent
+      ) {
+        padding = C_TAB;
+      } else {
+        padding = '';
+      }
+
+      values[position] = padding + values[position].slice(
+        index in stops ? stops[index] + 1 : 0
+      );
+    }
+  }
+
+  values.shift();
+
+  return values.join(C_NEWLINE);
+}
+
+},{"./get-indentation":390,"repeat-string":442,"trim":777}],395:[function(require,module,exports){
+'use strict';
+
+var unherit = require('unherit');
+var xtend = require('xtend');
+var Compiler = require('./lib/compiler.js');
+
+module.exports = stringify;
+stringify.Compiler = Compiler;
+
+function stringify(options) {
+  var Local = unherit(Compiler);
+  Local.prototype.options = xtend(Local.prototype.options, this.data('settings'), options);
+  this.Compiler = Local;
+}
+
+},{"./lib/compiler.js":396,"unherit":779,"xtend":802}],396:[function(require,module,exports){
+'use strict';
+
+var xtend = require('xtend');
+var toggle = require('state-toggle');
+
+module.exports = Compiler;
+
+/* Construct a new compiler. */
+function Compiler(tree, file) {
+  this.inLink = false;
+  this.inTable = false;
+  this.tree = tree;
+  this.file = file;
+  this.options = xtend(this.options);
+  this.setOptions({});
+}
+
+var proto = Compiler.prototype;
+
+/* Enter and exit helpers. */
+proto.enterLink = toggle('inLink', false);
+proto.enterTable = toggle('inTable', false);
+proto.enterLinkReference = require('./util/enter-link-reference');
+
+/* Configuration. */
+proto.options = require('./defaults');
+proto.setOptions = require('./set-options');
+
+proto.compile = require('./macro/compile');
+proto.visit = require('./macro/one');
+proto.all = require('./macro/all');
+proto.block = require('./macro/block');
+proto.visitOrderedItems = require('./macro/ordered-items');
+proto.visitUnorderedItems = require('./macro/unordered-items');
+
+/* Expose visitors. */
+proto.visitors = {
+  root: require('./visitors/root'),
+  text: require('./visitors/text'),
+  heading: require('./visitors/heading'),
+  paragraph: require('./visitors/paragraph'),
+  blockquote: require('./visitors/blockquote'),
+  list: require('./visitors/list'),
+  listItem: require('./visitors/list-item'),
+  inlineCode: require('./visitors/inline-code'),
+  code: require('./visitors/code'),
+  html: require('./visitors/html'),
+  thematicBreak: require('./visitors/thematic-break'),
+  strong: require('./visitors/strong'),
+  emphasis: require('./visitors/emphasis'),
+  break: require('./visitors/break'),
+  delete: require('./visitors/delete'),
+  link: require('./visitors/link'),
+  linkReference: require('./visitors/link-reference'),
+  imageReference: require('./visitors/image-reference'),
+  definition: require('./visitors/definition'),
+  image: require('./visitors/image'),
+  footnote: require('./visitors/footnote'),
+  footnoteReference: require('./visitors/footnote-reference'),
+  footnoteDefinition: require('./visitors/footnote-definition'),
+  table: require('./visitors/table'),
+  tableCell: require('./visitors/table-cell')
+};
+
+},{"./defaults":397,"./macro/all":399,"./macro/block":400,"./macro/compile":401,"./macro/one":402,"./macro/ordered-items":403,"./macro/unordered-items":404,"./set-options":405,"./util/enter-link-reference":409,"./visitors/blockquote":414,"./visitors/break":415,"./visitors/code":416,"./visitors/definition":417,"./visitors/delete":418,"./visitors/emphasis":419,"./visitors/footnote":422,"./visitors/footnote-definition":420,"./visitors/footnote-reference":421,"./visitors/heading":423,"./visitors/html":424,"./visitors/image":426,"./visitors/image-reference":425,"./visitors/inline-code":427,"./visitors/link":429,"./visitors/link-reference":428,"./visitors/list":431,"./visitors/list-item":430,"./visitors/paragraph":432,"./visitors/root":433,"./visitors/strong":434,"./visitors/table":436,"./visitors/table-cell":435,"./visitors/text":437,"./visitors/thematic-break":438,"state-toggle":461,"xtend":802}],397:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  gfm: true,
+  commonmark: false,
+  pedantic: false,
+  entities: 'false',
+  setext: false,
+  closeAtx: false,
+  looseTable: false,
+  spacedTable: true,
+  paddedTable: true,
+  stringLength: stringLength,
+  incrementListMarker: true,
+  fences: false,
+  fence: '`',
+  bullet: '-',
+  listItemIndent: 'tab',
+  rule: '*',
+  ruleSpaces: true,
+  ruleRepetition: 3,
+  strong: '*',
+  emphasis: '_'
+};
+
+function stringLength(value) {
+  return value.length;
+}
+
+},{}],398:[function(require,module,exports){
+'use strict';
+
+var decimal = require('is-decimal');
+var alphanumeric = require('is-alphanumeric');
+var whitespace = require('is-whitespace-character');
+var escapes = require('markdown-escapes');
+var prefix = require('./util/entity-prefix-length');
+
+module.exports = factory;
+
+var BACKSLASH = '\\';
+var BULLETS = ['*', '-', '+'];
+var ALLIGNMENT = [':', '-', ' ', '|'];
+var entities = {'<': '&lt;', ':': '&#x3A;', '&': '&amp;', '|': '&#x7C;', '~': '&#x7E;'};
+
+/* Factory to escape characters. */
+function factory(options) {
+  return escape;
+
+  /* Escape punctuation characters in a node's value. */
+  function escape(value, node, parent) {
+    var self = this;
+    var gfm = options.gfm;
+    var commonmark = options.commonmark;
+    var pedantic = options.pedantic;
+    var markers = commonmark ? ['.', ')'] : ['.'];
+    var siblings = parent && parent.children;
+    var index = siblings && siblings.indexOf(node);
+    var prev = siblings && siblings[index - 1];
+    var next = siblings && siblings[index + 1];
+    var length = value.length;
+    var escapable = escapes(options);
+    var position = -1;
+    var queue = [];
+    var escaped = queue;
+    var afterNewLine;
+    var character;
+    var wordCharBefore;
+    var wordCharAfter;
+    var offset;
+    var replace;
+
+    if (prev) {
+      afterNewLine = text(prev) && /\n\s*$/.test(prev.value);
+    } else {
+      afterNewLine = !parent || parent.type === 'root' || parent.type === 'paragraph';
+    }
+
+    function one(character) {
+      return escapable.indexOf(character) === -1 ?
+        entities[character] : BACKSLASH + character;
+    }
+
+    while (++position < length) {
+      character = value.charAt(position);
+      replace = false;
+
+      if (character === '\n') {
+        afterNewLine = true;
+      } else if (
+        character === BACKSLASH ||
+        character === '`' ||
+        character === '*' ||
+        character === '[' ||
+        character === '<' ||
+        (character === '&' && prefix(value.slice(position)) > 0) ||
+        (character === ']' && self.inLink) ||
+        (gfm && character === '~' && value.charAt(position + 1) === '~') ||
+        (gfm && character === '|' && (self.inTable || alignment(value, position))) ||
+        (
+          character === '_' &&
+          /* Delegate leading/trailing underscores
+           * to the multinode version below. */
+          position > 0 &&
+          position < length - 1 &&
+          (
+              pedantic ||
+              !alphanumeric(value.charAt(position - 1)) ||
+              !alphanumeric(value.charAt(position + 1))
+          )
+        ) ||
+        (gfm && !self.inLink && character === ':' && protocol(queue.join('')))
+      ) {
+        replace = true;
+      } else if (afterNewLine) {
+        if (
+          character === '>' ||
+          character === '#' ||
+          BULLETS.indexOf(character) !== -1
+        ) {
+          replace = true;
+        } else if (decimal(character)) {
+          offset = position + 1;
+
+          while (offset < length) {
+            if (!decimal(value.charAt(offset))) {
+              break;
+            }
+
+            offset++;
+          }
+
+          if (markers.indexOf(value.charAt(offset)) !== -1) {
+            next = value.charAt(offset + 1);
+
+            if (!next || next === ' ' || next === '\t' || next === '\n') {
+              queue.push(value.slice(position, offset));
+              position = offset;
+              character = value.charAt(position);
+              replace = true;
+            }
+          }
+        }
+      }
+
+      if (afterNewLine && !whitespace(character)) {
+        afterNewLine = false;
+      }
+
+      queue.push(replace ? one(character) : character);
+    }
+
+    /* Multi-node versions. */
+    if (siblings && text(node)) {
+      /* Check for an opening parentheses after a
+       * link-reference (which can be joined by
+       * white-space). */
+      if (prev && prev.referenceType === 'shortcut') {
+        position = -1;
+        length = escaped.length;
+
+        while (++position < length) {
+          character = escaped[position];
+
+          if (character === ' ' || character === '\t') {
+            continue;
+          }
+
+          if (character === '(' || character === ':') {
+            escaped[position] = one(character);
+          }
+
+          break;
+        }
+
+        /* If the current node is all spaces / tabs,
+         * preceded by a shortcut, and followed by
+         * a text starting with `(`, escape it. */
+        if (
+          text(next) &&
+          position === length &&
+          next.value.charAt(0) === '('
+        ) {
+          escaped.push(BACKSLASH);
+        }
+      }
+
+      /* Ensure non-auto-links are not seen as links.
+       * This pattern needs to check the preceding
+       * nodes too. */
+      if (
+        gfm &&
+        !self.inLink &&
+        text(prev) &&
+        value.charAt(0) === ':' &&
+        protocol(prev.value.slice(-6))
+      ) {
+        escaped[0] = one(':');
+      }
+
+      /* Escape ampersand if it would otherwise
+       * start an entity. */
+      if (
+        text(next) &&
+        value.charAt(length - 1) === '&' &&
+        prefix('&' + next.value) !== 0
+      ) {
+        escaped[escaped.length - 1] = one('&');
+      }
+
+      /* Escape double tildes in GFM. */
+      if (
+        gfm &&
+        text(next) &&
+        value.charAt(length - 1) === '~' &&
+        next.value.charAt(0) === '~'
+      ) {
+        escaped.splice(escaped.length - 1, 0, BACKSLASH);
+      }
+
+      /* Escape underscores, but not mid-word (unless
+       * in pedantic mode). */
+      wordCharBefore = text(prev) && alphanumeric(prev.value.slice(-1));
+      wordCharAfter = text(next) && alphanumeric(next.value.charAt(0));
+
+      if (length === 1) {
+        if (value === '_' && (pedantic || !wordCharBefore || !wordCharAfter)) {
+          escaped.unshift(BACKSLASH);
+        }
+      } else {
+        if (
+          value.charAt(0) === '_' &&
+          (pedantic || !wordCharBefore || !alphanumeric(value.charAt(1)))
+        ) {
+          escaped.unshift(BACKSLASH);
+        }
+
+        if (
+          value.charAt(length - 1) === '_' &&
+          (pedantic || !wordCharAfter || !alphanumeric(value.charAt(length - 2)))
+        ) {
+          escaped.splice(escaped.length - 1, 0, BACKSLASH);
+        }
+      }
+    }
+
+    return escaped.join('');
+  }
+}
+
+/* Check if `index` in `value` is inside an alignment row. */
+function alignment(value, index) {
+  var start = value.lastIndexOf('\n', index);
+  var end = value.indexOf('\n', index);
+
+  start = start === -1 ? -1 : start;
+  end = end === -1 ? value.length : end;
+
+  while (++start < end) {
+    if (ALLIGNMENT.indexOf(value.charAt(start)) === -1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/* Check if `node` is a text node. */
+function text(node) {
+  return node && node.type === 'text';
+}
+
+/* Check if `value` ends in a protocol. */
+function protocol(value) {
+  var val = value.slice(-6).toLowerCase();
+  return val === 'mailto' || val.slice(-5) === 'https' || val.slice(-4) === 'http';
+}
+
+},{"./util/entity-prefix-length":410,"is-alphanumeric":113,"is-decimal":117,"is-whitespace-character":135,"markdown-escapes":175}],399:[function(require,module,exports){
+'use strict';
+
+module.exports = all;
+
+/* Visit all children of `parent`. */
+function all(parent) {
+  var self = this;
+  var children = parent.children;
+  var length = children.length;
+  var results = [];
+  var index = -1;
+
+  while (++index < length) {
+    results[index] = self.visit(children[index], parent);
+  }
+
+  return results;
+}
+
+},{}],400:[function(require,module,exports){
+'use strict';
+
+module.exports = block;
+
+/* Stringify a block node with block children (e.g., `root`
+ * or `blockquote`).
+ * Knows about code following a list, or adjacent lists
+ * with similar bullets, and places an extra newline
+ * between them. */
+function block(node) {
+  var self = this;
+  var values = [];
+  var children = node.children;
+  var length = children.length;
+  var index = -1;
+  var child;
+  var prev;
+
+  while (++index < length) {
+    child = children[index];
+
+    if (prev) {
+      /* Duplicate nodes, such as a list
+       * directly following another list,
+       * often need multiple new lines.
+       *
+       * Additionally, code blocks following a list
+       * might easily be mistaken for a paragraph
+       * in the list itself. */
+      if (child.type === prev.type && prev.type === 'list') {
+        values.push(prev.ordered === child.ordered ? '\n\n\n' : '\n\n');
+      } else if (prev.type === 'list' && child.type === 'code' && !child.lang) {
+        values.push('\n\n\n');
+      } else {
+        values.push('\n\n');
+      }
+    }
+
+    values.push(self.visit(child, node));
+
+    prev = child;
+  }
+
+  return values.join('');
+}
+
+},{}],401:[function(require,module,exports){
+'use strict';
+
+var compact = require('mdast-util-compact');
+
+module.exports = compile;
+
+/* Stringify the given tree. */
+function compile() {
+  return this.visit(compact(this.tree, this.options.commonmark));
+}
+
+},{"mdast-util-compact":178}],402:[function(require,module,exports){
+'use strict';
+
+module.exports = one;
+
+function one(node, parent) {
+  var self = this;
+  var visitors = self.visitors;
+
+  /* Fail on unknown nodes. */
+  if (typeof visitors[node.type] !== 'function') {
+    self.file.fail(
+      new Error(
+        'Missing compiler for node of type `' +
+        node.type + '`: `' + node + '`'
+      ),
+      node
+    );
+  }
+
+  return visitors[node.type].call(self, node, parent);
+}
+
+},{}],403:[function(require,module,exports){
+'use strict';
+
+module.exports = orderedItems;
+
+/* Visit ordered list items.
+ *
+ * Starts the list with
+ * `node.start` and increments each following list item
+ * bullet by one:
+ *
+ *     2. foo
+ *     3. bar
+ *
+ * In `incrementListMarker: false` mode, does not increment
+ * each marker and stays on `node.start`:
+ *
+ *     1. foo
+ *     1. bar
+ */
+function orderedItems(node) {
+  var self = this;
+  var fn = self.visitors.listItem;
+  var increment = self.options.incrementListMarker;
+  var values = [];
+  var start = node.start;
+  var children = node.children;
+  var length = children.length;
+  var index = -1;
+  var bullet;
+
+  while (++index < length) {
+    bullet = (increment ? start + index : start) + '.';
+    values[index] = fn.call(self, children[index], node, index, bullet);
+  }
+
+  return values.join('\n');
+}
+
+},{}],404:[function(require,module,exports){
+'use strict';
+
+module.exports = unorderedItems;
+
+/* Visit unordered list items.
+ * Uses `options.bullet` as each item's bullet.
+ */
+function unorderedItems(node) {
+  var self = this;
+  var bullet = self.options.bullet;
+  var fn = self.visitors.listItem;
+  var children = node.children;
+  var length = children.length;
+  var index = -1;
+  var values = [];
+
+  while (++index < length) {
+    values[index] = fn.call(self, children[index], node, index, bullet);
+  }
+
+  return values.join('\n');
+}
+
+},{}],405:[function(require,module,exports){
+'use strict';
+
+var xtend = require('xtend');
+var encode = require('stringify-entities');
+var defaults = require('./defaults');
+var escapeFactory = require('./escape');
+var returner = require('./util/returner');
+
+module.exports = setOptions;
+
+/* Map of applicable enum's. */
+var maps = {
+  entities: {true: true, false: true, numbers: true, escape: true},
+  bullet: {'*': true, '-': true, '+': true},
+  rule: {'-': true, _: true, '*': true},
+  listItemIndent: {tab: true, mixed: true, 1: true},
+  emphasis: {_: true, '*': true},
+  strong: {_: true, '*': true},
+  fence: {'`': true, '~': true}
+};
+
+/* Expose `validate`. */
+var validate = {
+  boolean: validateBoolean,
+  string: validateString,
+  number: validateNumber,
+  function: validateFunction
+};
+
+/* Set options.  Does not overwrite previously set
+ * options. */
+function setOptions(options) {
+  var self = this;
+  var current = self.options;
+  var ruleRepetition;
+  var key;
+
+  if (options == null) {
+    options = {};
+  } else if (typeof options === 'object') {
+    options = xtend(options);
+  } else {
+    throw new Error('Invalid value `' + options + '` for setting `options`');
+  }
+
+  for (key in defaults) {
+    validate[typeof defaults[key]](options, key, current[key], maps[key]);
+  }
+
+  ruleRepetition = options.ruleRepetition;
+
+  if (ruleRepetition && ruleRepetition < 3) {
+    raise(ruleRepetition, 'options.ruleRepetition');
+  }
+
+  self.encode = encodeFactory(String(options.entities));
+  self.escape = escapeFactory(options);
+
+  self.options = options;
+
+  return self;
+}
+
+/* Throw an exception with in its `message` `value`
+ * and `name`. */
+function raise(value, name) {
+  throw new Error('Invalid value `' + value + '` for setting `' + name + '`');
+}
+
+/* Validate a value to be boolean. Defaults to `def`.
+ * Raises an exception with `context[name]` when not
+ * a boolean. */
+function validateBoolean(context, name, def) {
+  var value = context[name];
+
+  if (value == null) {
+    value = def;
+  }
+
+  if (typeof value !== 'boolean') {
+    raise(value, 'options.' + name);
+  }
+
+  context[name] = value;
+}
+
+/* Validate a value to be boolean. Defaults to `def`.
+ * Raises an exception with `context[name]` when not
+ * a boolean. */
+function validateNumber(context, name, def) {
+  var value = context[name];
+
+  if (value == null) {
+    value = def;
+  }
+
+  if (isNaN(value)) {
+    raise(value, 'options.' + name);
+  }
+
+  context[name] = value;
+}
+
+/* Validate a value to be in `map`. Defaults to `def`.
+ * Raises an exception with `context[name]` when not
+ * in `map`. */
+function validateString(context, name, def, map) {
+  var value = context[name];
+
+  if (value == null) {
+    value = def;
+  }
+
+  value = String(value);
+
+  if (!(value in map)) {
+    raise(value, 'options.' + name);
+  }
+
+  context[name] = value;
+}
+
+/* Validate a value to be function. Defaults to `def`.
+ * Raises an exception with `context[name]` when not
+ * a function. */
+function validateFunction(context, name, def) {
+  var value = context[name];
+
+  if (value == null) {
+    value = def;
+  }
+
+  if (typeof value !== 'function') {
+    raise(value, 'options.' + name);
+  }
+
+  context[name] = value;
+}
+
+/* Factory to encode HTML entities.
+ * Creates a no-operation function when `type` is
+ * `'false'`, a function which encodes using named
+ * references when `type` is `'true'`, and a function
+ * which encodes using numbered references when `type` is
+ * `'numbers'`. */
+function encodeFactory(type) {
+  var options = {};
+
+  if (type === 'false') {
+    return returner;
+  }
+
+  if (type === 'true') {
+    options.useNamedReferences = true;
+  }
+
+  if (type === 'escape') {
+    options.escapeOnly = true;
+    options.useNamedReferences = true;
+  }
+
+  return wrapped;
+
+  /* Encode HTML entities using the bound options. */
+  function wrapped(value) {
+    return encode(value, options);
+  }
+}
+
+},{"./defaults":397,"./escape":398,"./util/returner":413,"stringify-entities":465,"xtend":802}],406:[function(require,module,exports){
+'use strict';
+
+var entityPrefixLength = require('./entity-prefix-length');
+
+module.exports = copy;
+
+var PUNCTUATION = /[-!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~_]/;
+
+/* For shortcut and collapsed reference links, the contents
+ * is also an identifier, so we need to restore the original
+ * encoding and escaping that were present in the source
+ * string.
+ *
+ * This function takes the unescaped & unencoded value from
+ * shortcut's child nodes and the identifier and encodes
+ * the former according to the latter. */
+function copy(value, identifier) {
+  var length = value.length;
+  var count = identifier.length;
+  var result = [];
+  var position = 0;
+  var index = 0;
+  var start;
+
+  while (index < length) {
+    /* Take next non-punctuation characters from `value`. */
+    start = index;
+
+    while (index < length && !PUNCTUATION.test(value.charAt(index))) {
+      index += 1;
+    }
+
+    result.push(value.slice(start, index));
+
+    /* Advance `position` to the next punctuation character. */
+    while (position < count && !PUNCTUATION.test(identifier.charAt(position))) {
+      position += 1;
+    }
+
+    /* Take next punctuation characters from `identifier`. */
+    start = position;
+
+    while (position < count && PUNCTUATION.test(identifier.charAt(position))) {
+      if (identifier.charAt(position) === '&') {
+        position += entityPrefixLength(identifier.slice(position));
+      }
+
+      position += 1;
+    }
+
+    result.push(identifier.slice(start, position));
+
+    /* Advance `index` to the next non-punctuation character. */
+    while (index < length && PUNCTUATION.test(value.charAt(index))) {
+      index += 1;
+    }
+  }
+
+  return result.join('');
+}
+
+},{"./entity-prefix-length":410}],407:[function(require,module,exports){
+'use strict';
+
+module.exports = enclose;
+
+/* There is currently no way to support nested delimiters
+ * across Markdown.pl, CommonMark, and GitHub (RedCarpet).
+ * The following code supports Markdown.pl and GitHub.
+ * CommonMark is not supported when mixing double- and
+ * single quotes inside a title. */
+function enclose(title) {
+  var delimiter = title.indexOf('"') === -1 ? '"' : '\'';
+  return delimiter + title + delimiter;
+}
+
+},{}],408:[function(require,module,exports){
+'use strict';
+
+var count = require('ccount');
+
+module.exports = enclose;
+
+var re = /\s/;
+
+/* Wrap `url` in angle brackets when needed, or when
+ * forced.
+ * In links, images, and definitions, the URL part needs
+ * to be enclosed when it:
+ *
+ * - has a length of `0`;
+ * - contains white-space;
+ * - has more or less opening than closing parentheses.
+ */
+function enclose(uri, always) {
+  if (always || uri.length === 0 || re.test(uri) || count(uri, '(') !== count(uri, ')')) {
+    return '<' + uri + '>';
+  }
+
+  return uri;
+}
+
+},{"ccount":18}],409:[function(require,module,exports){
+'use strict';
+
+var returner = require('./returner');
+
+module.exports = enter;
+
+/* Shortcut and collapsed link references need no escaping
+ * and encoding during the processing of child nodes (it
+ * must be implied from identifier).
+ *
+ * This toggler turns encoding and escaping off for shortcut
+ * and collapsed references.
+ *
+ * Implies `enterLink`.
+ */
+function enter(compiler, node) {
+  var encode = compiler.encode;
+  var escape = compiler.escape;
+  var exit = compiler.enterLink();
+
+  if (
+    node.referenceType !== 'shortcut' &&
+    node.referenceType !== 'collapsed'
+  ) {
+    return exit;
+  }
+
+  compiler.escape = returner;
+  compiler.encode = returner;
+
+  return function () {
+    compiler.encode = encode;
+    compiler.escape = escape;
+    exit();
+  };
+}
+
+},{"./returner":413}],410:[function(require,module,exports){
+'use strict';
+
+var decode = require('parse-entities');
+
+module.exports = length;
+
+/* Returns the length of HTML entity that is a prefix of
+ * the given string (excluding the ampersand), 0 if it
+ * does not start with an entity. */
+function length(value) {
+  var prefix;
+
+  /* istanbul ignore if - Currently also tested for at
+   * implemention, but we keep it here because that’s
+   * proper. */
+  if (value.charAt(0) !== '&') {
+    return 0;
+  }
+
+  prefix = value.split('&', 2).join('&');
+
+  return prefix.length - decode(prefix).length;
+}
+
+},{"parse-entities":193}],411:[function(require,module,exports){
+'use strict';
+
+module.exports = label;
+
+/* Stringify a reference label.
+ * Because link references are easily, mistakingly,
+ * created (for example, `[foo]`), reference nodes have
+ * an extra property depicting how it looked in the
+ * original document, so stringification can cause minimal
+ * changes. */
+function label(node) {
+  var type = node.referenceType;
+  var value = type === 'full' ? node.identifier : '';
+
+  return type === 'shortcut' ? value : '[' + value + ']';
+}
+
+},{}],412:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+
+module.exports = pad;
+
+var INDENT = 4;
+
+/* Pad `value` with `level * INDENT` spaces.  Respects
+ * lines. Ignores empty lines. */
+function pad(value, level) {
+  var index;
+  var padding;
+
+  value = value.split('\n');
+
+  index = value.length;
+  padding = repeat(' ', level * INDENT);
+
+  while (index--) {
+    if (value[index].length !== 0) {
+      value[index] = padding + value[index];
+    }
+  }
+
+  return value.join('\n');
+}
+
+},{"repeat-string":442}],413:[function(require,module,exports){
+'use strict';
+
+module.exports = returner;
+
+function returner(value) {
+  return value;
+}
+
+},{}],414:[function(require,module,exports){
+'use strict';
+
+module.exports = blockquote;
+
+function blockquote(node) {
+  var values = this.block(node).split('\n');
+  var result = [];
+  var length = values.length;
+  var index = -1;
+  var value;
+
+  while (++index < length) {
+    value = values[index];
+    result[index] = (value ? ' ' : '') + value;
+  }
+
+  return '>' + result.join('\n>');
+}
+
+},{}],415:[function(require,module,exports){
+'use strict';
+
+module.exports = lineBreak;
+
+var map = {true: '\\\n', false: '  \n'};
+
+function lineBreak() {
+  return map[this.options.commonmark];
+}
+
+},{}],416:[function(require,module,exports){
+'use strict';
+
+var streak = require('longest-streak');
+var repeat = require('repeat-string');
+var pad = require('../util/pad');
+
+module.exports = code;
+
+var FENCE = /([`~])\1{2}/;
+
+/* Stringify code.
+ * Creates indented code when:
+ *
+ * - No language tag exists;
+ * - Not in `fences: true` mode;
+ * - A non-empty value exists.
+ *
+ * Otherwise, GFM fenced code is created:
+ *
+ *     ```js
+ *     foo();
+ *     ```
+ *
+ * When in ``fence: `~` `` mode, uses tildes as fences:
+ *
+ *     ~~~js
+ *     foo();
+ *     ~~~
+ *
+ * Knows about internal fences (Note: GitHub/Kramdown does
+ * not support this):
+ *
+ *     ````javascript
+ *     ```markdown
+ *     foo
+ *     ```
+ *     ````
+ */
+function code(node, parent) {
+  var self = this;
+  var value = node.value;
+  var options = self.options;
+  var marker = options.fence;
+  var language = self.encode(node.lang || '', node);
+  var fence;
+
+  /* Without (needed) fences. */
+  if (!language && !options.fences && value) {
+    /* Throw when pedantic, in a list item which
+     * isn’t compiled using a tab. */
+    if (
+      parent &&
+      parent.type === 'listItem' &&
+      options.listItemIndent !== 'tab' &&
+      options.pedantic
+    ) {
+      self.file.fail('Cannot indent code properly. See http://git.io/vgFvT', node.position);
+    }
+
+    return pad(value, 1);
+  }
+
+  fence = streak(value, marker) + 1;
+
+  /* Fix GFM / RedCarpet bug, where fence-like characters
+   * inside fenced code can exit a code-block.
+   * Yes, even when the outer fence uses different
+   * characters, or is longer.
+   * Thus, we can only pad the code to make it work. */
+  if (FENCE.test(value)) {
+    value = pad(value, 1);
+  }
+
+  fence = repeat(marker, Math.max(fence, 3));
+
+  return fence + language + '\n' + value + '\n' + fence;
+}
+
+},{"../util/pad":412,"longest-streak":174,"repeat-string":442}],417:[function(require,module,exports){
+'use strict';
+
+var uri = require('../util/enclose-uri');
+var title = require('../util/enclose-title');
+
+module.exports = definition;
+
+/* Stringify an URL definition.
+ *
+ * Is smart about enclosing `url` (see `encloseURI()`) and
+ * `title` (see `encloseTitle()`).
+ *
+ *    [foo]: <foo at bar dot com> 'An "example" e-mail'
+ */
+function definition(node) {
+  var content = uri(node.url);
+
+  if (node.title) {
+    content += ' ' + title(node.title);
+  }
+
+  return '[' + node.identifier + ']: ' + content;
+}
+
+},{"../util/enclose-title":407,"../util/enclose-uri":408}],418:[function(require,module,exports){
+'use strict';
+
+module.exports = strikethrough;
+
+function strikethrough(node) {
+  return '~~' + this.all(node).join('') + '~~';
+}
+
+},{}],419:[function(require,module,exports){
+'use strict';
+
+module.exports = emphasis;
+
+/* Stringify an `emphasis`.
+ *
+ * The marker used is configurable through `emphasis`, which
+ * defaults to an underscore (`'_'`) but also accepts an
+ * asterisk (`'*'`):
+ *
+ *     *foo*
+ */
+function emphasis(node) {
+  var marker = this.options.emphasis;
+  return marker + this.all(node).join('') + marker;
+}
+
+},{}],420:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+
+module.exports = footnoteDefinition;
+
+function footnoteDefinition(node) {
+  var id = node.identifier.toLowerCase();
+  var content = this.all(node).join('\n\n' + repeat(' ', 4));
+
+  return '[^' + id + ']: ' + content;
+}
+
+},{"repeat-string":442}],421:[function(require,module,exports){
+'use strict';
+
+module.exports = footnoteReference;
+
+function footnoteReference(node) {
+  return '[^' + node.identifier + ']';
+}
+
+},{}],422:[function(require,module,exports){
+'use strict';
+
+module.exports = footnote;
+
+function footnote(node) {
+  return '[^' + this.all(node).join('') + ']';
+}
+
+},{}],423:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+
+module.exports = heading;
+
+/* Stringify a heading.
+ *
+ * In `setext: true` mode and when `depth` is smaller than
+ * three, creates a setext header:
+ *
+ *     Foo
+ *     ===
+ *
+ * Otherwise, an ATX header is generated:
+ *
+ *     ### Foo
+ *
+ * In `closeAtx: true` mode, the header is closed with
+ * hashes:
+ *
+ *     ### Foo ###
+ */
+function heading(node) {
+  var self = this;
+  var depth = node.depth;
+  var setext = self.options.setext;
+  var closeAtx = self.options.closeAtx;
+  var content = self.all(node).join('');
+  var prefix;
+
+  if (setext && depth < 3) {
+    return content + '\n' + repeat(depth === 1 ? '=' : '-', content.length);
+  }
+
+  prefix = repeat('#', node.depth);
+
+  return prefix + ' ' + content + (closeAtx ? ' ' + prefix : '');
+}
+
+},{"repeat-string":442}],424:[function(require,module,exports){
+'use strict';
+
+module.exports = html;
+
+function html(node) {
+  return node.value;
+}
+
+},{}],425:[function(require,module,exports){
+'use strict';
+
+var label = require('../util/label');
+
+module.exports = imageReference;
+
+function imageReference(node) {
+  return '![' + (this.encode(node.alt, node) || '') + ']' + label(node);
+}
+
+},{"../util/label":411}],426:[function(require,module,exports){
+'use strict';
+
+var uri = require('../util/enclose-uri');
+var title = require('../util/enclose-title');
+
+module.exports = image;
+
+/* Stringify an image.
+ *
+ * Is smart about enclosing `url` (see `encloseURI()`) and
+ * `title` (see `encloseTitle()`).
+ *
+ *    ![foo](</fav icon.png> 'My "favourite" icon')
+ *
+ * Supports named entities in `url`, `alt`, and `title`
+ * when in `settings.encode` mode.
+ */
+function image(node) {
+  var self = this;
+  var content = uri(self.encode(node.url || '', node));
+  var exit = self.enterLink();
+  var alt = self.encode(self.escape(node.alt || '', node));
+
+  exit();
+
+  if (node.title) {
+    content += ' ' + title(self.encode(node.title, node));
+  }
+
+  return '![' + alt + '](' + content + ')';
+}
+
+},{"../util/enclose-title":407,"../util/enclose-uri":408}],427:[function(require,module,exports){
+'use strict';
+
+var streak = require('longest-streak');
+var repeat = require('repeat-string');
+
+module.exports = inlineCode;
+
+/* Stringify inline code.
+ *
+ * Knows about internal ticks (`\``), and ensures one more
+ * tick is used to enclose the inline code:
+ *
+ *     ```foo ``bar`` baz```
+ *
+ * Even knows about inital and final ticks:
+ *
+ *     `` `foo ``
+ *     `` foo` ``
+ */
+function inlineCode(node) {
+  var value = node.value;
+  var ticks = repeat('`', streak(value, '`') + 1);
+  var start = ticks;
+  var end = ticks;
+
+  if (value.charAt(0) === '`') {
+    start += ' ';
+  }
+
+  if (value.charAt(value.length - 1) === '`') {
+    end = ' ' + end;
+  }
+
+  return start + value + end;
+}
+
+},{"longest-streak":174,"repeat-string":442}],428:[function(require,module,exports){
+'use strict';
+
+var copy = require('../util/copy-identifier-encoding');
+var label = require('../util/label');
+
+module.exports = linkReference;
+
+function linkReference(node) {
+  var self = this;
+  var type = node.referenceType;
+  var exit = self.enterLinkReference(self, node);
+  var value = self.all(node).join('');
+
+  exit();
+
+  if (type === 'shortcut' || type === 'collapsed') {
+    value = copy(value, node.identifier);
+  }
+
+  return '[' + value + ']' + label(node);
+}
+
+},{"../util/copy-identifier-encoding":406,"../util/label":411}],429:[function(require,module,exports){
+'use strict';
+
+var uri = require('../util/enclose-uri');
+var title = require('../util/enclose-title');
+
+module.exports = link;
+
+/* Expression for a protocol:
+ * http://en.wikipedia.org/wiki/URI_scheme#Generic_syntax */
+var PROTOCOL = /^[a-z][a-z+.-]+:\/?/i;
+
+/* Stringify a link.
+ *
+ * When no title exists, the compiled `children` equal
+ * `url`, and `url` starts with a protocol, an auto
+ * link is created:
+ *
+ *     <http://example.com>
+ *
+ * Otherwise, is smart about enclosing `url` (see
+ * `encloseURI()`) and `title` (see `encloseTitle()`).
+ *
+ *    [foo](<foo at bar dot com> 'An "example" e-mail')
+ *
+ * Supports named entities in the `url` and `title` when
+ * in `settings.encode` mode. */
+function link(node) {
+  var self = this;
+  var content = self.encode(node.url || '', node);
+  var exit = self.enterLink();
+  var escaped = self.encode(self.escape(node.url || '', node));
+  var value = self.all(node).join('');
+
+  exit();
+
+  if (
+    node.title == null &&
+    PROTOCOL.test(content) &&
+    (escaped === value || escaped === 'mailto:' + value)
+  ) {
+    /* Backslash escapes do not work in autolinks,
+     * so we do not escape. */
+    return uri(self.encode(node.url), true);
+  }
+
+  content = uri(content);
+
+  if (node.title) {
+    content += ' ' + title(self.encode(self.escape(node.title, node), node));
+  }
+
+  return '[' + value + '](' + content + ')';
+}
+
+},{"../util/enclose-title":407,"../util/enclose-uri":408}],430:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+var pad = require('../util/pad');
+
+module.exports = listItem;
+
+/* Which checkbox to use. */
+var CHECKBOX_MAP = {
+  undefined: '',
+  null: '',
+  true: '[x] ',
+  false: '[ ] '
+};
+
+/* Stringify a list item.
+ *
+ * Prefixes the content with a checked checkbox when
+ * `checked: true`:
+ *
+ *     [x] foo
+ *
+ * Prefixes the content with an unchecked checkbox when
+ * `checked: false`:
+ *
+ *     [ ] foo
+ */
+function listItem(node, parent, position, bullet) {
+  var self = this;
+  var style = self.options.listItemIndent;
+  var loose = node.loose;
+  var children = node.children;
+  var length = children.length;
+  var values = [];
+  var index = -1;
+  var value;
+  var indent;
+  var spacing;
+
+  while (++index < length) {
+    values[index] = self.visit(children[index], node);
+  }
+
+  value = CHECKBOX_MAP[node.checked] + values.join(loose ? '\n\n' : '\n');
+
+  if (style === '1' || (style === 'mixed' && value.indexOf('\n') === -1)) {
+    indent = bullet.length + 1;
+    spacing = ' ';
+  } else {
+    indent = Math.ceil((bullet.length + 1) / 4) * 4;
+    spacing = repeat(' ', indent - bullet.length);
+  }
+
+  value = bullet + spacing + pad(value, indent / 4).slice(indent);
+
+  if (loose && parent.children.length - 1 !== position) {
+    value += '\n';
+  }
+
+  return value;
+}
+
+},{"../util/pad":412,"repeat-string":442}],431:[function(require,module,exports){
+'use strict';
+
+module.exports = list;
+
+/* Which method to use based on `list.ordered`. */
+var ORDERED_MAP = {
+  true: 'visitOrderedItems',
+  false: 'visitUnorderedItems'
+};
+
+function list(node) {
+  return this[ORDERED_MAP[node.ordered]](node);
+}
+
+},{}],432:[function(require,module,exports){
+'use strict';
+
+module.exports = paragraph;
+
+function paragraph(node) {
+  return this.all(node).join('');
+}
+
+},{}],433:[function(require,module,exports){
+'use strict';
+
+module.exports = root;
+
+/* Stringify a root.
+ * Adds a final newline to ensure valid POSIX files. */
+function root(node) {
+  return this.block(node) + '\n';
+}
+
+},{}],434:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+
+module.exports = strong;
+
+/* Stringify a `strong`.
+ *
+ * The marker used is configurable by `strong`, which
+ * defaults to an asterisk (`'*'`) but also accepts an
+ * underscore (`'_'`):
+ *
+ *     __foo__
+ */
+function strong(node) {
+  var marker = repeat(this.options.strong, 2);
+  return marker + this.all(node).join('') + marker;
+}
+
+},{"repeat-string":442}],435:[function(require,module,exports){
+'use strict';
+
+module.exports = tableCell;
+
+function tableCell(node) {
+  return this.all(node).join('');
+}
+
+},{}],436:[function(require,module,exports){
+'use strict';
+
+var markdownTable = require('markdown-table');
+
+module.exports = table;
+
+/* Stringify table.
+ *
+ * Creates a fenced table by default, but not in
+ * `looseTable: true` mode:
+ *
+ *     Foo | Bar
+ *     :-: | ---
+ *     Baz | Qux
+ *
+ * NOTE: Be careful with `looseTable: true` mode, as a
+ * loose table inside an indented code block on GitHub
+ * renders as an actual table!
+ *
+ * Creates a spaced table by default, but not in
+ * `spacedTable: false`:
+ *
+ *     |Foo|Bar|
+ *     |:-:|---|
+ *     |Baz|Qux|
+ */
+function table(node) {
+  var self = this;
+  var options = self.options;
+  var loose = options.looseTable;
+  var spaced = options.spacedTable;
+  var pad = options.paddedTable;
+  var stringLength = options.stringLength;
+  var rows = node.children;
+  var index = rows.length;
+  var exit = self.enterTable();
+  var result = [];
+  var start;
+  var end;
+
+  while (index--) {
+    result[index] = self.all(rows[index]);
+  }
+
+  exit();
+
+  if (loose) {
+    start = '';
+    end = '';
+  } else if (spaced) {
+    start = '| ';
+    end = ' |';
+  } else {
+    start = '|';
+    end = '|';
+  }
+
+  return markdownTable(result, {
+    align: node.align,
+    pad: pad,
+    start: start,
+    end: end,
+    stringLength: stringLength,
+    delimiter: spaced ? ' | ' : '|'
+  });
+}
+
+},{"markdown-table":176}],437:[function(require,module,exports){
+'use strict';
+
+module.exports = text;
+
+/* Stringify text.
+ * Supports named entities in `settings.encode: true` mode:
+ *
+ *     AT&amp;T
+ *
+ * Supports numbered entities in `settings.encode: numbers`
+ * mode:
+ *
+ *     AT&#x26;T
+ */
+function text(node, parent) {
+  return this.encode(this.escape(node.value, node, parent), node);
+}
+
+},{}],438:[function(require,module,exports){
+'use strict';
+
+var repeat = require('repeat-string');
+
+module.exports = thematic;
+
+/* Stringify a `thematic-break`.
+ * The character used is configurable through `rule`: (`'_'`)
+ *
+ *     ___
+ *
+ * The number of repititions is defined through
+ * `ruleRepetition`: (`6`)
+ *
+ *     ******
+ *
+ * Whether spaces delimit each character, is configured
+ * through `ruleSpaces`: (`true`)
+ *
+ *     * * *
+ */
+function thematic() {
+  var options = this.options;
+  var rule = repeat(options.rule, options.ruleRepetition);
+  return options.ruleSpaces ? rule.split('').join(' ') : rule;
+}
+
+},{"repeat-string":442}],439:[function(require,module,exports){
+'use strict';
+
+var unified = require('unified');
+var parse = require('remark-parse');
+var stringify = require('remark-stringify');
+
+module.exports = unified().use(parse).use(stringify).freeze();
+
+},{"remark-parse":347,"remark-stringify":395,"unified":780}],440:[function(require,module,exports){
 (function (process){
 var isWin = process.platform === 'win32';
 
@@ -60949,7 +72489,7 @@ function isSeparator(str, i) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283}],307:[function(require,module,exports){
+},{"_process":324}],441:[function(require,module,exports){
 /*!
  * repeat-element <https://github.com/jonschlinkert/repeat-element>
  *
@@ -60969,7 +72509,7 @@ module.exports = function repeat(ele, num) {
   return arr;
 };
 
-},{}],308:[function(require,module,exports){
+},{}],442:[function(require,module,exports){
 /*!
  * repeat-string <https://github.com/jonschlinkert/repeat-string>
  *
@@ -61041,7 +72581,27 @@ function repeat(str, num) {
   return res;
 }
 
-},{}],309:[function(require,module,exports){
+},{}],443:[function(require,module,exports){
+'use strict';
+
+var path = require('path');
+
+function replaceExt(npath, ext) {
+  if (typeof npath !== 'string') {
+    return npath;
+  }
+
+  if (npath.length === 0) {
+    return npath;
+  }
+
+  var nFileName = path.basename(npath, path.extname(npath)) + ext;
+  return path.join(path.dirname(npath), nFileName);
+}
+
+module.exports = replaceExt;
+
+},{"path":198}],444:[function(require,module,exports){
 'use strict';
 
 var Module = require('module');
@@ -61077,7 +72637,7 @@ module.exports = function requireFromString(code, filename, opts) {
 	return exports;
 };
 
-},{"module":14,"path":146}],310:[function(require,module,exports){
+},{"module":16,"path":198}],445:[function(require,module,exports){
 'use strict';
 const path = require('path');
 const Module = require('module');
@@ -61126,7 +72686,7 @@ const resolveFrom = (fromDir, moduleId, silent) => {
 module.exports = (fromDir, moduleId) => resolveFrom(fromDir, moduleId);
 module.exports.silent = (fromDir, moduleId) => resolveFrom(fromDir, moduleId, true);
 
-},{"fs":14,"module":14,"path":146}],311:[function(require,module,exports){
+},{"fs":16,"module":16,"path":198}],446:[function(require,module,exports){
 (function (process){
 module.exports = rimraf
 rimraf.sync = rimrafSync
@@ -61494,7 +73054,7 @@ function rmkidsSync (p, options) {
 }
 
 }).call(this,require('_process'))
-},{"_process":283,"assert":8,"fs":14,"glob":56,"path":146}],312:[function(require,module,exports){
+},{"_process":324,"assert":9,"fs":16,"glob":88,"path":198}],447:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -61558,19 +73118,32 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":15}],313:[function(require,module,exports){
-arguments[4][204][0].apply(exports,arguments)
-},{"./util":322,"dup":204}],314:[function(require,module,exports){
-arguments[4][205][0].apply(exports,arguments)
-},{"./base64":315,"dup":205}],315:[function(require,module,exports){
-arguments[4][206][0].apply(exports,arguments)
-},{"dup":206}],316:[function(require,module,exports){
-arguments[4][207][0].apply(exports,arguments)
-},{"dup":207}],317:[function(require,module,exports){
-arguments[4][208][0].apply(exports,arguments)
-},{"./util":322,"dup":208}],318:[function(require,module,exports){
-arguments[4][209][0].apply(exports,arguments)
-},{"dup":209}],319:[function(require,module,exports){
+},{"buffer":17}],448:[function(require,module,exports){
+'use strict';
+module.exports = function (str) {
+	var isExtendedLengthPath = /^\\\\\?\\/.test(str);
+	var hasNonAscii = /[^\x00-\x80]+/.test(str);
+
+	if (isExtendedLengthPath || hasNonAscii) {
+		return str;
+	}
+
+	return str.replace(/\\/g, '/');
+};
+
+},{}],449:[function(require,module,exports){
+arguments[4][266][0].apply(exports,arguments)
+},{"./util":458,"dup":266}],450:[function(require,module,exports){
+arguments[4][267][0].apply(exports,arguments)
+},{"./base64":451,"dup":267}],451:[function(require,module,exports){
+arguments[4][268][0].apply(exports,arguments)
+},{"dup":268}],452:[function(require,module,exports){
+arguments[4][269][0].apply(exports,arguments)
+},{"dup":269}],453:[function(require,module,exports){
+arguments[4][270][0].apply(exports,arguments)
+},{"./util":458,"dup":270}],454:[function(require,module,exports){
+arguments[4][271][0].apply(exports,arguments)
+},{"dup":271}],455:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -62626,7 +74199,7 @@ IndexedSourceMapConsumer.prototype.sourceContentFor =
  * and an object is returned with the following properties:
  *
  *   - line: The line number in the generated source, or null.  The
- *     line number is 1-based.
+ *     line number is 1-based. 
  *   - column: The column number in the generated source, or null.
  *     The column number is 0-based.
  */
@@ -62717,7 +74290,7 @@ IndexedSourceMapConsumer.prototype._parseMappings =
 
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./array-set":313,"./base64-vlq":314,"./binary-search":316,"./quick-sort":318,"./util":322}],320:[function(require,module,exports){
+},{"./array-set":449,"./base64-vlq":450,"./binary-search":452,"./quick-sort":454,"./util":458}],456:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -63144,7 +74717,7 @@ SourceMapGenerator.prototype.toString =
 
 exports.SourceMapGenerator = SourceMapGenerator;
 
-},{"./array-set":313,"./base64-vlq":314,"./mapping-list":317,"./util":322}],321:[function(require,module,exports){
+},{"./array-set":449,"./base64-vlq":450,"./mapping-list":453,"./util":458}],457:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -63559,7 +75132,7 @@ SourceNode.prototype.toStringWithSourceMap = function SourceNode_toStringWithSou
 
 exports.SourceNode = SourceNode;
 
-},{"./source-map-generator":320,"./util":322}],322:[function(require,module,exports){
+},{"./source-map-generator":456,"./util":458}],458:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -64049,9 +75622,9 @@ function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
 }
 exports.computeSourceURL = computeSourceURL;
 
-},{}],323:[function(require,module,exports){
-arguments[4][214][0].apply(exports,arguments)
-},{"./lib/source-map-consumer":319,"./lib/source-map-generator":320,"./lib/source-node":321,"dup":214}],324:[function(require,module,exports){
+},{}],459:[function(require,module,exports){
+arguments[4][276][0].apply(exports,arguments)
+},{"./lib/source-map-consumer":455,"./lib/source-map-generator":456,"./lib/source-node":457,"dup":276}],460:[function(require,module,exports){
 var SPECIFICITY = (function() {
 	var calculate,
 		calculateSingle,
@@ -64285,7 +75858,54 @@ if (typeof exports !== 'undefined') {
 	exports.compare = SPECIFICITY.compare;
 }
 
-},{}],325:[function(require,module,exports){
+},{}],461:[function(require,module,exports){
+/**
+ * @author Titus Wormer
+ * @copyright 2016 Titus Wormer
+ * @license MIT
+ * @module state-toggle
+ * @fileoverview Enter/exit a state.
+ */
+
+'use strict';
+
+/* eslint-env commonjs */
+
+/* Expose. */
+module.exports = factory;
+
+/**
+ * Construct a state `toggler`: a function which inverses
+ * `property` in context based on its current value.
+ * The by `toggler` returned function restores that value.
+ *
+ * @param {string} key - Property to toggle.
+ * @param {boolean} state - Default state.
+ * @param {Object?} [ctx] - Context object.
+ * @return {Function} - Enter.
+ */
+function factory(key, state, ctx) {
+  /**
+   * Enter a state.
+   *
+   * @return {Function} - Exit state.
+   */
+  return function () {
+    var context = ctx || this;
+    var current = context[key];
+
+    context[key] = !state;
+
+    /**
+     * Cancel state to its value before entering.
+     */
+    return function () {
+      context[key] = current;
+    };
+  };
+}
+
+},{}],462:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -64414,7 +76034,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":35,"inherits":73,"readable-stream/duplex.js":292,"readable-stream/passthrough.js":301,"readable-stream/readable.js":302,"readable-stream/transform.js":303,"readable-stream/writable.js":304}],326:[function(require,module,exports){
+},{"events":67,"inherits":111,"readable-stream/duplex.js":333,"readable-stream/passthrough.js":342,"readable-stream/readable.js":343,"readable-stream/transform.js":344,"readable-stream/writable.js":345}],463:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('safe-buffer').Buffer;
@@ -64687,7 +76307,153 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":312}],327:[function(require,module,exports){
+},{"safe-buffer":447}],464:[function(require,module,exports){
+module.exports=[
+  "cent",
+  "copy",
+  "divide",
+  "gt",
+  "lt",
+  "not",
+  "para",
+  "times"
+]
+
+},{}],465:[function(require,module,exports){
+'use strict';
+
+var entities = require('character-entities-html4');
+var legacy = require('character-entities-legacy');
+var hexadecimal = require('is-hexadecimal');
+var alphanumerical = require('is-alphanumerical');
+var dangerous = require('./dangerous.json');
+
+/* Expose. */
+module.exports = encode;
+
+encode.escape = escape;
+
+var own = {}.hasOwnProperty;
+
+/* List of enforced escapes. */
+var escapes = ['"', '\'', '<', '>', '&', '`'];
+
+/* Map of characters to names. */
+var characters = construct();
+
+/* Default escapes. */
+var EXPRESSION_ESCAPE = toExpression(escapes);
+
+/* Surrogate pairs. */
+var EXPRESSION_SURROGATE_PAIR = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+
+/* Non-ASCII characters. */
+// eslint-disable-next-line no-control-regex
+var EXPRESSION_BMP = /[\x01-\t\x0B\f\x0E-\x1F\x7F\x81\x8D\x8F\x90\x9D\xA0-\uFFFF]/g;
+
+/* Encode special characters in `value`. */
+function encode(value, options) {
+  var settings = options || {};
+  var subset = settings.subset;
+  var set = subset ? toExpression(subset) : EXPRESSION_ESCAPE;
+  var escapeOnly = settings.escapeOnly;
+  var omit = settings.omitOptionalSemicolons;
+
+  value = value.replace(set, function (char, pos, val) {
+    return one(char, val.charAt(pos + 1), settings);
+  });
+
+  if (subset || escapeOnly) {
+    return value;
+  }
+
+  return value
+    .replace(EXPRESSION_SURROGATE_PAIR, function (pair, pos, val) {
+      return toHexReference(
+        ((pair.charCodeAt(0) - 0xD800) * 0x400) +
+        pair.charCodeAt(1) - 0xDC00 + 0x10000,
+        val.charAt(pos + 2),
+        omit
+      );
+    })
+    .replace(EXPRESSION_BMP, function (char, pos, val) {
+      return one(char, val.charAt(pos + 1), settings);
+    });
+}
+
+/* Shortcut to escape special characters in HTML. */
+function escape(value) {
+  return encode(value, {
+    escapeOnly: true,
+    useNamedReferences: true
+  });
+}
+
+/* Encode `char` according to `options`. */
+function one(char, next, options) {
+  var shortest = options.useShortestReferences;
+  var omit = options.omitOptionalSemicolons;
+  var named;
+  var numeric;
+
+  if (
+    (shortest || options.useNamedReferences) &&
+    own.call(characters, char)
+  ) {
+    named = toNamed(characters[char], next, omit, options.attribute);
+  }
+
+  if (shortest || !named) {
+    numeric = toHexReference(char.charCodeAt(0), next, omit);
+  }
+
+  if (named && (!shortest || named.length < numeric.length)) {
+    return named;
+  }
+
+  return numeric;
+}
+
+/* Transform `code` into an entity. */
+function toNamed(name, next, omit, attribute) {
+  var value = '&' + name;
+
+  if (
+    omit &&
+    own.call(legacy, name) &&
+    dangerous.indexOf(name) === -1 &&
+    (!attribute || (next && next !== '=' && !alphanumerical(next)))
+  ) {
+    return value;
+  }
+
+  return value + ';';
+}
+
+/* Transform `code` into a hexadecimal character reference. */
+function toHexReference(code, next, omit) {
+  var value = '&#x' + code.toString(16).toUpperCase();
+  return omit && next && !hexadecimal(next) ? value : value + ';';
+}
+
+/* Create an expression for `characters`. */
+function toExpression(characters) {
+  return new RegExp('[' + characters.join('') + ']', 'g');
+}
+
+/* Construct the map. */
+function construct() {
+  var chars = {};
+  var name;
+
+  for (name in entities) {
+    chars[entities[name]] = name;
+  }
+
+  return chars;
+}
+
+},{"./dangerous.json":464,"character-entities-html4":19,"character-entities-legacy":20,"is-alphanumerical":114,"is-hexadecimal":124}],466:[function(require,module,exports){
 'use strict';
 var ansiRegex = require('ansi-regex')();
 
@@ -64695,7 +76461,7 @@ module.exports = function (str) {
 	return typeof str === 'string' ? str.replace(ansiRegex, '') : str;
 };
 
-},{"ansi-regex":1}],328:[function(require,module,exports){
+},{"ansi-regex":1}],467:[function(require,module,exports){
 var SKIP = 'skip';
 var CHECK = 'check';
 var ONLY = 'only';
@@ -64900,7 +76666,7 @@ module.exports = function (options, callback) {
   }
 }
 
-},{}],329:[function(require,module,exports){
+},{}],468:[function(require,module,exports){
 /* @flow */
 "use strict";
 const _ = require("lodash");
@@ -65107,7 +76873,7 @@ module.exports = function(
   }
 };
 
-},{"lodash":126}],330:[function(require,module,exports){
+},{"lodash":173}],469:[function(require,module,exports){
 /* @flow */
 "use strict";
 const _ = require("lodash");
@@ -65156,16 +76922,14 @@ function augmentConfigExtended(
 
   const configDir = path.dirname(cosmiconfigResult.filepath || "");
   const cleanedConfig = _.omit(cosmiconfigResult.config, "ignoreFiles");
-  return augmentConfigBasic(
-    stylelint,
-    cleanedConfig,
-    configDir
-  ).then(augmentedConfig => {
-    return {
-      config: augmentedConfig,
-      filepath: cosmiconfigResult.filepath
-    };
-  });
+  return augmentConfigBasic(stylelint, cleanedConfig, configDir).then(
+    augmentedConfig => {
+      return {
+        config: augmentedConfig,
+        filepath: cosmiconfigResult.filepath
+      };
+    }
+  );
 }
 
 function augmentConfigFull(
@@ -65375,7 +77139,9 @@ function addPluginFunctions(
       if (!pluginRuleDefinition.ruleName) {
         throw configurationError(
           "stylelint v3+ requires plugins to expose a ruleName. " +
-            `The plugin "${pluginLookup}" is not doing this, so will not work ` +
+            `The plugin "${
+              pluginLookup
+            }" is not doing this, so will not work ` +
             "with stylelint v3+. Please file an issue with the plugin."
         );
       }
@@ -65384,7 +77150,9 @@ function addPluginFunctions(
         throw configurationError(
           "stylelint v7+ requires plugin rules to be namspaced, " +
             "i.e. only `plugin-namespace/plugin-rule-name` plugin rule names are supported. " +
-            `The plugin rule "${pluginRuleDefinition.ruleName}" does not do this, so will not work. ` +
+            `The plugin rule "${
+              pluginRuleDefinition.ruleName
+            }" does not do this, so will not work. ` +
             "Please file an issue with the plugin."
         );
       }
@@ -65470,18 +77238,18 @@ function addProcessorFunctions(
 
 module.exports = { augmentConfigExtended, augmentConfigFull };
 
-},{"./dynamicRequire":334,"./normalizeRuleSettings":342,"./rules":427,"./utils/configurationError":528,"./utils/getModulePath":536,"globjoin":60,"lodash":126,"path":146}],331:[function(require,module,exports){
+},{"./dynamicRequire":473,"./normalizeRuleSettings":481,"./rules":567,"./utils/configurationError":669,"./utils/getModulePath":677,"globjoin":90,"lodash":173,"path":198}],470:[function(require,module,exports){
 /* @flow */
-"use strict"
+"use strict";
 
-module.exports = function (ruleName/*: string*/, rule/*: Function*/) {
+module.exports = function(ruleName /*: string*/, rule /*: Function*/) {
   return {
     ruleName,
     rule
   };
 };
 
-},{}],332:[function(require,module,exports){
+},{}],471:[function(require,module,exports){
 /* @flow */
 "use strict";
 const _ = require("lodash");
@@ -65529,7 +77297,7 @@ module.exports = function(
   return stylelint;
 };
 
-},{"./augmentConfig":330,"./createStylelintResult":333,"./getConfigForFile":337,"./getPostcssResult":338,"./isPathIgnored":339,"./lintSource":340,"cosmiconfig":24,"lodash":126}],333:[function(require,module,exports){
+},{"./augmentConfig":469,"./createStylelintResult":472,"./getConfigForFile":476,"./getPostcssResult":477,"./isPathIgnored":478,"./lintSource":479,"cosmiconfig":32,"lodash":173}],472:[function(require,module,exports){
 /* @flow */
 "use strict";
 const _ = require("lodash");
@@ -65682,7 +77450,7 @@ module.exports = function(
   });
 };
 
-},{"lodash":126}],334:[function(require,module,exports){
+},{"lodash":173}],473:[function(require,module,exports){
 "use strict";
 // This file exists to remove the need for Flow's ignore_non_literal_requires option
 
@@ -65690,7 +77458,7 @@ module.exports = function(name) {
   return require(name);
 };
 
-},{}],335:[function(require,module,exports){
+},{}],474:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -65701,7 +77469,7 @@ module.exports = {
   verbose: () => {}
 };
 
-},{"./jsonFormatter":336}],336:[function(require,module,exports){
+},{"./jsonFormatter":475}],475:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -65714,7 +77482,7 @@ module.exports = function(results) {
   return JSON.stringify(cleanedResults);
 };
 
-},{"lodash":126}],337:[function(require,module,exports){
+},{"lodash":173}],476:[function(require,module,exports){
 (function (process){
 /* @flow */
 "use strict";
@@ -65768,10 +77536,11 @@ module.exports = function(
 };
 
 }).call(this,require('_process'))
-},{"./augmentConfig":330,"./utils/configurationError":528,"_process":283,"path":146}],338:[function(require,module,exports){
+},{"./augmentConfig":469,"./utils/configurationError":669,"_process":324,"path":198}],477:[function(require,module,exports){
 /* @flow */
 "use strict";
 
+const autoSyntax = require("postcss-html");
 const dynamicRequire = require("./dynamicRequire");
 const fs = require("fs");
 const less = require("postcss-less");
@@ -65851,7 +77620,7 @@ module.exports = function(
           .extname(options.filePath || "")
           .slice(1)
           .toLowerCase();
-        syntax = syntaxes[fileExtension] || syntaxes.css;
+        syntax = syntaxes[fileExtension] || autoSyntax(syntaxes);
       }
 
       const postcssOptions /*: postcss$options*/ = {};
@@ -65895,7 +77664,7 @@ function readFile(filePath /*: string*/) /*: Promise<string>*/ {
   });
 }
 
-},{"./dynamicRequire":334,"fs":14,"path":146,"postcss":268,"postcss-less":159,"postcss-safe-parser":221,"postcss-scss":228,"sugarss":598}],339:[function(require,module,exports){
+},{"./dynamicRequire":473,"fs":16,"path":198,"postcss":309,"postcss-html":209,"postcss-less":221,"postcss-safe-parser":283,"postcss-scss":290,"sugarss":766}],478:[function(require,module,exports){
 (function (process){
 /* @flow */
 "use strict";
@@ -65927,7 +77696,7 @@ module.exports = function(
 };
 
 }).call(this,require('_process'))
-},{"_process":283,"micromatch":128,"path":146}],340:[function(require,module,exports){
+},{"_process":324,"micromatch":179,"path":198}],479:[function(require,module,exports){
 (function (process){
 /* @flow */
 "use strict";
@@ -66172,7 +77941,7 @@ function createEmptyPostcssResult(
 }
 
 }).call(this,require('_process'))
-},{"./assignDisabledRanges":329,"./rules":427,"./utils/configurationError":528,"./utils/getOsEol":538,"_process":283,"lodash":126,"path":146}],341:[function(require,module,exports){
+},{"./assignDisabledRanges":468,"./rules":567,"./utils/configurationError":669,"./utils/getOsEol":679,"_process":324,"lodash":173,"path":198}],480:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -66297,7 +78066,7 @@ function isWarningInRange(
   );
 }
 
-},{"lodash":126}],342:[function(require,module,exports){
+},{"lodash":173}],481:[function(require,module,exports){
 /* @flow */
 "use strict";
 const _ = require("lodash");
@@ -66362,7 +78131,7 @@ module.exports = function(
   return [rawSettings];
 };
 
-},{"./rules":427,"lodash":126}],343:[function(require,module,exports){
+},{"./rules":567,"lodash":173}],482:[function(require,module,exports){
 (function (process){
 /* @flow */
 "use strict";
@@ -66491,7 +78260,7 @@ module.exports = postcss.plugin("stylelint", function(
 });
 
 }).call(this,require('_process'))
-},{"./createStylelint":332,"_process":283,"lodash":126,"path":146,"postcss":268}],344:[function(require,module,exports){
+},{"./createStylelint":471,"_process":324,"lodash":173,"path":198,"postcss":309}],483:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -67153,7 +78922,7 @@ function uniteSets() {
 
 module.exports = keywordSets;
 
-},{"lodash":126}],345:[function(require,module,exports){
+},{"lodash":173}],484:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -67307,7 +79076,7 @@ module.exports = {
   yellowgreen: ["#9acd32", "#ff9acd32"]
 };
 
-},{}],346:[function(require,module,exports){
+},{}],485:[function(require,module,exports){
 "use strict";
 
 const propertySets = {};
@@ -67327,7 +79096,7 @@ propertySets.acceptCustomIdents = new Set([
 
 module.exports = propertySets;
 
-},{}],347:[function(require,module,exports){
+},{}],486:[function(require,module,exports){
 "use strict";
 
 const punctuationSets = {};
@@ -67345,7 +79114,7 @@ punctuationSets.nonSpaceCombinators = new Set([">", "+", "~", ">>>", "/deep/"]);
 
 module.exports = punctuationSets;
 
-},{}],348:[function(require,module,exports){
+},{}],487:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -67519,7 +79288,7 @@ module.exports = {
   ]
 };
 
-},{}],349:[function(require,module,exports){
+},{}],488:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -67571,7 +79340,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],350:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],489:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -67736,7 +79505,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/addEmptyLineBefore":520,"../../utils/getPreviousNonSharedLineCommentNode":539,"../../utils/hasEmptyLine":544,"../../utils/isAfterComment":550,"../../utils/isBlocklessAtRuleAfterBlocklessAtRule":553,"../../utils/isBlocklessAtRuleAfterSameNameBlocklessAtRule":554,"../../utils/isFirstNested":562,"../../utils/isFirstNodeOfRoot":563,"../../utils/optionsMatches":588,"../../utils/removeEmptyLinesBefore":591,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],351:[function(require,module,exports){
+},{"../../utils/addEmptyLineBefore":661,"../../utils/getPreviousNonSharedLineCommentNode":680,"../../utils/hasEmptyLine":685,"../../utils/isAfterComment":691,"../../utils/isBlocklessAtRuleAfterBlocklessAtRule":694,"../../utils/isBlocklessAtRuleAfterSameNameBlocklessAtRule":695,"../../utils/isFirstNested":703,"../../utils/isFirstNodeOfRoot":704,"../../utils/optionsMatches":729,"../../utils/removeEmptyLinesBefore":732,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],490:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -67788,7 +79557,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],352:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],491:[function(require,module,exports){
 "use strict";
 
 const atRuleNameSpaceChecker = require("../atRuleNameSpaceChecker");
@@ -67826,7 +79595,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../atRuleNameSpaceChecker":358}],353:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../atRuleNameSpaceChecker":497}],492:[function(require,module,exports){
 "use strict";
 
 const atRuleNameSpaceChecker = require("../atRuleNameSpaceChecker");
@@ -67864,7 +79633,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../atRuleNameSpaceChecker":358}],354:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../atRuleNameSpaceChecker":497}],493:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -67929,7 +79698,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],355:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],494:[function(require,module,exports){
 "use strict";
 
 const hasBlock = require("../../utils/hasBlock");
@@ -67994,7 +79763,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/hasBlock":542,"../../utils/nextNonCommentNode":586,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],356:[function(require,module,exports){
+},{"../../utils/hasBlock":683,"../../utils/nextNonCommentNode":727,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],495:[function(require,module,exports){
 "use strict";
 
 const hasBlock = require("../../utils/hasBlock");
@@ -68050,7 +79819,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/hasBlock":542,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],357:[function(require,module,exports){
+},{"../../utils/hasBlock":683,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],496:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -68102,7 +79871,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],358:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],497:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxAtRule = require("../utils/isStandardSyntaxAtRule");
@@ -68138,7 +79907,7 @@ module.exports = function(options) {
   }
 };
 
-},{"../utils/isStandardSyntaxAtRule":571,"../utils/report":592}],359:[function(require,module,exports){
+},{"../utils/isStandardSyntaxAtRule":712,"../utils/report":733}],498:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -68224,7 +79993,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/hasEmptyLine":544,"../../utils/isSingleLineString":570,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],360:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/hasEmptyLine":685,"../../utils/isSingleLineString":711,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],499:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -68343,7 +80112,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/optionsMatches":588,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"lodash":126}],361:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/optionsMatches":729,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"lodash":173}],500:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -68436,7 +80205,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/isSingleLineString":570,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],362:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/isSingleLineString":711,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],501:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -68525,7 +80294,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],363:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],502:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -68609,7 +80378,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],364:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],503:[function(require,module,exports){
 "use strict";
 
 const beforeBlockString = require("../../utils/beforeBlockString");
@@ -68662,7 +80431,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/hasEmptyBlock":543,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],365:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/hasEmptyBlock":684,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],504:[function(require,module,exports){
 "use strict";
 
 const beforeBlockString = require("../../utils/beforeBlockString");
@@ -68737,7 +80506,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/nextNonCommentNode":586,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],366:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/nextNonCommentNode":727,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],505:[function(require,module,exports){
 "use strict";
 
 const beforeBlockString = require("../../utils/beforeBlockString");
@@ -68823,7 +80592,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],367:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],506:[function(require,module,exports){
 "use strict";
 
 const beforeBlockString = require("../../utils/beforeBlockString");
@@ -68900,7 +80669,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],368:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],507:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -69005,7 +80774,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/blockString":523,"../../utils/hasBlock":542,"../../utils/hasEmptyBlock":543,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"lodash":126}],369:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/blockString":664,"../../utils/hasBlock":683,"../../utils/hasEmptyBlock":684,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"lodash":173}],508:[function(require,module,exports){
 "use strict";
 
 const blurFunctionArguments = require("../../utils/blurFunctionArguments");
@@ -69101,7 +80870,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blurFunctionArguments":525,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],370:[function(require,module,exports){
+},{"../../utils/blurFunctionArguments":666,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],509:[function(require,module,exports){
 "use strict";
 
 const blurFunctionArguments = require("../../utils/blurFunctionArguments");
@@ -69234,7 +81003,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blurFunctionArguments":525,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],371:[function(require,module,exports){
+},{"../../utils/blurFunctionArguments":666,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],510:[function(require,module,exports){
 "use strict";
 
 // these algorithms are sourced from https://drafts.csswg.org/css-color/#color-conversion-code
@@ -69434,7 +81203,7 @@ function generateColorFuncs(hexString) {
 
 module.exports = generateColorFuncs;
 
-},{}],372:[function(require,module,exports){
+},{}],511:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -69610,7 +81379,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../reference/namedColorData":345,"../../reference/propertySets":346,"../../utils/declarationValueIndex":530,"../../utils/isStandardSyntaxFunction":573,"../../utils/isStandardSyntaxValue":580,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"./generateColorFuncs":371,"lodash":126,"postcss-value-parser":251}],373:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../reference/namedColorData":484,"../../reference/propertySets":485,"../../utils/declarationValueIndex":671,"../../utils/isStandardSyntaxFunction":714,"../../utils/isStandardSyntaxValue":721,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"./generateColorFuncs":510,"lodash":173,"postcss-value-parser":292}],512:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -69666,7 +81435,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],374:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],513:[function(require,module,exports){
 "use strict";
 
 const isValidHex = require("../../utils/isValidHex");
@@ -69727,7 +81496,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isValidHex":582,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],375:[function(require,module,exports){
+},{"../../utils/isValidHex":723,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],514:[function(require,module,exports){
 "use strict";
 
 const addEmptyLineBefore = require("../../utils/addEmptyLineBefore");
@@ -69852,7 +81621,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/addEmptyLineBefore":520,"../../utils/hasEmptyLine":544,"../../utils/isAfterComment":550,"../../utils/isFirstNested":562,"../../utils/isFirstNodeOfRoot":563,"../../utils/isSharedLineComment":569,"../../utils/optionsMatches":588,"../../utils/removeEmptyLinesBefore":591,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],376:[function(require,module,exports){
+},{"../../utils/addEmptyLineBefore":661,"../../utils/hasEmptyLine":685,"../../utils/isAfterComment":691,"../../utils/isFirstNested":703,"../../utils/isFirstNodeOfRoot":704,"../../utils/isSharedLineComment":710,"../../utils/optionsMatches":729,"../../utils/removeEmptyLinesBefore":732,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],515:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -69897,7 +81666,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],377:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],516:[function(require,module,exports){
 "use strict";
 
 const isWhitespace = require("../../utils/isWhitespace");
@@ -69983,7 +81752,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isWhitespace":584,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],378:[function(require,module,exports){
+},{"../../utils/isWhitespace":725,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],517:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -70043,7 +81812,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/containsString":529,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],379:[function(require,module,exports){
+},{"../../utils/containsString":670,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],518:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -70096,7 +81865,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],380:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],519:[function(require,module,exports){
 "use strict";
 
 const addEmptyLineBefore = require("../../utils/addEmptyLineBefore");
@@ -70224,7 +81993,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/addEmptyLineBefore":520,"../../utils/blockString":523,"../../utils/getPreviousNonSharedLineCommentNode":539,"../../utils/hasEmptyLine":544,"../../utils/isAfterComment":550,"../../utils/isCustomProperty":559,"../../utils/isFirstNested":562,"../../utils/isSingleLineString":570,"../../utils/isStandardSyntaxDeclaration":572,"../../utils/optionsMatches":588,"../../utils/removeEmptyLinesBefore":591,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],381:[function(require,module,exports){
+},{"../../utils/addEmptyLineBefore":661,"../../utils/blockString":664,"../../utils/getPreviousNonSharedLineCommentNode":680,"../../utils/hasEmptyLine":685,"../../utils/isAfterComment":691,"../../utils/isCustomProperty":700,"../../utils/isFirstNested":703,"../../utils/isSingleLineString":711,"../../utils/isStandardSyntaxDeclaration":713,"../../utils/optionsMatches":729,"../../utils/removeEmptyLinesBefore":732,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],520:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -70275,7 +82044,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomProperty":559,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],382:[function(require,module,exports){
+},{"../../utils/isCustomProperty":700,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],521:[function(require,module,exports){
 "use strict";
 
 const declarationBangSpaceChecker = require("../declarationBangSpaceChecker");
@@ -70314,7 +82083,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../declarationBangSpaceChecker":402}],383:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../declarationBangSpaceChecker":541}],522:[function(require,module,exports){
 "use strict";
 
 const declarationBangSpaceChecker = require("../declarationBangSpaceChecker");
@@ -70353,7 +82122,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../declarationBangSpaceChecker":402}],384:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../declarationBangSpaceChecker":541}],523:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -70495,7 +82264,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomProperty":559,"../../utils/isStandardSyntaxProperty":575,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],385:[function(require,module,exports){
+},{"../../utils/isCustomProperty":700,"../../utils/isStandardSyntaxProperty":716,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],524:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -70574,11 +82343,11 @@ const rule = function(actual, options) {
 
           longhandDeclarations[prefixedShorthandProperty].push(prop);
 
-          const prefixedShorthandData = shorthandData[
-            shorthandProperty
-          ].map(item => {
-            return prefix + item;
-          });
+          const prefixedShorthandData = shorthandData[shorthandProperty].map(
+            item => {
+              return prefix + item;
+            }
+          );
 
           if (
             !_.isEqual(
@@ -70605,7 +82374,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/shorthandData":348,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],386:[function(require,module,exports){
+},{"../../reference/shorthandData":487,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],525:[function(require,module,exports){
 "use strict";
 
 const postcss = require("postcss");
@@ -70672,7 +82441,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/shorthandData":348,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss":268}],387:[function(require,module,exports){
+},{"../../reference/shorthandData":487,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss":309}],526:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -70745,7 +82514,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/nextNonCommentNode":586,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],388:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/nextNonCommentNode":727,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],527:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -70806,7 +82575,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],389:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],528:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -70873,7 +82642,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/rawNodeString":590,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],390:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/rawNodeString":731,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],529:[function(require,module,exports){
 "use strict";
 
 const blockString = require("../../utils/blockString");
@@ -70936,7 +82705,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/blockString":523,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],391:[function(require,module,exports){
+},{"../../utils/blockString":664,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],530:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -70993,7 +82762,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/blockString":523,"../../utils/isSingleLineString":570,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],392:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/blockString":664,"../../utils/isSingleLineString":711,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],531:[function(require,module,exports){
 "use strict";
 
 const hasBlock = require("../../utils/hasBlock");
@@ -71069,7 +82838,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/hasBlock":542,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],393:[function(require,module,exports){
+},{"../../utils/hasBlock":683,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],532:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../../utils/declarationValueIndex");
@@ -71143,7 +82912,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/isStandardSyntaxDeclaration":572,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596}],394:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/isStandardSyntaxDeclaration":713,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737}],533:[function(require,module,exports){
 "use strict";
 
 const declarationColonSpaceChecker = require("../declarationColonSpaceChecker");
@@ -71184,7 +82953,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../declarationColonSpaceChecker":403}],395:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../declarationColonSpaceChecker":542}],534:[function(require,module,exports){
 "use strict";
 
 const declarationColonSpaceChecker = require("../declarationColonSpaceChecker");
@@ -71223,7 +82992,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../declarationColonSpaceChecker":403}],396:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../declarationColonSpaceChecker":542}],535:[function(require,module,exports){
 "use strict";
 
 const addEmptyLineBefore = require("../../utils/addEmptyLineBefore");
@@ -71354,7 +83123,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/addEmptyLineBefore":520,"../../utils/blockString":523,"../../utils/hasEmptyLine":544,"../../utils/isAfterComment":550,"../../utils/isAfterStandardPropertyDeclaration":552,"../../utils/isCustomProperty":559,"../../utils/isFirstNested":562,"../../utils/isSingleLineString":570,"../../utils/isStandardSyntaxDeclaration":572,"../../utils/optionsMatches":588,"../../utils/removeEmptyLinesBefore":591,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],397:[function(require,module,exports){
+},{"../../utils/addEmptyLineBefore":661,"../../utils/blockString":664,"../../utils/hasEmptyLine":685,"../../utils/isAfterComment":691,"../../utils/isAfterStandardPropertyDeclaration":693,"../../utils/isCustomProperty":700,"../../utils/isFirstNested":703,"../../utils/isSingleLineString":711,"../../utils/isStandardSyntaxDeclaration":713,"../../utils/optionsMatches":729,"../../utils/removeEmptyLinesBefore":732,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],536:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -71394,7 +83163,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],398:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],537:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -71472,7 +83241,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268,"postcss-value-parser":251}],399:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309,"postcss-value-parser":292}],538:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -71550,7 +83319,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268,"postcss-value-parser":251}],400:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309,"postcss-value-parser":292}],539:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -71608,7 +83377,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],401:[function(require,module,exports){
+},{"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],540:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -71666,7 +83435,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],402:[function(require,module,exports){
+},{"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],541:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../utils/declarationValueIndex");
@@ -71703,7 +83472,7 @@ module.exports = function(opts) {
   }
 };
 
-},{"../utils/declarationValueIndex":530,"../utils/report":592,"style-search":328}],403:[function(require,module,exports){
+},{"../utils/declarationValueIndex":671,"../utils/report":733,"style-search":467}],542:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../utils/declarationValueIndex");
@@ -71747,7 +83516,7 @@ module.exports = function(opts) {
   });
 };
 
-},{"../utils/declarationValueIndex":530,"../utils/isStandardSyntaxDeclaration":572,"../utils/report":592}],404:[function(require,module,exports){
+},{"../utils/declarationValueIndex":671,"../utils/isStandardSyntaxDeclaration":713,"../utils/report":733}],543:[function(require,module,exports){
 "use strict";
 
 const rangeOperatorRegex = /[^><](>=?|<=?|=)/g;
@@ -71764,7 +83533,7 @@ module.exports = function(atRule, cb) {
   }
 };
 
-},{}],405:[function(require,module,exports){
+},{}],544:[function(require,module,exports){
 "use strict";
 
 const findFontFamily = require("../../utils/findFontFamily");
@@ -71912,7 +83681,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/findFontFamily":533,"../../utils/isStandardSyntaxValue":580,"../../utils/isVariable":583,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],406:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/findFontFamily":674,"../../utils/isStandardSyntaxValue":721,"../../utils/isVariable":724,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],545:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -72017,7 +83786,78 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/declarationValueIndex":530,"../../utils/findFontFamily":533,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],407:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/findFontFamily":674,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],546:[function(require,module,exports){
+"use strict";
+
+const declarationValueIndex = require("../../utils/declarationValueIndex");
+const findFontFamily = require("../../utils/findFontFamily");
+const keywordSets = require("../../reference/keywordSets");
+const report = require("../../utils/report");
+const ruleMessages = require("../../utils/ruleMessages");
+const validateOptions = require("../../utils/validateOptions");
+
+const ruleName = "font-family-no-missing-generic-family-keyword";
+
+const messages = ruleMessages(ruleName, {
+  rejected: "Unexpected missing generic font family"
+});
+
+const isFamilyNameKeyword = node =>
+  !node.quote && keywordSets.fontFamilyKeywords.has(node.value.toLowerCase());
+
+const rule = function(actual, options) {
+  return (root, result) => {
+    const validOptions = validateOptions(
+      result,
+      ruleName,
+      { actual },
+      {
+        actual: options,
+        optional: true
+      }
+    );
+    if (!validOptions) {
+      return;
+    }
+
+    root.walkDecls(/^font(-family)?$/i, decl => {
+      // Ignore @font-face
+      if (
+        decl.parent &&
+        decl.parent.type === "atrule" &&
+        decl.parent.name.toLowerCase() === "font-face"
+      ) {
+        return;
+      }
+
+      const fontFamilies = findFontFamily(decl.value);
+
+      if (fontFamilies.length === 0) {
+        return;
+      }
+
+      if (fontFamilies.some(isFamilyNameKeyword)) {
+        return;
+      }
+
+      report({
+        result,
+        ruleName,
+        message: messages.rejected,
+        node: decl,
+        index:
+          declarationValueIndex(decl) +
+          fontFamilies[fontFamilies.length - 1].sourceIndex
+      });
+    });
+  };
+};
+
+rule.ruleName = ruleName;
+rule.messages = messages;
+module.exports = rule;
+
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/findFontFamily":674,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],547:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -72157,7 +83997,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/declarationValueIndex":530,"../../utils/isNumbery":566,"../../utils/isStandardSyntaxValue":580,"../../utils/isVariable":583,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],408:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/isNumbery":707,"../../utils/isStandardSyntaxValue":721,"../../utils/isVariable":724,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],548:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -72222,7 +84062,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/isStandardSyntaxFunction":573,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268,"postcss-value-parser":251}],409:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/isStandardSyntaxFunction":714,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309,"postcss-value-parser":292}],549:[function(require,module,exports){
 "use strict";
 
 const balancedMatch = require("balanced-match");
@@ -72374,7 +84214,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isWhitespace":584,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"balanced-match":9,"postcss-value-parser":251,"style-search":328}],410:[function(require,module,exports){
+},{"../../utils/isWhitespace":725,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"balanced-match":11,"postcss-value-parser":292,"style-search":467}],550:[function(require,module,exports){
 "use strict";
 
 const functionCommaSpaceChecker = require("../functionCommaSpaceChecker");
@@ -72416,7 +84256,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../functionCommaSpaceChecker":425}],411:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../functionCommaSpaceChecker":565}],551:[function(require,module,exports){
 "use strict";
 
 const functionCommaSpaceChecker = require("../functionCommaSpaceChecker");
@@ -72458,7 +84298,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../functionCommaSpaceChecker":425}],412:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../functionCommaSpaceChecker":565}],552:[function(require,module,exports){
 "use strict";
 
 const functionCommaSpaceChecker = require("../functionCommaSpaceChecker");
@@ -72501,7 +84341,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../functionCommaSpaceChecker":425}],413:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../functionCommaSpaceChecker":565}],553:[function(require,module,exports){
 "use strict";
 
 const functionCommaSpaceChecker = require("../functionCommaSpaceChecker");
@@ -72544,7 +84384,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../functionCommaSpaceChecker":425}],414:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../functionCommaSpaceChecker":565}],554:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../../utils/declarationValueIndex");
@@ -72643,7 +84483,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/functionArgumentsSearch":534,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss":268,"postcss-value-parser":251}],415:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/functionArgumentsSearch":675,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss":309,"postcss-value-parser":292}],555:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -72717,7 +84557,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],416:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],556:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -72817,7 +84657,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/declarationValueIndex":530,"../../utils/isStandardSyntaxFunction":573,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251}],417:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/isStandardSyntaxFunction":714,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292}],557:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../../utils/declarationValueIndex");
@@ -72939,7 +84779,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/isSingleLineString":570,"../../utils/isStandardSyntaxFunction":573,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-value-parser":251}],418:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/isSingleLineString":711,"../../utils/isStandardSyntaxFunction":714,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-value-parser":292}],558:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../../utils/declarationValueIndex");
@@ -73073,7 +84913,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/isSingleLineString":570,"../../utils/isStandardSyntaxFunction":573,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-value-parser":251}],419:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/isSingleLineString":711,"../../utils/isStandardSyntaxFunction":714,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-value-parser":292}],559:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -73124,7 +84964,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/functionArgumentsSearch":534,"../../utils/isStandardSyntaxUrl":579,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],420:[function(require,module,exports){
+},{"../../utils/functionArgumentsSearch":675,"../../utils/isStandardSyntaxUrl":720,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],560:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -73255,7 +85095,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/functionArgumentsSearch":534,"../../utils/isStandardSyntaxUrl":579,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],421:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/functionArgumentsSearch":675,"../../utils/isStandardSyntaxUrl":720,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],561:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -73322,7 +85162,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/functionArgumentsSearch":534,"../../utils/getSchemeFromUrl":540,"../../utils/isStandardSyntaxUrl":579,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],422:[function(require,module,exports){
+},{"../../utils/functionArgumentsSearch":675,"../../utils/getSchemeFromUrl":681,"../../utils/isStandardSyntaxUrl":720,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],562:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -73389,7 +85229,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/functionArgumentsSearch":534,"../../utils/getSchemeFromUrl":540,"../../utils/isStandardSyntaxUrl":579,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],423:[function(require,module,exports){
+},{"../../utils/functionArgumentsSearch":675,"../../utils/getSchemeFromUrl":681,"../../utils/isStandardSyntaxUrl":720,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],563:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -73454,7 +85294,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/declarationValueIndex":530,"../../utils/isStandardSyntaxFunction":573,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268,"postcss-value-parser":251}],424:[function(require,module,exports){
+},{"../../utils/declarationValueIndex":671,"../../utils/isStandardSyntaxFunction":714,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309,"postcss-value-parser":292}],564:[function(require,module,exports){
 "use strict";
 
 const isWhitespace = require("../../utils/isWhitespace");
@@ -73540,7 +85380,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isWhitespace":584,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],425:[function(require,module,exports){
+},{"../../utils/isWhitespace":725,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],565:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -73615,7 +85455,7 @@ module.exports = function(opts) {
   });
 };
 
-},{"../utils/declarationValueIndex":530,"../utils/isStandardSyntaxFunction":573,"../utils/report":592,"lodash":126,"postcss-value-parser":251,"style-search":328}],426:[function(require,module,exports){
+},{"../utils/declarationValueIndex":671,"../utils/isStandardSyntaxFunction":714,"../utils/report":733,"lodash":173,"postcss-value-parser":292,"style-search":467}],566:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -74083,7 +85923,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/beforeBlockString":522,"../../utils/hasBlock":542,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],427:[function(require,module,exports){
+},{"../../utils/beforeBlockString":663,"../../utils/hasBlock":683,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],567:[function(require,module,exports){
 "use strict";
 
 const atRuleBlacklist = require("./at-rule-blacklist");
@@ -74140,6 +85980,7 @@ const declarationPropertyValueBlacklist = require("./declaration-property-value-
 const declarationPropertyValueWhitelist = require("./declaration-property-value-whitelist");
 const fontFamilyNameQuotes = require("./font-family-name-quotes");
 const fontFamilyNoDuplicateNames = require("./font-family-no-duplicate-names");
+const fontFamilyNoMissingGenericFamilyKeyword = require("./font-family-no-missing-generic-family-keyword");
 const fontWeightNotation = require("./font-weight-notation");
 const functionBlacklist = require("./function-blacklist");
 const functionCalcNoUnspacedOperator = require("./function-calc-no-unspaced-operator");
@@ -74179,6 +86020,7 @@ const mediaQueryListCommaNewlineBefore = require("./media-query-list-comma-newli
 const mediaQueryListCommaSpaceAfter = require("./media-query-list-comma-space-after");
 const mediaQueryListCommaSpaceBefore = require("./media-query-list-comma-space-before");
 const noDescendingSpecificity = require("./no-descending-specificity");
+const noDuplicateAtImportRules = require("./no-duplicate-at-import-rules");
 const noDuplicateSelectors = require("./no-duplicate-selectors");
 const noEmptySource = require("./no-empty-source");
 const noEolWhitespace = require("./no-eol-whitespace");
@@ -74301,6 +86143,7 @@ module.exports = {
   "declaration-property-unit-whitelist": declarationPropertyUnitWhitelist,
   "declaration-property-value-blacklist": declarationPropertyValueBlacklist,
   "declaration-property-value-whitelist": declarationPropertyValueWhitelist,
+  "font-family-no-missing-generic-family-keyword": fontFamilyNoMissingGenericFamilyKeyword,
   "font-family-name-quotes": fontFamilyNameQuotes,
   "font-family-no-duplicate-names": fontFamilyNoDuplicateNames,
   "font-weight-notation": fontWeightNotation,
@@ -74341,6 +86184,7 @@ module.exports = {
   "media-query-list-comma-space-after": mediaQueryListCommaSpaceAfter,
   "media-query-list-comma-space-before": mediaQueryListCommaSpaceBefore,
   "no-descending-specificity": noDescendingSpecificity,
+  "no-duplicate-at-import-rules": noDuplicateAtImportRules,
   "no-duplicate-selectors": noDuplicateSelectors,
   "no-empty-source": noEmptySource,
   "no-eol-whitespace": noEolWhitespace,
@@ -74412,7 +86256,7 @@ module.exports = {
   indentation: indentation /* Placed here for better autofixing */ // eslint-disable-line object-shorthand
 };
 
-},{"./at-rule-blacklist":349,"./at-rule-empty-line-before":350,"./at-rule-name-case":351,"./at-rule-name-newline-after":352,"./at-rule-name-space-after":353,"./at-rule-no-unknown":354,"./at-rule-semicolon-newline-after":355,"./at-rule-semicolon-space-before":356,"./at-rule-whitelist":357,"./block-closing-brace-empty-line-before":359,"./block-closing-brace-newline-after":360,"./block-closing-brace-newline-before":361,"./block-closing-brace-space-after":362,"./block-closing-brace-space-before":363,"./block-no-empty":364,"./block-opening-brace-newline-after":365,"./block-opening-brace-newline-before":366,"./block-opening-brace-space-after":367,"./block-opening-brace-space-before":368,"./color-hex-case":369,"./color-hex-length":370,"./color-named":372,"./color-no-hex":373,"./color-no-invalid-hex":374,"./comment-empty-line-before":375,"./comment-no-empty":376,"./comment-whitespace-inside":377,"./comment-word-blacklist":378,"./custom-media-pattern":379,"./custom-property-empty-line-before":380,"./custom-property-pattern":381,"./declaration-bang-space-after":382,"./declaration-bang-space-before":383,"./declaration-block-no-duplicate-properties":384,"./declaration-block-no-redundant-longhand-properties":385,"./declaration-block-no-shorthand-property-overrides":386,"./declaration-block-semicolon-newline-after":387,"./declaration-block-semicolon-newline-before":388,"./declaration-block-semicolon-space-after":389,"./declaration-block-semicolon-space-before":390,"./declaration-block-single-line-max-declarations":391,"./declaration-block-trailing-semicolon":392,"./declaration-colon-newline-after":393,"./declaration-colon-space-after":394,"./declaration-colon-space-before":395,"./declaration-empty-line-before":396,"./declaration-no-important":397,"./declaration-property-unit-blacklist":398,"./declaration-property-unit-whitelist":399,"./declaration-property-value-blacklist":400,"./declaration-property-value-whitelist":401,"./font-family-name-quotes":405,"./font-family-no-duplicate-names":406,"./font-weight-notation":407,"./function-blacklist":408,"./function-calc-no-unspaced-operator":409,"./function-comma-newline-after":410,"./function-comma-newline-before":411,"./function-comma-space-after":412,"./function-comma-space-before":413,"./function-linear-gradient-no-nonstandard-direction":414,"./function-max-empty-lines":415,"./function-name-case":416,"./function-parentheses-newline-inside":417,"./function-parentheses-space-inside":418,"./function-url-no-scheme-relative":419,"./function-url-quotes":420,"./function-url-scheme-blacklist":421,"./function-url-scheme-whitelist":422,"./function-whitelist":423,"./function-whitespace-after":424,"./indentation":426,"./keyframe-declaration-no-important":428,"./length-zero-no-unit":429,"./max-empty-lines":430,"./max-line-length":431,"./max-nesting-depth":432,"./media-feature-colon-space-after":433,"./media-feature-colon-space-before":434,"./media-feature-name-blacklist":435,"./media-feature-name-case":436,"./media-feature-name-no-unknown":437,"./media-feature-name-whitelist":438,"./media-feature-parentheses-space-inside":439,"./media-feature-range-operator-space-after":440,"./media-feature-range-operator-space-before":441,"./media-query-list-comma-newline-after":442,"./media-query-list-comma-newline-before":443,"./media-query-list-comma-space-after":444,"./media-query-list-comma-space-before":445,"./no-descending-specificity":448,"./no-duplicate-selectors":449,"./no-empty-source":450,"./no-eol-whitespace":451,"./no-extra-semicolons":452,"./no-invalid-double-slash-comments":453,"./no-missing-end-of-source-newline":454,"./no-unknown-animations":455,"./number-leading-zero":456,"./number-max-precision":457,"./number-no-trailing-zeros":458,"./property-blacklist":459,"./property-case":460,"./property-no-unknown":461,"./property-whitelist":462,"./rule-empty-line-before":463,"./selector-attribute-brackets-space-inside":464,"./selector-attribute-operator-blacklist":465,"./selector-attribute-operator-space-after":466,"./selector-attribute-operator-space-before":467,"./selector-attribute-operator-whitelist":468,"./selector-attribute-quotes":469,"./selector-class-pattern":470,"./selector-combinator-space-after":471,"./selector-combinator-space-before":472,"./selector-descendant-combinator-no-non-space":473,"./selector-id-pattern":474,"./selector-list-comma-newline-after":475,"./selector-list-comma-newline-before":476,"./selector-list-comma-space-after":477,"./selector-list-comma-space-before":478,"./selector-max-attribute":479,"./selector-max-class":480,"./selector-max-combinators":481,"./selector-max-compound-selectors":482,"./selector-max-empty-lines":483,"./selector-max-id":484,"./selector-max-specificity":485,"./selector-max-type":486,"./selector-max-universal":487,"./selector-nested-pattern":488,"./selector-no-qualifying-type":489,"./selector-pseudo-class-blacklist":490,"./selector-pseudo-class-case":491,"./selector-pseudo-class-no-unknown":492,"./selector-pseudo-class-parentheses-space-inside":493,"./selector-pseudo-class-whitelist":494,"./selector-pseudo-element-case":495,"./selector-pseudo-element-colon-notation":496,"./selector-pseudo-element-no-unknown":497,"./selector-type-case":498,"./selector-type-no-unknown":499,"./shorthand-property-no-redundant-values":503,"./string-no-newline":504,"./string-quotes":505,"./time-min-milliseconds":506,"./unit-blacklist":507,"./unit-case":508,"./unit-no-unknown":509,"./unit-whitelist":510,"./value-keyword-case":511,"./value-list-comma-newline-after":512,"./value-list-comma-newline-before":513,"./value-list-comma-space-after":514,"./value-list-comma-space-before":515,"./value-list-max-empty-lines":516}],428:[function(require,module,exports){
+},{"./at-rule-blacklist":488,"./at-rule-empty-line-before":489,"./at-rule-name-case":490,"./at-rule-name-newline-after":491,"./at-rule-name-space-after":492,"./at-rule-no-unknown":493,"./at-rule-semicolon-newline-after":494,"./at-rule-semicolon-space-before":495,"./at-rule-whitelist":496,"./block-closing-brace-empty-line-before":498,"./block-closing-brace-newline-after":499,"./block-closing-brace-newline-before":500,"./block-closing-brace-space-after":501,"./block-closing-brace-space-before":502,"./block-no-empty":503,"./block-opening-brace-newline-after":504,"./block-opening-brace-newline-before":505,"./block-opening-brace-space-after":506,"./block-opening-brace-space-before":507,"./color-hex-case":508,"./color-hex-length":509,"./color-named":511,"./color-no-hex":512,"./color-no-invalid-hex":513,"./comment-empty-line-before":514,"./comment-no-empty":515,"./comment-whitespace-inside":516,"./comment-word-blacklist":517,"./custom-media-pattern":518,"./custom-property-empty-line-before":519,"./custom-property-pattern":520,"./declaration-bang-space-after":521,"./declaration-bang-space-before":522,"./declaration-block-no-duplicate-properties":523,"./declaration-block-no-redundant-longhand-properties":524,"./declaration-block-no-shorthand-property-overrides":525,"./declaration-block-semicolon-newline-after":526,"./declaration-block-semicolon-newline-before":527,"./declaration-block-semicolon-space-after":528,"./declaration-block-semicolon-space-before":529,"./declaration-block-single-line-max-declarations":530,"./declaration-block-trailing-semicolon":531,"./declaration-colon-newline-after":532,"./declaration-colon-space-after":533,"./declaration-colon-space-before":534,"./declaration-empty-line-before":535,"./declaration-no-important":536,"./declaration-property-unit-blacklist":537,"./declaration-property-unit-whitelist":538,"./declaration-property-value-blacklist":539,"./declaration-property-value-whitelist":540,"./font-family-name-quotes":544,"./font-family-no-duplicate-names":545,"./font-family-no-missing-generic-family-keyword":546,"./font-weight-notation":547,"./function-blacklist":548,"./function-calc-no-unspaced-operator":549,"./function-comma-newline-after":550,"./function-comma-newline-before":551,"./function-comma-space-after":552,"./function-comma-space-before":553,"./function-linear-gradient-no-nonstandard-direction":554,"./function-max-empty-lines":555,"./function-name-case":556,"./function-parentheses-newline-inside":557,"./function-parentheses-space-inside":558,"./function-url-no-scheme-relative":559,"./function-url-quotes":560,"./function-url-scheme-blacklist":561,"./function-url-scheme-whitelist":562,"./function-whitelist":563,"./function-whitespace-after":564,"./indentation":566,"./keyframe-declaration-no-important":568,"./length-zero-no-unit":569,"./max-empty-lines":570,"./max-line-length":571,"./max-nesting-depth":572,"./media-feature-colon-space-after":573,"./media-feature-colon-space-before":574,"./media-feature-name-blacklist":575,"./media-feature-name-case":576,"./media-feature-name-no-unknown":577,"./media-feature-name-whitelist":578,"./media-feature-parentheses-space-inside":579,"./media-feature-range-operator-space-after":580,"./media-feature-range-operator-space-before":581,"./media-query-list-comma-newline-after":582,"./media-query-list-comma-newline-before":583,"./media-query-list-comma-space-after":584,"./media-query-list-comma-space-before":585,"./no-descending-specificity":588,"./no-duplicate-at-import-rules":589,"./no-duplicate-selectors":590,"./no-empty-source":591,"./no-eol-whitespace":592,"./no-extra-semicolons":593,"./no-invalid-double-slash-comments":594,"./no-missing-end-of-source-newline":595,"./no-unknown-animations":596,"./number-leading-zero":597,"./number-max-precision":598,"./number-no-trailing-zeros":599,"./property-blacklist":600,"./property-case":601,"./property-no-unknown":602,"./property-whitelist":603,"./rule-empty-line-before":604,"./selector-attribute-brackets-space-inside":605,"./selector-attribute-operator-blacklist":606,"./selector-attribute-operator-space-after":607,"./selector-attribute-operator-space-before":608,"./selector-attribute-operator-whitelist":609,"./selector-attribute-quotes":610,"./selector-class-pattern":611,"./selector-combinator-space-after":612,"./selector-combinator-space-before":613,"./selector-descendant-combinator-no-non-space":614,"./selector-id-pattern":615,"./selector-list-comma-newline-after":616,"./selector-list-comma-newline-before":617,"./selector-list-comma-space-after":618,"./selector-list-comma-space-before":619,"./selector-max-attribute":620,"./selector-max-class":621,"./selector-max-combinators":622,"./selector-max-compound-selectors":623,"./selector-max-empty-lines":624,"./selector-max-id":625,"./selector-max-specificity":626,"./selector-max-type":627,"./selector-max-universal":628,"./selector-nested-pattern":629,"./selector-no-qualifying-type":630,"./selector-pseudo-class-blacklist":631,"./selector-pseudo-class-case":632,"./selector-pseudo-class-no-unknown":633,"./selector-pseudo-class-parentheses-space-inside":634,"./selector-pseudo-class-whitelist":635,"./selector-pseudo-element-case":636,"./selector-pseudo-element-colon-notation":637,"./selector-pseudo-element-no-unknown":638,"./selector-type-case":639,"./selector-type-no-unknown":640,"./shorthand-property-no-redundant-values":644,"./string-no-newline":645,"./string-quotes":646,"./time-min-milliseconds":647,"./unit-blacklist":648,"./unit-case":649,"./unit-no-unknown":650,"./unit-whitelist":651,"./value-keyword-case":652,"./value-list-comma-newline-after":653,"./value-list-comma-newline-before":654,"./value-list-comma-space-after":655,"./value-list-comma-space-before":656,"./value-list-max-empty-lines":657}],568:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -74453,14 +86297,16 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],429:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],569:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
 const beforeBlockString = require("../../utils/beforeBlockString");
 const blurComments = require("../../utils/blurComments");
 const hasBlock = require("../../utils/hasBlock");
+const isCustomProperty = require("../../utils/isCustomProperty");
 const keywordSets = require("../../reference/keywordSets");
+const optionsMatches = require("../../utils/optionsMatches");
 const report = require("../../utils/report");
 const ruleMessages = require("../../utils/ruleMessages");
 const styleSearch = require("style-search");
@@ -74494,6 +86340,13 @@ const rule = function(actual, secondary, context) {
     function check(value, node) {
       const ignorableIndexes = new Set();
       const fixPositions = [];
+
+      if (
+        optionsMatches(secondary, "ignore", "custom-properties") &&
+        isCustomProperty(value)
+      ) {
+        return;
+      }
 
       styleSearch({ source: value, target: "0" }, match => {
         const index = match.startIndex;
@@ -74626,7 +86479,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/beforeBlockString":522,"../../utils/blurComments":524,"../../utils/hasBlock":542,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251,"style-search":328}],430:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/beforeBlockString":663,"../../utils/blurComments":665,"../../utils/hasBlock":683,"../../utils/isCustomProperty":700,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292,"style-search":467}],570:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -74724,7 +86577,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],431:[function(require,module,exports){
+},{"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],571:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -74739,9 +86592,9 @@ const ruleName = "max-line-length";
 
 const messages = ruleMessages(ruleName, {
   expected: max =>
-    `Expected line length to be no more than ${max} ${max === 1
-      ? "character"
-      : "characters"}`
+    `Expected line length to be no more than ${max} ${
+      max === 1 ? "character" : "characters"
+    }`
 });
 
 const rule = function(maxLength, options) {
@@ -74809,12 +86662,12 @@ const rule = function(maxLength, options) {
         return;
       }
 
-      const urlArgumentsLength = execall(
-        /url\((.*)\)/gi,
-        lineText
-      ).reduce((result, match) => {
-        return result + _.get(match, "sub[0].length", 0);
-      }, 0);
+      const urlArgumentsLength = execall(/url\((.*)\)/gi, lineText).reduce(
+        (result, match) => {
+          return result + _.get(match, "sub[0].length", 0);
+        },
+        0
+      );
 
       const importUrlsLength = execall(
         /@import\s+(['"].*['"])/gi,
@@ -74883,7 +86736,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"execall":36,"lodash":126,"style-search":328}],432:[function(require,module,exports){
+},{"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"execall":68,"lodash":173,"style-search":467}],572:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -74983,7 +86836,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/hasBlock":542,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],433:[function(require,module,exports){
+},{"../../utils/hasBlock":683,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],573:[function(require,module,exports){
 "use strict";
 
 const mediaFeatureColonSpaceChecker = require("../mediaFeatureColonSpaceChecker");
@@ -75022,7 +86875,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../mediaFeatureColonSpaceChecker":446}],434:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../mediaFeatureColonSpaceChecker":586}],574:[function(require,module,exports){
 "use strict";
 
 const mediaFeatureColonSpaceChecker = require("../mediaFeatureColonSpaceChecker");
@@ -75061,7 +86914,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../mediaFeatureColonSpaceChecker":446}],435:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../mediaFeatureColonSpaceChecker":586}],575:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -75127,7 +86980,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/isCustomMediaQuery":558,"../../utils/isRangeContextMediaFeature":568,"../../utils/isStandardSyntaxMediaFeatureName":574,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-media-query-parser":216}],436:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/isCustomMediaQuery":699,"../../utils/isRangeContextMediaFeature":709,"../../utils/isStandardSyntaxMediaFeatureName":715,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-media-query-parser":278}],576:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -75192,7 +87045,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/isCustomMediaQuery":558,"../../utils/isRangeContextMediaFeature":568,"../../utils/isStandardSyntaxMediaFeatureName":574,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-media-query-parser":216}],437:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/isCustomMediaQuery":699,"../../utils/isRangeContextMediaFeature":709,"../../utils/isStandardSyntaxMediaFeatureName":715,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-media-query-parser":278}],577:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -75275,7 +87128,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/atRuleParamIndex":521,"../../utils/isCustomMediaQuery":558,"../../utils/isRangeContextMediaFeature":568,"../../utils/isStandardSyntaxMediaFeatureName":574,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268,"postcss-media-query-parser":216}],438:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/atRuleParamIndex":662,"../../utils/isCustomMediaQuery":699,"../../utils/isRangeContextMediaFeature":709,"../../utils/isStandardSyntaxMediaFeatureName":715,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309,"postcss-media-query-parser":278}],578:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -75341,7 +87194,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/isCustomMediaQuery":558,"../../utils/isRangeContextMediaFeature":568,"../../utils/isStandardSyntaxMediaFeatureName":574,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-media-query-parser":216}],439:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/isCustomMediaQuery":699,"../../utils/isRangeContextMediaFeature":709,"../../utils/isStandardSyntaxMediaFeatureName":715,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-media-query-parser":278}],579:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -75427,7 +87280,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],440:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],580:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -75483,7 +87336,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../findMediaOperator":404}],441:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../findMediaOperator":543}],581:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -75539,7 +87392,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../findMediaOperator":404}],442:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../findMediaOperator":543}],582:[function(require,module,exports){
 "use strict";
 
 const mediaQueryListCommaWhitespaceChecker = require("../mediaQueryListCommaWhitespaceChecker");
@@ -75584,7 +87437,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../mediaQueryListCommaWhitespaceChecker":447}],443:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../mediaQueryListCommaWhitespaceChecker":587}],583:[function(require,module,exports){
 "use strict";
 
 const mediaQueryListCommaWhitespaceChecker = require("../mediaQueryListCommaWhitespaceChecker");
@@ -75625,7 +87478,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../mediaQueryListCommaWhitespaceChecker":447}],444:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../mediaQueryListCommaWhitespaceChecker":587}],584:[function(require,module,exports){
 "use strict";
 
 const mediaQueryListCommaWhitespaceChecker = require("../mediaQueryListCommaWhitespaceChecker");
@@ -75667,7 +87520,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../mediaQueryListCommaWhitespaceChecker":447}],445:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../mediaQueryListCommaWhitespaceChecker":587}],585:[function(require,module,exports){
 "use strict";
 
 const mediaQueryListCommaWhitespaceChecker = require("../mediaQueryListCommaWhitespaceChecker");
@@ -75710,7 +87563,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../mediaQueryListCommaWhitespaceChecker":447}],446:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../mediaQueryListCommaWhitespaceChecker":587}],586:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../utils/atRuleParamIndex");
@@ -75742,7 +87595,7 @@ module.exports = function(opts) {
   }
 };
 
-},{"../utils/atRuleParamIndex":521,"../utils/report":592,"style-search":328}],447:[function(require,module,exports){
+},{"../utils/atRuleParamIndex":662,"../utils/report":733,"style-search":467}],587:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../utils/atRuleParamIndex");
@@ -75773,7 +87626,7 @@ module.exports = function(opts) {
   }
 };
 
-},{"../utils/atRuleParamIndex":521,"../utils/report":592,"style-search":328}],448:[function(require,module,exports){
+},{"../utils/atRuleParamIndex":662,"../utils/report":733,"style-search":467}],588:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -75893,7 +87746,71 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/findAtRuleContext":532,"../../utils/isCustomPropertySet":560,"../../utils/nodeContextLookup":587,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-resolve-nested-selector":220,"specificity":324}],449:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/findAtRuleContext":673,"../../utils/isCustomPropertySet":701,"../../utils/nodeContextLookup":728,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-resolve-nested-selector":282,"specificity":460}],589:[function(require,module,exports){
+"use strict";
+
+const mediaParser = require("postcss-media-query-parser").default;
+const report = require("../../utils/report");
+const ruleMessages = require("../../utils/ruleMessages");
+const validateOptions = require("../../utils/validateOptions");
+const valueParser = require("postcss-value-parser");
+
+const ruleName = "no-duplicate-at-import-rules";
+
+const messages = ruleMessages(ruleName, {
+  rejected: atImport => `Unexpected duplicate @import rule ${atImport}`
+});
+
+const rule = function(actual) {
+  return (root, result) => {
+    const validOptions = validateOptions(result, ruleName, { actual });
+    if (!validOptions) {
+      return;
+    }
+
+    const imports = {};
+
+    root.walkAtRules(/^import$/i, atRule => {
+      const params = valueParser(atRule.params).nodes;
+      if (!params.length) {
+        return;
+      }
+
+      // extract uri from url() if exists
+      const uri =
+        params[0].type === "function" && params[0].value === "url"
+          ? params[0].nodes[0].value
+          : params[0].value;
+      // extract media queries if any
+      const media = mediaParser(valueParser.stringify(params.slice(1)))
+        .nodes.map(n => n.value.replace(/\s/g, ""))
+        .filter(n => n.length);
+
+      const isDuplicate = media.length
+        ? imports[uri] && media.some(q => imports[uri].indexOf(q) !== -1)
+        : imports[uri];
+
+      if (isDuplicate) {
+        report({
+          message: messages.rejected(uri),
+          node: atRule,
+          result,
+          ruleName
+        });
+        return;
+      }
+
+      if (!imports[uri]) imports[uri] = [];
+      imports[uri] = imports[uri].concat(media);
+    });
+  };
+};
+
+rule.ruleName = ruleName;
+rule.messages = messages;
+module.exports = rule;
+
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-media-query-parser":278,"postcss-value-parser":292}],590:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -75910,7 +87827,9 @@ const ruleName = "no-duplicate-selectors";
 
 const messages = ruleMessages(ruleName, {
   rejected: (selector, firstDuplicateLine) =>
-    `Unexpected duplicate selector "${selector}", first used at line ${firstDuplicateLine}`
+    `Unexpected duplicate selector "${selector}", first used at line ${
+      firstDuplicateLine
+    }`
 });
 
 const rule = function(actual) {
@@ -75998,7 +87917,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/findAtRuleContext":532,"../../utils/isKeyframeRule":564,"../../utils/nodeContextLookup":587,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"normalize-selector":137,"postcss-resolve-nested-selector":220}],450:[function(require,module,exports){
+},{"../../utils/findAtRuleContext":673,"../../utils/isKeyframeRule":705,"../../utils/nodeContextLookup":728,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"normalize-selector":188,"postcss-resolve-nested-selector":282}],591:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -76035,7 +87954,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],451:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],592:[function(require,module,exports){
 "use strict";
 
 const isOnlyWhitespace = require("../../utils/isOnlyWhitespace");
@@ -76114,7 +88033,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isOnlyWhitespace":567,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],452:[function(require,module,exports){
+},{"../../utils/isOnlyWhitespace":708,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],593:[function(require,module,exports){
 "use strict";
 
 const isCustomPropertySet = require("../../utils/isCustomPropertySet");
@@ -76294,7 +88213,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomPropertySet":560,"../../utils/isStandardSyntaxRule":576,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],453:[function(require,module,exports){
+},{"../../utils/isCustomPropertySet":701,"../../utils/isStandardSyntaxRule":717,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],594:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -76343,7 +88262,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],454:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],595:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -76388,7 +88307,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],455:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],596:[function(require,module,exports){
 "use strict";
 
 const declarationValueIndex = require("../../utils/declarationValueIndex");
@@ -76457,7 +88376,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/declarationValueIndex":530,"../../utils/findAnimationName":531,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],456:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/findAnimationName":672,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],597:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -76474,7 +88393,7 @@ const messages = ruleMessages(ruleName, {
   rejected: "Unexpected leading zero"
 });
 
-const rule = function(expectation) {
+const rule = function(expectation, secondary, context) {
   return (root, result) => {
     const validOptions = validateOptions(result, ruleName, {
       actual: expectation,
@@ -76495,6 +88414,9 @@ const rule = function(expectation) {
     root.walkDecls(decl => check(decl, decl.value, declarationValueIndex));
 
     function check(node, value, getIndex) {
+      const neverFixPositions = [];
+      const alwaysFixPositions = [];
+
       // Get out quickly if there are no periods
       if (value.indexOf(".") === -1) {
         return;
@@ -76521,39 +88443,75 @@ const rule = function(expectation) {
           if (match === null) {
             return;
           }
-
           // The regexp above consists of 2 capturing groups (or capturing parentheses).
           // We need the index of the second group. This makes sanse when we have "-.5" as an input
           // for regex. And we need the index of ".5".
           const capturingGroupIndex = match[0].length - match[1].length;
-          complain(
-            messages.expected,
-            node,
-            getIndex(node) +
-              valueNode.sourceIndex +
-              match.index +
-              capturingGroupIndex
-          );
+
+          const index =
+            valueNode.sourceIndex + match.index + capturingGroupIndex;
+
+          if (context.fix) {
+            alwaysFixPositions.unshift({
+              index
+            });
+            return;
+          } else {
+            complain(messages.expected, node, getIndex(node) + index);
+          }
         }
 
         if (expectation === "never") {
-          const match = /(?:\D|^)(0+\.\d+)/.exec(valueNode.value);
+          const match = /(?:\D|^)(0+)(\.\d+)/.exec(valueNode.value);
 
           if (match === null) {
             return;
           }
 
-          const capturingGroupIndex = match[0].length - match[1].length;
-          complain(
-            messages.rejected,
-            node,
-            getIndex(node) +
-              valueNode.sourceIndex +
-              match.index +
-              capturingGroupIndex
-          );
+          // The regexp above consists of 3 capturing groups (or capturing parentheses).
+          // We need the index of the second group. This makes sanse when we have "-00.5"
+          // as an input for regex. And we need the index of "00".
+          const capturingGroupIndex =
+            match[0].length - (match[1].length + match[2].length);
+
+          const index =
+            valueNode.sourceIndex + match.index + capturingGroupIndex;
+
+          if (context.fix) {
+            neverFixPositions.unshift({
+              startIndex: index,
+              // match[1].length is the length of our matched zero(s)
+              endIndex: index + match[1].length
+            });
+            return;
+          } else {
+            complain(messages.rejected, node, getIndex(node) + index);
+          }
         }
       });
+
+      if (alwaysFixPositions.length) {
+        alwaysFixPositions.forEach(function(fixPosition) {
+          const index = fixPosition.index;
+          if (node.type === "atrule") {
+            node.params = addLeadingZero(node.params, index);
+          } else {
+            node.value = addLeadingZero(node.value, index);
+          }
+        });
+      }
+
+      if (neverFixPositions.length) {
+        neverFixPositions.forEach(function(fixPosition) {
+          const startIndex = fixPosition.startIndex;
+          const endIndex = fixPosition.endIndex;
+          if (node.type === "atrule") {
+            node.params = removeLeadingZeros(node.params, startIndex, endIndex);
+          } else {
+            node.value = removeLeadingZeros(node.value, startIndex, endIndex);
+          }
+        });
+      }
     }
 
     function complain(message, node, index) {
@@ -76568,11 +88526,19 @@ const rule = function(expectation) {
   };
 };
 
+function addLeadingZero(input, index) {
+  return input.slice(0, index) + "0" + input.slice(index);
+}
+
+function removeLeadingZeros(input, startIndex, endIndex) {
+  return input.slice(0, startIndex) + input.slice(endIndex);
+}
+
 rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-value-parser":251}],457:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-value-parser":292}],598:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -76676,7 +88642,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251}],458:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292}],599:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -76692,7 +88658,7 @@ const messages = ruleMessages(ruleName, {
   rejected: "Unexpected trailing zero(s)"
 });
 
-const rule = function(actual) {
+const rule = function(actual, secondary, context) {
   return (root, result) => {
     const validOptions = validateOptions(result, ruleName, { actual });
     if (!validOptions) {
@@ -76710,6 +88676,8 @@ const rule = function(actual) {
     root.walkDecls(decl => check(decl, decl.value, declarationValueIndex));
 
     function check(node, value, getIndex) {
+      const fixPositions = [];
+
       // Get out quickly if there are no periods
       if (value.indexOf(".") === -1) {
         return;
@@ -76729,33 +88697,74 @@ const rule = function(actual) {
           return;
         }
 
-        const match = /(\.\d*)0+(?:\D|$)/.exec(valueNode.value);
-
+        const match = /\.(\d*?)(0+)(?:\D|$)/.exec(valueNode.value);
+        // match[1] is any numbers between the decimal and our trailing zero, could be empty
+        // match[2] is our trailing zero(s)
         if (match === null) {
           return;
         }
 
-        report({
-          message: messages.rejected,
-          node,
-          index:
-            getIndex(node) +
-            valueNode.sourceIndex +
-            match.index +
-            match[1].length,
-          result,
-          ruleName
-        });
+        // our index is:
+        //  the index of our valueNode +
+        //  the index of our match +
+        //  1 for our decimal +
+        //  the length of our potential non-zero number match (match[1])
+        const index = valueNode.sourceIndex + match.index + 1 + match[1].length;
+
+        // our startIndex is identical to our index except when we have only
+        // trailing zeros after our decimal. in that case we don't need the decimal
+        // either so we move our index back by 1.
+        const startIndex = match[1].length > 0 ? index : index - 1;
+
+        // our end index is our original index + the length of our trailing zeros
+        const endIndex = index + match[2].length;
+
+        if (context.fix) {
+          fixPositions.unshift({
+            startIndex,
+            endIndex
+          });
+          return;
+        } else {
+          report({
+            message: messages.rejected,
+            node,
+            // this is the index of the _first_ trailing zero
+            index: getIndex(node) + index,
+            result,
+            ruleName
+          });
+        }
       });
+
+      if (fixPositions.length) {
+        fixPositions.forEach(function(fixPosition) {
+          const startIndex = fixPosition.startIndex;
+          const endIndex = fixPosition.endIndex;
+          if (node.type === "atrule") {
+            node.params = removeTrailingZeros(
+              node.params,
+              startIndex,
+              endIndex
+            );
+          } else {
+            node.value = removeTrailingZeros(node.value, startIndex, endIndex);
+          }
+        });
+      }
     }
   };
 };
+
+function removeTrailingZeros(input, startIndex, endIndex) {
+  return input.slice(0, startIndex) + input.slice(endIndex);
+}
 
 rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-value-parser":251}],459:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-value-parser":292}],600:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -76812,7 +88821,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomProperty":559,"../../utils/isStandardSyntaxProperty":575,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],460:[function(require,module,exports){
+},{"../../utils/isCustomProperty":700,"../../utils/isStandardSyntaxProperty":716,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],601:[function(require,module,exports){
 "use strict";
 
 const isCustomProperty = require("../../utils/isCustomProperty");
@@ -76867,7 +88876,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomProperty":559,"../../utils/isStandardSyntaxProperty":575,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],461:[function(require,module,exports){
+},{"../../utils/isCustomProperty":700,"../../utils/isStandardSyntaxProperty":716,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],602:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -76948,7 +88957,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomProperty":559,"../../utils/isStandardSyntaxDeclaration":572,"../../utils/isStandardSyntaxProperty":575,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"known-css-properties":125,"lodash":126,"postcss":268}],462:[function(require,module,exports){
+},{"../../utils/isCustomProperty":700,"../../utils/isStandardSyntaxDeclaration":713,"../../utils/isStandardSyntaxProperty":716,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"known-css-properties":172,"lodash":173,"postcss":309}],603:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -77005,7 +89014,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isCustomProperty":559,"../../utils/isStandardSyntaxProperty":575,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],463:[function(require,module,exports){
+},{"../../utils/isCustomProperty":700,"../../utils/isStandardSyntaxProperty":716,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],604:[function(require,module,exports){
 "use strict";
 
 const addEmptyLineBefore = require("../../utils/addEmptyLineBefore");
@@ -77046,7 +89055,8 @@ const rule = function(expectation, options, context) {
             "after-rule",
             "after-single-line-comment",
             "first-nested",
-            "inside-block-and-after-rule"
+            "inside-block-and-after-rule",
+            "inside-block"
           ]
         },
         optional: true
@@ -77104,7 +89114,8 @@ const rule = function(expectation, options, context) {
           isNested &&
           isAfterRule(rule)) ||
         (optionsMatches(options, "except", "after-single-line-comment") &&
-          isAfterSingleLineComment(rule))
+          isAfterSingleLineComment(rule)) ||
+        (optionsMatches(options, "except", "inside-block") && isNested)
       ) {
         expectEmptyLineBefore = !expectEmptyLineBefore;
       }
@@ -77150,7 +89161,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/addEmptyLineBefore":520,"../../utils/getPreviousNonSharedLineCommentNode":539,"../../utils/hasEmptyLine":544,"../../utils/isAfterSingleLineComment":551,"../../utils/isFirstNested":562,"../../utils/isFirstNodeOfRoot":563,"../../utils/isSingleLineString":570,"../../utils/isStandardSyntaxRule":576,"../../utils/optionsMatches":588,"../../utils/removeEmptyLinesBefore":591,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],464:[function(require,module,exports){
+},{"../../utils/addEmptyLineBefore":661,"../../utils/getPreviousNonSharedLineCommentNode":680,"../../utils/hasEmptyLine":685,"../../utils/isAfterSingleLineComment":692,"../../utils/isFirstNested":703,"../../utils/isFirstNodeOfRoot":704,"../../utils/isSingleLineString":711,"../../utils/isStandardSyntaxRule":717,"../../utils/optionsMatches":729,"../../utils/removeEmptyLinesBefore":732,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],605:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -77240,7 +89251,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],465:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],606:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -77289,7 +89300,8 @@ const rule = function(blacklistInput) {
           report({
             message: messages.rejected(operator),
             node: rule,
-            index: attributeNode.attribute.length + 1,
+            index:
+              attributeNode.sourceIndex + attributeNode.offsetOf("operator"),
             result,
             ruleName
           });
@@ -77305,7 +89317,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],466:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],607:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -77345,7 +89357,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorAttributeOperatorSpaceChecker":500}],467:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorAttributeOperatorSpaceChecker":641}],608:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -77385,7 +89397,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorAttributeOperatorSpaceChecker":500}],468:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorAttributeOperatorSpaceChecker":641}],609:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -77434,7 +89446,8 @@ const rule = function(whitelistInput) {
           report({
             message: messages.rejected(operator),
             node: rule,
-            index: attributeNode.attribute.length + 1,
+            index:
+              attributeNode.sourceIndex + attributeNode.offsetOf("operator"),
             result,
             ruleName
           });
@@ -77450,10 +89463,11 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],469:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],610:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
+const isStandardSyntaxSelector = require("../../utils/isStandardSyntaxSelector");
 const parseSelector = require("../../utils/parseSelector");
 const report = require("../../utils/report");
 const ruleMessages = require("../../utils/ruleMessages");
@@ -77480,13 +89494,15 @@ const rule = function(expectation) {
       if (!isStandardSyntaxRule(rule)) {
         return;
       }
+      if (!isStandardSyntaxSelector(rule.selector)) {
+        return;
+      }
       if (
         rule.selector.indexOf("[") === -1 ||
         rule.selector.indexOf("=") === -1
       ) {
         return;
       }
-
       parseSelector(rule.selector, result, rule, selectorTree => {
         selectorTree.walkAttributes(attributeNode => {
           if (!attributeNode.operator) {
@@ -77530,7 +89546,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],470:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],611:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -77653,7 +89669,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isKeyframeSelector":565,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-resolve-nested-selector":220}],471:[function(require,module,exports){
+},{"../../utils/isKeyframeSelector":706,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-resolve-nested-selector":282}],612:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -77693,7 +89709,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorCombinatorSpaceChecker":501}],472:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorCombinatorSpaceChecker":642}],613:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -77733,7 +89749,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorCombinatorSpaceChecker":501}],473:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorCombinatorSpaceChecker":642}],614:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -77791,7 +89807,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/punctuationSets":347,"../../utils/isStandardSyntaxRule":576,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],474:[function(require,module,exports){
+},{"../../reference/punctuationSets":486,"../../utils/isStandardSyntaxRule":717,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],615:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -77863,7 +89879,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],475:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],616:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -77948,7 +89964,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"style-search":328}],476:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"style-search":467}],617:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -77990,7 +90006,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorListCommaWhitespaceChecker":502}],477:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorListCommaWhitespaceChecker":643}],618:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -78033,7 +90049,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorListCommaWhitespaceChecker":502}],478:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorListCommaWhitespaceChecker":643}],619:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -78076,7 +90092,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../selectorListCommaWhitespaceChecker":502}],479:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../selectorListCommaWhitespaceChecker":643}],620:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -78093,9 +90109,9 @@ const ruleName = "selector-max-attribute";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} attribute ${max === 1
-      ? "selector"
-      : "selectors"}`
+    `Expected "${selector}" to have no more than ${max} attribute ${
+      max === 1 ? "selector" : "selectors"
+    }`
 });
 
 function rule(max, options) {
@@ -78188,7 +90204,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-resolve-nested-selector":220}],480:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-resolve-nested-selector":282}],621:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -78203,9 +90219,9 @@ const ruleName = "selector-max-class";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} ${max === 1
-      ? "class"
-      : "classes"}`
+    `Expected "${selector}" to have no more than ${max} ${
+      max === 1 ? "class" : "classes"
+    }`
 });
 
 function rule(max) {
@@ -78278,7 +90294,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-resolve-nested-selector":220}],481:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-resolve-nested-selector":282}],622:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -78293,9 +90309,9 @@ const ruleName = "selector-max-combinators";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} ${max === 1
-      ? "combinator"
-      : "combinators"}`
+    `Expected "${selector}" to have no more than ${max} ${
+      max === 1 ? "combinator" : "combinators"
+    }`
 });
 
 function rule(max) {
@@ -78368,7 +90384,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-resolve-nested-selector":220}],482:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-resolve-nested-selector":282}],623:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -78383,9 +90399,9 @@ const ruleName = "selector-max-compound-selectors";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} compound ${max === 1
-      ? "selector"
-      : "selectors"}`
+    `Expected "${selector}" to have no more than ${max} compound ${
+      max === 1 ? "selector" : "selectors"
+    }`
 });
 
 const rule = function(max) {
@@ -78458,7 +90474,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-resolve-nested-selector":220}],483:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-resolve-nested-selector":282}],624:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -78523,7 +90539,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],484:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],625:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -78538,9 +90554,9 @@ const ruleName = "selector-max-id";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} id ${max === 1
-      ? "selector"
-      : "selectors"}`
+    `Expected "${selector}" to have no more than ${max} id ${
+      max === 1 ? "selector" : "selectors"
+    }`
 });
 
 function rule(max) {
@@ -78613,7 +90629,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-resolve-nested-selector":220}],485:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-resolve-nested-selector":282}],626:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -78686,8 +90702,7 @@ const rule = function(max, options) {
     // Calculate the the specificity of the most specific direct child
     const maxChildSpecificity = node =>
       node.reduce((max, child) => {
-        // eslint-disable-next-line no-use-before-define
-        const childSpecificity = nodeSpecificity(child);
+        const childSpecificity = nodeSpecificity(child); // eslint-disable-line no-use-before-define
         return specificity.compare(childSpecificity, max) === 1
           ? childSpecificity
           : max;
@@ -78774,7 +90789,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-resolve-nested-selector":220,"specificity":324}],486:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-resolve-nested-selector":282,"specificity":460}],627:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -78793,9 +90808,9 @@ const ruleName = "selector-max-type";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} type ${max === 1
-      ? "selector"
-      : "selectors"}`
+    `Expected "${selector}" to have no more than ${max} type ${
+      max === 1 ? "selector" : "selectors"
+    }`
 });
 
 function rule(max, options) {
@@ -78942,7 +90957,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isKeyframeSelector":565,"../../utils/isOnlyWhitespace":567,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-resolve-nested-selector":220}],487:[function(require,module,exports){
+},{"../../utils/isKeyframeSelector":706,"../../utils/isOnlyWhitespace":708,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-resolve-nested-selector":282}],628:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -78957,9 +90972,9 @@ const ruleName = "selector-max-universal";
 
 const messages = ruleMessages(ruleName, {
   expected: (selector, max) =>
-    `Expected "${selector}" to have no more than ${max} universal ${max === 1
-      ? "selector"
-      : "selectors"}`
+    `Expected "${selector}" to have no more than ${max} universal ${
+      max === 1 ? "selector" : "selectors"
+    }`
 });
 
 function rule(max) {
@@ -79032,7 +91047,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-resolve-nested-selector":220}],488:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-resolve-nested-selector":282}],629:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79095,7 +91110,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126}],489:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173}],630:[function(require,module,exports){
 "use strict";
 
 const isKeyframeRule = require("../../utils/isKeyframeRule");
@@ -79239,7 +91254,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isKeyframeRule":564,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-resolve-nested-selector":220}],490:[function(require,module,exports){
+},{"../../utils/isKeyframeRule":705,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-resolve-nested-selector":282}],631:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79320,7 +91335,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/matchesStringOrRegExp":585,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],491:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/matchesStringOrRegExp":726,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],632:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -79401,7 +91416,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],492:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],633:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79567,7 +91582,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/atRuleParamIndex":521,"../../utils/isCustomSelector":561,"../../utils/isStandardSyntaxAtRule":571,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],493:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/atRuleParamIndex":662,"../../utils/isCustomSelector":702,"../../utils/isStandardSyntaxAtRule":712,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],634:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79656,7 +91671,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],494:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],635:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79735,7 +91750,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/matchesStringOrRegExp":585,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],495:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/matchesStringOrRegExp":726,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],636:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
@@ -79816,7 +91831,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],496:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],637:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79887,7 +91902,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/isStandardSyntaxRule":576,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],497:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/isStandardSyntaxRule":717,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],638:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -79987,7 +92002,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268}],498:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309}],639:[function(require,module,exports){
 "use strict";
 
 const isKeyframeSelector = require("../../utils/isKeyframeSelector");
@@ -80062,7 +92077,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isKeyframeSelector":565,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/isStandardSyntaxTypeSelector":578,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595}],499:[function(require,module,exports){
+},{"../../utils/isKeyframeSelector":706,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/isStandardSyntaxTypeSelector":719,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736}],640:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -80136,7 +92151,7 @@ const rule = function(actual, options) {
 
           if (
             optionsMatches(options, "ignore", "default-namespace") &&
-            !tagNode.hasOwnProperty("namespace")
+            !(typeof tagNode.namespace === "string")
           ) {
             return;
           }
@@ -80178,7 +92193,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/isCustomElement":557,"../../utils/isKeyframeSelector":565,"../../utils/isStandardSyntaxRule":576,"../../utils/isStandardSyntaxSelector":577,"../../utils/isStandardSyntaxTypeSelector":578,"../../utils/optionsMatches":588,"../../utils/parseSelector":589,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"html-tags":67,"lodash":126,"mathml-tag-names":127,"svg-tags":606}],500:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/isCustomElement":698,"../../utils/isKeyframeSelector":706,"../../utils/isStandardSyntaxRule":717,"../../utils/isStandardSyntaxSelector":718,"../../utils/isStandardSyntaxTypeSelector":719,"../../utils/optionsMatches":729,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"html-tags":97,"lodash":173,"mathml-tag-names":177,"svg-tags":774}],641:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../utils/isStandardSyntaxRule");
@@ -80248,7 +92263,7 @@ module.exports = function(options) {
   });
 };
 
-},{"../utils/isStandardSyntaxRule":576,"../utils/parseSelector":589,"../utils/report":592,"style-search":328}],501:[function(require,module,exports){
+},{"../utils/isStandardSyntaxRule":717,"../utils/parseSelector":730,"../utils/report":733,"style-search":467}],642:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../utils/isStandardSyntaxRule");
@@ -80306,7 +92321,7 @@ module.exports = function(opts) {
   }
 };
 
-},{"../utils/isStandardSyntaxRule":576,"../utils/parseSelector":589,"../utils/report":592}],502:[function(require,module,exports){
+},{"../utils/isStandardSyntaxRule":717,"../utils/parseSelector":730,"../utils/report":733}],643:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxRule = require("../utils/isStandardSyntaxRule");
@@ -80347,7 +92362,7 @@ module.exports = function(opts) {
   }
 };
 
-},{"../utils/isStandardSyntaxRule":576,"../utils/report":592,"style-search":328}],503:[function(require,module,exports){
+},{"../utils/isStandardSyntaxRule":717,"../utils/report":733,"style-search":467}],644:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxDeclaration = require("../../utils/isStandardSyntaxDeclaration");
@@ -80438,7 +92453,7 @@ function canCondenseToThreeValues(top, right, bottom, left) {
   return right === left;
 }
 
-const rule = function(actual) {
+const rule = function(actual, secondary, context) {
   return (root, result) => {
     const validOptions = validateOptions(result, ruleName, { actual });
     if (!validOptions) {
@@ -80492,12 +92507,16 @@ const rule = function(actual) {
         return;
       }
 
-      report({
-        message: messages.rejected(value, shortestFormString),
-        node: decl,
-        result,
-        ruleName
-      });
+      if (context.fix) {
+        decl.value = decl.value.replace(value, shortestFormString);
+      } else {
+        report({
+          message: messages.rejected(value, shortestFormString),
+          node: decl,
+          result,
+          ruleName
+        });
+      }
     });
   };
 };
@@ -80506,7 +92525,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/isStandardSyntaxDeclaration":572,"../../utils/isStandardSyntaxProperty":575,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss":268,"postcss-value-parser":251}],504:[function(require,module,exports){
+},{"../../utils/isStandardSyntaxDeclaration":713,"../../utils/isStandardSyntaxProperty":716,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss":309,"postcss-value-parser":292}],645:[function(require,module,exports){
 "use strict";
 
 const report = require("../../utils/report");
@@ -80557,13 +92576,18 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],505:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"style-search":467}],646:[function(require,module,exports){
 "use strict";
 
+const _ = require("lodash");
+const atRuleParamIndex = require("../../utils/atRuleParamIndex");
+const declarationValueIndex = require("../../utils/declarationValueIndex");
+const isStandardSyntaxRule = require("../../utils/isStandardSyntaxRule");
+const parseSelector = require("../../utils/parseSelector");
 const report = require("../../utils/report");
 const ruleMessages = require("../../utils/ruleMessages");
-const styleSearch = require("style-search");
 const validateOptions = require("../../utils/validateOptions");
+const valueParser = require("postcss-value-parser");
 
 const ruleName = "string-quotes";
 
@@ -80571,48 +92595,172 @@ const messages = ruleMessages(ruleName, {
   expected: q => `Expected ${q} quotes`
 });
 
-const rule = function(expectation) {
-  const erroneousQuote = expectation === "single" ? '"' : "'";
+const singleQuote = `'`;
+const doubleQuote = `"`;
+
+const rule = function(expectation, secondary, context) {
+  const correctQuote = expectation === "single" ? singleQuote : doubleQuote;
+  const erroneousQuote = expectation === "single" ? doubleQuote : singleQuote;
 
   return (root, result) => {
-    const validOptions = validateOptions(result, ruleName, {
-      actual: expectation,
-      possible: ["single", "double"]
-    });
+    const validOptions = validateOptions(
+      result,
+      ruleName,
+      {
+        actual: expectation,
+        possible: ["single", "double"]
+      },
+      {
+        actual: secondary,
+        possible: {
+          avoidEscape: _.isBoolean
+        },
+        optional: true
+      }
+    );
+
     if (!validOptions) {
       return;
     }
 
-    let cssString = root.toString();
+    const avoidEscape = _.get(secondary, "avoidEscape", true);
 
-    // allow @charset rules to have double quotes, in spite of the configuration
-    if (erroneousQuote === '"') {
-      root.walkAtRules(atRule => {
-        if (atRule.name === "charset") {
-          const badAtRule = atRule.toString();
-          const goodAtRule = badAtRule.split('"').join("'");
-          cssString = cssString.replace(badAtRule, goodAtRule);
-        }
+    root.walk(node => {
+      switch (node.type) {
+        case "atrule":
+          checkDeclOrAtRule(node, node.params, atRuleParamIndex);
+          break;
+        case "decl":
+          checkDeclOrAtRule(node, node.value, declarationValueIndex);
+          break;
+        case "rule":
+          checkRule(node);
+          break;
+      }
+    });
+
+    function checkRule(rule) {
+      if (!isStandardSyntaxRule(rule)) {
+        return;
+      }
+      if (
+        rule.selector.indexOf("[") === -1 ||
+        rule.selector.indexOf("=") === -1
+      ) {
+        return;
+      }
+
+      const fixPositions = [];
+      parseSelector(rule.selector, result, rule, selectorTree => {
+        selectorTree.walkAttributes(attributeNode => {
+          if (
+            attributeNode.quoted &&
+            attributeNode.value.indexOf(erroneousQuote) !== -1
+          ) {
+            const needsEscape =
+              attributeNode.value.indexOf(correctQuote) !== -1;
+            if (avoidEscape && needsEscape) {
+              // don't consider this an error
+              return;
+            }
+
+            const openIndex =
+              // index of the start of our attribute node in our source
+              attributeNode.sourceIndex +
+              // length of our attribute
+              attributeNode.attribute.length +
+              // length of our operator , ie '='
+              attributeNode.operator.length +
+              // and the length of the quote
+              erroneousQuote.length;
+
+            // we currently don't fix escapes
+            if (context.fix && !needsEscape) {
+              const closeIndex =
+                // our initial index
+                openIndex +
+                // the length of our value
+                attributeNode.value.length -
+                // with the length of our quote subtracted
+                erroneousQuote.length;
+              fixPositions.push(openIndex, closeIndex);
+            } else {
+              report({
+                message: messages.expected(expectation),
+                node: rule,
+                index: openIndex,
+                result,
+                ruleName
+              });
+            }
+          }
+        });
+      });
+      fixPositions.forEach(fixIndex => {
+        rule.selector = replaceQuote(rule.selector, fixIndex, correctQuote);
       });
     }
 
-    styleSearch({ source: cssString, target: erroneousQuote }, match => {
-      report({
-        message: messages.expected(expectation),
-        node: root,
-        index: match.startIndex,
-        result,
-        ruleName
+    function checkDeclOrAtRule(node, value, getIndex) {
+      const fixPositions = [];
+      // Get out quickly if there are no erroneous quotes
+      if (value.indexOf(erroneousQuote) === -1) {
+        return;
+      } else if (node.type === "atrule" && node.name === "charset") {
+        // allow @charset rules to have double quotes, in spite of the configuration
+        // TODO: @charset should always use double-quotes, see https://github.com/stylelint/stylelint/issues/2788
+        return;
+      }
+
+      valueParser(value).walk(valueNode => {
+        if (valueNode.type === "string" && valueNode.quote === erroneousQuote) {
+          const needsEscape = valueNode.value.indexOf(correctQuote) !== -1;
+          if (avoidEscape && needsEscape) {
+            // don't consider this an error
+            return;
+          }
+          const openIndex = valueNode.sourceIndex;
+
+          // we currently don't fix escapes
+          if (context.fix && !needsEscape) {
+            const closeIndex =
+              openIndex + valueNode.value.length + erroneousQuote.length;
+            fixPositions.push(openIndex, closeIndex);
+          } else {
+            report({
+              message: messages.expected(expectation),
+              node,
+              index: getIndex(node) + openIndex,
+              result,
+              ruleName
+            });
+          }
+        }
       });
-    });
+
+      fixPositions.forEach(fixIndex => {
+        if (node.type === "atrule") {
+          node.params = replaceQuote(node.params, fixIndex, correctQuote);
+        } else {
+          node.value = replaceQuote(node.value, fixIndex, correctQuote);
+        }
+      });
+    }
   };
 };
 
+function replaceQuote(string, index, replace) {
+  return (
+    string.substring(0, index) +
+    replace +
+    string.substring(index + replace.length)
+  );
+}
 rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"style-search":328}],506:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/isStandardSyntaxRule":717,"../../utils/parseSelector":730,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292}],647:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -80705,13 +92853,14 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/declarationValueIndex":530,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss":268,"postcss-value-parser":251}],507:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss":309,"postcss-value-parser":292}],648:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
 const declarationValueIndex = require("../../utils/declarationValueIndex");
 const getUnitFromValueNode = require("../../utils/getUnitFromValueNode");
+const mediaParser = require("postcss-media-query-parser").default;
 const optionsMatches = require("../../utils/optionsMatches");
 const report = require("../../utils/report");
 const ruleMessages = require("../../utils/ruleMessages");
@@ -80724,6 +92873,14 @@ const ruleName = "unit-blacklist";
 const messages = ruleMessages(ruleName, {
   rejected: unit => `Unexpected unit "${unit}"`
 });
+
+// a function to retrieve only the media feature name
+// could be externalized in an utils function if needed in other code
+const getMediaFeatureName = mediaFeatureNode => {
+  const value = mediaFeatureNode.value.toLowerCase();
+
+  return /((-?\w*)*)/i.exec(value)[1];
+};
 
 const rule = function(blacklistInput, options) {
   const blacklist = [].concat(blacklistInput);
@@ -80739,7 +92896,8 @@ const rule = function(blacklistInput, options) {
         optional: true,
         actual: options,
         possible: {
-          ignoreProperties: validateObjectWithStringArrayProps
+          ignoreProperties: validateObjectWithStringArrayProps,
+          ignoreMediaFeatureNames: validateObjectWithStringArrayProps
         }
       }
     );
@@ -80747,7 +92905,59 @@ const rule = function(blacklistInput, options) {
       return;
     }
 
-    function check(node, value, getIndex) {
+    function check(node, nodeIndex, valueNode, input, option) {
+      const unit = getUnitFromValueNode(valueNode);
+
+      // There is not unit or it is not configured as a violation
+      if (!unit || (unit && blacklist.indexOf(unit.toLowerCase()) === -1)) {
+        return;
+      }
+
+      // The unit has an ignore option for the specific input
+      if (optionsMatches(option, unit.toLowerCase(), input)) {
+        return;
+      }
+
+      report({
+        index: nodeIndex + valueNode.sourceIndex,
+        message: messages.rejected(unit),
+        node,
+        result,
+        ruleName
+      });
+    }
+
+    function checkMedia(node, value, getIndex) {
+      mediaParser(node.params).walk(/^media-feature$/i, mediaFeatureNode => {
+        const mediaName = getMediaFeatureName(mediaFeatureNode),
+          parentValue = mediaFeatureNode.parent.value;
+
+        valueParser(value).walk(function(valueNode) {
+          // Ignore all non-word valueNode and
+          // the values not included in the parentValue string
+          if (
+            valueNode.type !== "word" ||
+            !parentValue.includes(valueNode.value)
+          ) {
+            return;
+          }
+          check(
+            node,
+            getIndex(node),
+            valueNode,
+            mediaName,
+            options ? options.ignoreMediaFeatureNames : {}
+          );
+        });
+        return;
+      });
+    }
+
+    function checkDecl(node, value, getIndex) {
+      // make sure multiplication operations (*) are divided - not handled
+      // by postcss-value-parser
+      value = value.replace(/\*/g, ",");
+
       valueParser(value).walk(function(valueNode) {
         // Ignore wrong units within `url` function
         if (
@@ -80756,38 +92966,20 @@ const rule = function(blacklistInput, options) {
         ) {
           return false;
         }
-
-        const unit = getUnitFromValueNode(valueNode);
-
-        if (!unit || (unit && blacklist.indexOf(unit.toLowerCase()) === -1)) {
-          return;
-        }
-
-        if (
-          options &&
-          optionsMatches(
-            options.ignoreProperties,
-            unit.toLowerCase(),
-            node.prop
-          )
-        ) {
-          return;
-        }
-
-        report({
-          index: getIndex(node) + valueNode.sourceIndex,
-          message: messages.rejected(unit),
+        check(
           node,
-          result,
-          ruleName
-        });
+          getIndex(node),
+          valueNode,
+          node.prop,
+          options ? options.ignoreProperties : {}
+        );
       });
     }
 
     root.walkAtRules(/^media$/i, atRule =>
-      check(atRule, atRule.params, atRuleParamIndex)
+      checkMedia(atRule, atRule.params, atRuleParamIndex)
     );
-    root.walkDecls(decl => check(decl, decl.value, declarationValueIndex));
+    root.walkDecls(decl => checkDecl(decl, decl.value, declarationValueIndex));
   };
 };
 
@@ -80797,7 +92989,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateObjectWithStringArrayProps":594,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251}],508:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateObjectWithStringArrayProps":735,"../../utils/validateOptions":736,"lodash":173,"postcss-media-query-parser":278,"postcss-value-parser":292}],649:[function(require,module,exports){
 "use strict";
 
 const atRuleParamIndex = require("../../utils/atRuleParamIndex");
@@ -80825,6 +93017,9 @@ const rule = function(expectation) {
     }
 
     function check(node, value, getIndex) {
+      // make sure multiplication operations (*) are divided - not handled
+      // by postcss-value-parser
+      value = value.replace(/\*/g, ",");
       valueParser(value).walk(valueNode => {
         // Ignore wrong units within `url` function
         if (
@@ -80868,7 +93063,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"postcss-value-parser":251}],509:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"postcss-value-parser":292}],650:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -80910,7 +93105,7 @@ const rule = function(actual, options) {
     function check(node, value, getIndex) {
       // make sure multiplication operations (*) are divided - not handled
       // by postcss-value-parser
-      value = value.replace("*", ",");
+      value = value.replace(/\*/g, ",");
       valueParser(value).walk(function(valueNode) {
         // Ignore wrong units within `url` function
         if (
@@ -80954,7 +93149,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251}],510:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292}],651:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -80997,6 +93192,9 @@ const rule = function(whitelistInput, options) {
     }
 
     function check(node, value, getIndex) {
+      // make sure multiplication operations (*) are divided - not handled
+      // by postcss-value-parser
+      value = value.replace(/\*/g, ",");
       valueParser(value).walk(function(valueNode) {
         // Ignore wrong units within `url` function
         if (
@@ -81046,7 +93244,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/atRuleParamIndex":521,"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/optionsMatches":588,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateObjectWithStringArrayProps":594,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251}],511:[function(require,module,exports){
+},{"../../utils/atRuleParamIndex":662,"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/optionsMatches":729,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateObjectWithStringArrayProps":735,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292}],652:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -81258,7 +93456,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../reference/keywordSets":344,"../../utils/declarationValueIndex":530,"../../utils/getUnitFromValueNode":541,"../../utils/isCounterIncrementCustomIdentValue":555,"../../utils/isCounterResetCustomIdentValue":556,"../../utils/isStandardSyntaxValue":580,"../../utils/matchesStringOrRegExp":585,"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"postcss-value-parser":251}],512:[function(require,module,exports){
+},{"../../reference/keywordSets":483,"../../utils/declarationValueIndex":671,"../../utils/getUnitFromValueNode":682,"../../utils/isCounterIncrementCustomIdentValue":696,"../../utils/isCounterResetCustomIdentValue":697,"../../utils/isStandardSyntaxValue":721,"../../utils/matchesStringOrRegExp":726,"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"postcss-value-parser":292}],653:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -81300,7 +93498,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../valueListCommaWhitespaceChecker":517}],513:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../valueListCommaWhitespaceChecker":658}],654:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -81342,7 +93540,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../valueListCommaWhitespaceChecker":517}],514:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../valueListCommaWhitespaceChecker":658}],655:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -81385,7 +93583,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../valueListCommaWhitespaceChecker":517}],515:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../valueListCommaWhitespaceChecker":658}],656:[function(require,module,exports){
 "use strict";
 
 const ruleMessages = require("../../utils/ruleMessages");
@@ -81428,7 +93626,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"../../utils/whitespaceChecker":596,"../valueListCommaWhitespaceChecker":517}],516:[function(require,module,exports){
+},{"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"../../utils/whitespaceChecker":737,"../valueListCommaWhitespaceChecker":658}],657:[function(require,module,exports){
 "use strict";
 
 const _ = require("lodash");
@@ -81491,7 +93689,7 @@ rule.ruleName = ruleName;
 rule.messages = messages;
 module.exports = rule;
 
-},{"../../utils/report":592,"../../utils/ruleMessages":593,"../../utils/validateOptions":595,"lodash":126,"style-search":328}],517:[function(require,module,exports){
+},{"../../utils/report":733,"../../utils/ruleMessages":734,"../../utils/validateOptions":736,"lodash":173,"style-search":467}],658:[function(require,module,exports){
 "use strict";
 
 const isStandardSyntaxDeclaration = require("../utils/isStandardSyntaxDeclaration");
@@ -81536,7 +93734,8 @@ module.exports = function(opts) {
   }
 };
 
-},{"../utils/isStandardSyntaxDeclaration":572,"../utils/isStandardSyntaxProperty":575,"../utils/report":592,"style-search":328}],518:[function(require,module,exports){
+},{"../utils/isStandardSyntaxDeclaration":713,"../utils/isStandardSyntaxProperty":716,"../utils/report":733,"style-search":467}],659:[function(require,module,exports){
+(function (process){
 /* @flow */
 "use strict";
 const createStylelint = require("./createStylelint");
@@ -81686,7 +93885,26 @@ module.exports = function(
       })
       .catch(handleError)
       .then(stylelintResult => {
-        return prepareReturnValue([stylelintResult]);
+        const returnValue = prepareReturnValue([stylelintResult]);
+        const postcssResult = stylelintResult._postcssResult;
+        // if file is ignored, return nothing
+        if (
+          absoluteCodeFilename &&
+          !ignorer.filter(path.relative(process.cwd(), absoluteCodeFilename))
+            .length
+        ) {
+          returnValue.output = "";
+        } else if (
+          options.fix &&
+          postcssResult &&
+          !postcssResult.stylelint.ignored
+        ) {
+          // If we're fixing, the output should be the fixed code
+          returnValue.output = postcssResult.root.toString(
+            postcssResult.opts.syntax
+          );
+        }
+        return returnValue;
       });
   }
 
@@ -81742,7 +93960,9 @@ module.exports = function(
           .then(postcssResult => {
             if (postcssResult.stylelint.stylelintError && useCache) {
               debug(
-                `${absoluteFilepath} contains linting errors and will not be cached.`
+                `${
+                  absoluteFilepath
+                } contains linting errors and will not be cached.`
               );
               fileCache.removeEntry(absoluteFilepath);
             }
@@ -81831,7 +94051,8 @@ function convertCssSyntaxErrorToResult(
   };
 }
 
-},{"../package.json":597,"./createStylelint":332,"./formatters":335,"./needlessDisables":341,"./utils/FileCache":519,"./utils/hash":549,"debug":31,"globby":58,"ignore":69,"pify":149}],519:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"../package.json":765,"./createStylelint":471,"./formatters":474,"./needlessDisables":480,"./utils/FileCache":660,"./utils/hash":690,"_process":324,"debug":39,"globby":739,"ignore":107,"pify":201}],660:[function(require,module,exports){
 (function (process){
 /* @flow */
 "use strict";
@@ -81886,7 +94107,7 @@ FileCache.prototype.removeEntry = function(absoluteFilepath) {
 module.exports = FileCache;
 
 }).call(this,require('_process'))
-},{"./getCacheFile":535,"_process":283,"debug":31,"file-entry-cache":40,"path":146}],520:[function(require,module,exports){
+},{"./getCacheFile":676,"_process":324,"debug":39,"file-entry-cache":73,"path":198}],661:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -81911,7 +94132,7 @@ function addEmptyLineBefore(
 
 module.exports = addEmptyLineBefore;
 
-},{"lodash":126}],521:[function(require,module,exports){
+},{"lodash":173}],662:[function(require,module,exports){
 /* @flow */
 "use strict";
 module.exports = function(atRule /*: postcss$atRule*/) /*: number*/ {
@@ -81923,7 +94144,7 @@ module.exports = function(atRule /*: postcss$atRule*/) /*: number*/ {
   return index;
 };
 
-},{}],522:[function(require,module,exports){
+},{}],663:[function(require,module,exports){
 /* @flow */
 "use strict";
 module.exports = function(
@@ -81968,7 +94189,7 @@ module.exports = function(
   return result;
 };
 
-},{}],523:[function(require,module,exports){
+},{}],664:[function(require,module,exports){
 /* @flow */
 "use strict";
 const beforeBlockString = require("./beforeBlockString");
@@ -81993,7 +94214,7 @@ module.exports = function(
   return rawNodeString(statement).slice(beforeBlockString(statement).length);
 };
 
-},{"./beforeBlockString":522,"./hasBlock":542,"./rawNodeString":590}],524:[function(require,module,exports){
+},{"./beforeBlockString":663,"./hasBlock":683,"./rawNodeString":731}],665:[function(require,module,exports){
 /* @flow */
 "use strict";
 module.exports = function(source /*: string*/) /*: string*/ {
@@ -82003,7 +94224,7 @@ module.exports = function(source /*: string*/) /*: string*/ {
   return source.replace(/\/\*.*\*\//g, blurChar);
 };
 
-},{}],525:[function(require,module,exports){
+},{}],666:[function(require,module,exports){
 /* @flow */
 "use strict";
 const _ = require("lodash");
@@ -82059,7 +94280,7 @@ module.exports = function(
   return result;
 };
 
-},{"balanced-match":9,"lodash":126}],526:[function(require,module,exports){
+},{"balanced-match":11,"lodash":173}],667:[function(require,module,exports){
 /* @flow */
 "use strict";
 module.exports = function(
@@ -82071,7 +94292,7 @@ module.exports = function(
   return source.replace(/[#@{}]+/g, blurChar);
 };
 
-},{}],527:[function(require,module,exports){
+},{}],668:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82119,7 +94340,7 @@ module.exports = function(
   tmpPostcssResult.warnings().forEach(callback);
 };
 
-},{"../normalizeRuleSettings":342,"../rules":427,"postcss/lib/result":271}],528:[function(require,module,exports){
+},{"../normalizeRuleSettings":481,"../rules":567,"postcss/lib/result":312}],669:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82132,7 +94353,7 @@ module.exports = function(text /*: string */) /* Object */ {
   return err;
 };
 
-},{}],529:[function(require,module,exports){
+},{}],670:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82173,7 +94394,7 @@ function testAgainstString(value, comparison) {
   return false;
 }
 
-},{}],530:[function(require,module,exports){
+},{}],671:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82187,7 +94408,7 @@ module.exports = function(decl /*: Object*/) /*: number*/ {
   return beforeColon + afterColon;
 };
 
-},{}],531:[function(require,module,exports){
+},{}],672:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82249,7 +94470,7 @@ module.exports = function findAnimationName(
   return animationNames;
 };
 
-},{"../reference/keywordSets":344,"./getUnitFromValueNode":541,"./isStandardSyntaxValue":580,"./isVariable":583,"postcss-value-parser":251}],532:[function(require,module,exports){
+},{"../reference/keywordSets":483,"./getUnitFromValueNode":682,"./isStandardSyntaxValue":721,"./isVariable":724,"postcss-value-parser":292}],673:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82272,7 +94493,7 @@ module.exports = function findAtRuleContext(
   return findAtRuleContext(parent);
 };
 
-},{}],533:[function(require,module,exports){
+},{}],674:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82394,7 +94615,7 @@ module.exports = function findFontFamily(
   return fontFamilies;
 };
 
-},{"../reference/keywordSets":344,"./isNumbery":566,"./isStandardSyntaxValue":580,"./isValidFontSize":581,"./isVariable":583,"postcss-value-parser":251}],534:[function(require,module,exports){
+},{"../reference/keywordSets":483,"./isNumbery":707,"./isStandardSyntaxValue":721,"./isValidFontSize":722,"./isVariable":724,"postcss-value-parser":292}],675:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82436,7 +94657,7 @@ module.exports = function(
   );
 };
 
-},{"balanced-match":9,"style-search":328}],535:[function(require,module,exports){
+},{"balanced-match":11,"style-search":467}],676:[function(require,module,exports){
 "use strict";
 
 const fs = require("fs");
@@ -82489,7 +94710,7 @@ module.exports = function getCacheFile(cacheFile, cwd) {
   return resolvedCacheFile;
 };
 
-},{"./hash":549,"fs":14,"path":146}],536:[function(require,module,exports){
+},{"./hash":690,"fs":16,"path":198}],677:[function(require,module,exports){
 (function (process){
 /* @flow */
 "use strict";
@@ -82516,7 +94737,7 @@ module.exports = function(
 };
 
 }).call(this,require('_process'))
-},{"./configurationError":528,"_process":283,"resolve-from":310}],537:[function(require,module,exports){
+},{"./configurationError":669,"_process":324,"resolve-from":445}],678:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82550,7 +94771,7 @@ module.exports = function getNextNonSharedLineCommentNode(
   return nextNode;
 };
 
-},{"lodash":126}],538:[function(require,module,exports){
+},{"lodash":173}],679:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82564,7 +94785,7 @@ function getOsEl() /*: string*/ {
 
 module.exports = getOsEl;
 
-},{"os":141}],539:[function(require,module,exports){
+},{"os":192}],680:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82598,7 +94819,7 @@ module.exports = function getPreviousNonSharedLineCommentNode(
   return previousNode;
 };
 
-},{"lodash":126}],540:[function(require,module,exports){
+},{"lodash":173}],681:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82632,7 +94853,7 @@ module.exports = function(urlString /*: string*/) /*: ?string*/ {
   return scheme;
 };
 
-},{"url":609}],541:[function(require,module,exports){
+},{"url":788}],682:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82676,7 +94897,7 @@ module.exports = function(node /*: Object*/) /*: ?string*/ {
   return parsedUnit.unit;
 };
 
-},{"./blurInterpolation":526,"./isStandardSyntaxValue":580,"lodash":126,"postcss-value-parser":251}],542:[function(require,module,exports){
+},{"./blurInterpolation":667,"./isStandardSyntaxValue":721,"lodash":173,"postcss-value-parser":292}],683:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82690,7 +94911,7 @@ module.exports = function(statement /*: postcss$node*/) /*: boolean*/ {
   return statement.nodes !== undefined;
 };
 
-},{}],543:[function(require,module,exports){
+},{}],684:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82708,7 +94929,7 @@ module.exports = function(
   ); // and is empty
 };
 
-},{}],544:[function(require,module,exports){
+},{}],685:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82721,7 +94942,7 @@ module.exports = function(string /*:: ?: string*/) /*: boolean*/ {
   return /\n[\r\t ]*\n/.test(string);
 };
 
-},{}],545:[function(require,module,exports){
+},{}],686:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82747,7 +94968,7 @@ module.exports = function(string /*: string*/) /*: boolean*/ {
   return false;
 };
 
-},{"../utils/hasLessInterpolation":546,"../utils/hasPsvInterpolation":547,"../utils/hasScssInterpolation":548}],546:[function(require,module,exports){
+},{"../utils/hasLessInterpolation":687,"../utils/hasPsvInterpolation":688,"../utils/hasScssInterpolation":689}],687:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82765,7 +94986,7 @@ module.exports = function(string /*: string*/) /*: boolean*/ {
   return false;
 };
 
-},{}],547:[function(require,module,exports){
+},{}],688:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82780,7 +95001,7 @@ module.exports = function(string /*: string*/) /*: boolean*/ {
   return false;
 };
 
-},{}],548:[function(require,module,exports){
+},{}],689:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82795,7 +95016,7 @@ module.exports = function(string /*: string*/) /*: boolean*/ {
   return false;
 };
 
-},{}],549:[function(require,module,exports){
+},{}],690:[function(require,module,exports){
 "use strict";
 const murmur = require("imurmurhash");
 
@@ -82810,7 +95031,7 @@ module.exports = function hash(str) {
     .toString(36);
 };
 
-},{"imurmurhash":70}],550:[function(require,module,exports){
+},{"imurmurhash":108}],691:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82826,7 +95047,7 @@ module.exports = function(node /*: postcss$node*/) /*: boolean*/ {
   return !isSharedLineComment(previousNode);
 };
 
-},{"./isSharedLineComment":569}],551:[function(require,module,exports){
+},{"./isSharedLineComment":710}],692:[function(require,module,exports){
 "use strict";
 
 const isSharedLineComment = require("./isSharedLineComment");
@@ -82844,7 +95065,7 @@ function isAfterSingleLineComment(node /*: postcss$node*/) /*: boolean*/ {
 
 module.exports = isAfterSingleLineComment;
 
-},{"./isSharedLineComment":569}],552:[function(require,module,exports){
+},{"./isSharedLineComment":710}],693:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82864,7 +95085,7 @@ module.exports = function(node /*: postcss$node*/) /*: boolean*/ {
   );
 };
 
-},{"./getPreviousNonSharedLineCommentNode":539,"./isCustomProperty":559,"./isStandardSyntaxDeclaration":572,"lodash":126}],553:[function(require,module,exports){
+},{"./getPreviousNonSharedLineCommentNode":680,"./isCustomProperty":700,"./isStandardSyntaxDeclaration":713,"lodash":173}],694:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82888,7 +95109,7 @@ module.exports = function(atRule /*: postcss$atRule*/) /*: boolean*/ {
   );
 };
 
-},{"./getPreviousNonSharedLineCommentNode":539,"./hasBlock":542}],554:[function(require,module,exports){
+},{"./getPreviousNonSharedLineCommentNode":680,"./hasBlock":683}],695:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82906,7 +95127,7 @@ module.exports = function(atRule /*: postcss$atRule*/) /*: boolean*/ {
   return _.get(previousNode, "name") === atRule.name;
 };
 
-},{"./getPreviousNonSharedLineCommentNode":539,"./isBlocklessAtRuleAfterBlocklessAtRule":553,"lodash":126}],555:[function(require,module,exports){
+},{"./getPreviousNonSharedLineCommentNode":680,"./isBlocklessAtRuleAfterBlocklessAtRule":694,"lodash":173}],696:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82930,7 +95151,7 @@ module.exports = function(value /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../reference/keywordSets":344,"lodash":126}],556:[function(require,module,exports){
+},{"../reference/keywordSets":483,"lodash":173}],697:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82954,7 +95175,7 @@ module.exports = function(value /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../reference/keywordSets":344,"lodash":126}],557:[function(require,module,exports){
+},{"../reference/keywordSets":483,"lodash":173}],698:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -82996,7 +95217,7 @@ module.exports = function(selector /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../reference/keywordSets":344,"html-tags":67,"mathml-tag-names":127,"svg-tags":606}],558:[function(require,module,exports){
+},{"../reference/keywordSets":483,"html-tags":97,"mathml-tag-names":177,"svg-tags":774}],699:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83007,7 +95228,7 @@ module.exports = function(mediaQuery /*: string*/) /*: boolean*/ {
   return mediaQuery.slice(0, 2) === "--";
 };
 
-},{}],559:[function(require,module,exports){
+},{}],700:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83018,7 +95239,7 @@ module.exports = function(property /*: string*/) /*: boolean*/ {
   return property.slice(0, 2) === "--";
 };
 
-},{}],560:[function(require,module,exports){
+},{}],701:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83039,7 +95260,7 @@ module.exports = function(node /*: Object*/) /*: boolean*/ {
   );
 };
 
-},{"../utils/hasBlock":542,"lodash":126}],561:[function(require,module,exports){
+},{"../utils/hasBlock":683,"lodash":173}],702:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83050,7 +95271,7 @@ module.exports = function(selector /*: string*/) /*: boolean*/ {
   return selector.slice(0, 3) === ":--";
 };
 
-},{}],562:[function(require,module,exports){
+},{}],703:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83099,7 +95320,7 @@ module.exports = function(statement /*: postcss$node*/) /*: boolean*/ {
   return false;
 };
 
-},{}],563:[function(require,module,exports){
+},{}],704:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83108,7 +95329,7 @@ module.exports = function(node /*: postcss$node*/) /*: boolean*/ {
   return parentNode.type === "root" && node === parentNode.first;
 };
 
-},{}],564:[function(require,module,exports){
+},{}],705:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83121,7 +95342,7 @@ module.exports = function(rule /*: postcss$rule*/) /*: boolean*/ {
   return parent.type === "atrule" && parent.name.toLowerCase() === "keyframes";
 };
 
-},{}],565:[function(require,module,exports){
+},{}],706:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83143,7 +95364,7 @@ module.exports = function(selector /*: string*/) /*: boolean*/ {
   return false;
 };
 
-},{"../reference/keywordSets":344}],566:[function(require,module,exports){
+},{"../reference/keywordSets":483}],707:[function(require,module,exports){
 // Too weird for Flow
 "use strict";
 
@@ -83157,7 +95378,7 @@ module.exports = function(value) {
   /* eslint-enable eqeqeq */
 };
 
-},{}],567:[function(require,module,exports){
+},{}],708:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83177,7 +95398,7 @@ module.exports = function(input /*: string*/) /*: boolean*/ {
   return isOnlyWhitespace;
 };
 
-},{"./isWhitespace":584}],568:[function(require,module,exports){
+},{"./isWhitespace":725}],709:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83195,7 +95416,7 @@ module.exports = function(mediaFeature /*: string*/) /*: boolean*/ {
   );
 };
 
-},{}],569:[function(require,module,exports){
+},{}],710:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83204,7 +95425,7 @@ const getNextNonSharedLineCommentNode = require("./getNextNonSharedLineCommentNo
 const getPreviousNonSharedLineCommentNode = require("./getPreviousNonSharedLineCommentNode");
 
 function nodesShareLines(a, b) {
-  return _.get(a, "source.start.line") === _.get(b, "source.start.line");
+  return _.get(a, "source.end.line") === _.get(b, "source.start.line");
 }
 
 module.exports = function isSharedLineComment(
@@ -83217,7 +95438,7 @@ module.exports = function isSharedLineComment(
   const previousNonSharedLineCommentNode = getPreviousNonSharedLineCommentNode(
     node
   );
-  if (nodesShareLines(node, previousNonSharedLineCommentNode)) {
+  if (nodesShareLines(previousNonSharedLineCommentNode, node)) {
     return true;
   }
 
@@ -83238,7 +95459,7 @@ module.exports = function isSharedLineComment(
   return false;
 };
 
-},{"./getNextNonSharedLineCommentNode":537,"./getPreviousNonSharedLineCommentNode":539,"lodash":126}],570:[function(require,module,exports){
+},{"./getNextNonSharedLineCommentNode":678,"./getPreviousNonSharedLineCommentNode":680,"lodash":173}],711:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83253,7 +95474,7 @@ module.exports = function(input /*: string*/) /*: boolean*/ {
   return !/[\n\r]/.test(input);
 };
 
-},{}],571:[function(require,module,exports){
+},{}],712:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83281,7 +95502,7 @@ module.exports = function(atRule /*: postcss$atRule*/) /*: boolean*/ {
   return true;
 };
 
-},{}],572:[function(require,module,exports){
+},{}],713:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83320,7 +95541,7 @@ module.exports = function(decl /*: Object*/) /*: boolean*/ {
   return true;
 };
 
-},{}],573:[function(require,module,exports){
+},{}],714:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83336,7 +95557,7 @@ module.exports = function(node /*: Object*/) /*: boolean*/ {
   return true;
 };
 
-},{}],574:[function(require,module,exports){
+},{}],715:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83352,7 +95573,7 @@ module.exports = function(mediaFeatureName /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{}],575:[function(require,module,exports){
+},{}],716:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83385,7 +95606,7 @@ module.exports = function(property /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../utils/hasInterpolation":545,"lodash":126}],576:[function(require,module,exports){
+},{"../utils/hasInterpolation":686,"lodash":173}],717:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83443,7 +95664,7 @@ module.exports = function(rule /*: Object*/) /*: boolean*/ {
   return true;
 };
 
-},{"../utils/isCustomPropertySet":560,"lodash":126}],577:[function(require,module,exports){
+},{"../utils/isCustomPropertySet":701,"lodash":173}],718:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83475,7 +95696,7 @@ module.exports = function(selector /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../utils/hasInterpolation":545}],578:[function(require,module,exports){
+},{"../utils/hasInterpolation":686}],719:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83526,7 +95747,7 @@ module.exports = function(node /*: Object*/) /*: boolean*/ {
   return true;
 };
 
-},{"../reference/keywordSets":344,"lodash":126}],579:[function(require,module,exports){
+},{"../reference/keywordSets":483,"lodash":173}],720:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83580,7 +95801,7 @@ module.exports = function(url /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../utils/hasLessInterpolation":546,"../utils/hasPsvInterpolation":547,"../utils/hasScssInterpolation":548}],580:[function(require,module,exports){
+},{"../utils/hasLessInterpolation":687,"../utils/hasPsvInterpolation":688,"../utils/hasScssInterpolation":689}],721:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83614,7 +95835,7 @@ module.exports = function(value /*: string*/) /*: boolean*/ {
   return true;
 };
 
-},{"../utils/hasInterpolation":545}],581:[function(require,module,exports){
+},{"../utils/hasInterpolation":686}],722:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83650,7 +95871,7 @@ module.exports = function(word /*: string*/) /*: boolean*/ {
   return false;
 };
 
-},{"../reference/keywordSets":344,"postcss-value-parser":251}],582:[function(require,module,exports){
+},{"../reference/keywordSets":483,"postcss-value-parser":292}],723:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83661,7 +95882,7 @@ module.exports = function(value /*: string*/) /*: boolean*/ {
   return /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value);
 };
 
-},{}],583:[function(require,module,exports){
+},{}],724:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83672,7 +95893,7 @@ module.exports = function(word /*: string*/) /*: boolean*/ {
   return word.toLowerCase().slice(0, 4) === "var(";
 };
 
-},{}],584:[function(require,module,exports){
+},{}],725:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83683,7 +95904,7 @@ module.exports = function(char /*: string*/) /*: boolean*/ {
   return [" ", "\n", "\t", "\r", "\f"].indexOf(char) !== -1;
 };
 
-},{}],585:[function(require,module,exports){
+},{}],726:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83750,7 +95971,7 @@ function testAgainstString(value, comparison) {
   return value === comparison ? { match: value, pattern: comparison } : false;
 }
 
-},{}],586:[function(require,module,exports){
+},{}],727:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83770,7 +95991,7 @@ module.exports = function nextNonCommentNode(
   return startNode;
 };
 
-},{}],587:[function(require,module,exports){
+},{}],728:[function(require,module,exports){
 // Too weird for Flow
 "use strict";
 
@@ -83807,7 +96028,7 @@ function creativeGetMap(someMap, someThing) {
   return someMap.get(someThing);
 }
 
-},{}],588:[function(require,module,exports){
+},{}],729:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83830,7 +96051,7 @@ module.exports = function optionsMatches(
   );
 };
 
-},{"./matchesStringOrRegExp":585}],589:[function(require,module,exports){
+},{"./matchesStringOrRegExp":726}],730:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83843,13 +96064,13 @@ module.exports = function(
   cb /*: Function*/
 ) {
   try {
-    selectorParser(cb).process(selector);
+    selectorParser(cb).processSync(selector);
   } catch (e) {
     result.warn("Cannot parse selector", { node, stylelintType: "parseError" });
   }
 };
 
-},{"postcss-selector-parser":230}],590:[function(require,module,exports){
+},{"postcss-selector-parser":740}],731:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83865,7 +96086,7 @@ module.exports = function(node /*: Object*/) /*: string*/ {
   return result;
 };
 
-},{}],591:[function(require,module,exports){
+},{}],732:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83881,7 +96102,7 @@ function removeEmptyLinesBefore(
 
 module.exports = removeEmptyLinesBefore;
 
-},{}],592:[function(require,module,exports){
+},{}],733:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -83982,7 +96203,7 @@ module.exports = function(
   result.warn(warningMessage, warningProperties);
 };
 
-},{"lodash":126}],593:[function(require,module,exports){
+},{"lodash":173}],734:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -84013,7 +96234,7 @@ module.exports = function(
   }, {});
 };
 
-},{}],594:[function(require,module,exports){
+},{}],735:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -84044,7 +96265,7 @@ module.exports = function(value /*: Object*/) /*: boolean*/ {
   });
 };
 
-},{"lodash":126}],595:[function(require,module,exports){
+},{"lodash":173}],736:[function(require,module,exports){
 /* @flow */
 "use strict";
 
@@ -84147,9 +96368,9 @@ function validate(opts, ruleName, complain) {
   // If possible is an object ...
   if (!_.isPlainObject(actual)) {
     complain(
-      `Invalid option value ${JSON.stringify(
-        actual
-      )} for rule "${ruleName}": ` + "should be an object"
+      `Invalid option value ${JSON.stringify(actual)} for rule "${
+        ruleName
+      }": ` + "should be an object"
     );
     return;
   }
@@ -84189,7 +96410,7 @@ function isValid(possible, actual) {
   }
 }
 
-},{"lodash":126}],596:[function(require,module,exports){
+},{"lodash":173}],737:[function(require,module,exports){
 "use strict";
 
 const configurationError = require("./configurationError");
@@ -84532,31 +96753,2878 @@ function isValue(x) {
   return x !== undefined && x !== null;
 }
 
-},{"./configurationError":528,"./isSingleLineString":570,"./isWhitespace":584}],597:[function(require,module,exports){
+},{"./configurationError":669,"./isSingleLineString":711,"./isWhitespace":725}],738:[function(require,module,exports){
+(function (process){
+'use strict';
+const fs = require('fs');
+const path = require('path');
+const glob = require('glob');
+const gitIgnore = require('ignore');
+const pify = require('pify');
+const slash = require('slash');
+
+const globP = pify(glob);
+const readFileP = pify(fs.readFile);
+
+const mapGitIgnorePatternTo = base => ignore => {
+	if (ignore.startsWith('!')) {
+		return '!' + path.posix.join(base, ignore.substr(1));
+	}
+
+	return path.posix.join(base, ignore);
+};
+
+const parseGitIgnore = (content, opts) => {
+	const base = slash(path.relative(opts.cwd, path.dirname(opts.fileName)));
+
+	return content
+		.split(/\r?\n/)
+		.filter(Boolean)
+		.filter(l => l.charAt(0) !== '#')
+		.map(mapGitIgnorePatternTo(base));
+};
+
+const reduceIgnore = files => {
+	return files.reduce((ignores, file) => {
+		ignores.add(parseGitIgnore(file.content, {
+			cwd: file.cwd,
+			fileName: file.filePath
+		}));
+		return ignores;
+	}, gitIgnore());
+};
+
+const getIsIgnoredPredecate = (ignores, cwd) => {
+	return p => ignores.ignores(slash(path.relative(cwd, p)));
+};
+
+const getFile = (file, cwd) => {
+	const filePath = path.join(cwd, file);
+	return readFileP(filePath, 'utf8')
+		.then(content => ({
+			content,
+			cwd,
+			filePath
+		}));
+};
+
+const getFileSync = (file, cwd) => {
+	const filePath = path.join(cwd, file);
+	const content = fs.readFileSync(filePath, 'utf8');
+
+	return {
+		content,
+		cwd,
+		filePath
+	};
+};
+
+const normalizeOpts = opts => {
+	opts = opts || {};
+	const ignore = opts.ignore || [];
+	const cwd = opts.cwd || process.cwd();
+	return {ignore, cwd};
+};
+
+module.exports = o => {
+	const opts = normalizeOpts(o);
+
+	return globP('**/.gitignore', {ignore: opts.ignore, cwd: opts.cwd})
+		.then(paths => Promise.all(paths.map(file => getFile(file, opts.cwd))))
+		.then(files => reduceIgnore(files))
+		.then(ignores => getIsIgnoredPredecate(ignores, opts.cwd));
+};
+
+module.exports.sync = o => {
+	const opts = normalizeOpts(o);
+
+	const paths = glob.sync('**/.gitignore', {ignore: opts.ignore, cwd: opts.cwd});
+	const files = paths.map(file => getFileSync(file, opts.cwd));
+	const ignores = reduceIgnore(files);
+	return getIsIgnoredPredecate(ignores, opts.cwd);
+};
+
+}).call(this,require('_process'))
+},{"_process":324,"fs":16,"glob":88,"ignore":107,"path":198,"pify":201,"slash":448}],739:[function(require,module,exports){
+'use strict';
+const arrayUnion = require('array-union');
+const glob = require('glob');
+const pify = require('pify');
+const dirGlob = require('dir-glob');
+const gitignore = require('./gitignore');
+
+const globP = pify(glob);
+const DEFAULT_FILTER = () => false;
+
+const isNegative = pattern => pattern[0] === '!';
+
+const assertPatternsInput = patterns => {
+	if (!patterns.every(x => typeof x === 'string')) {
+		throw new TypeError('Patterns must be a string or an array of strings');
+	}
+};
+
+const generateGlobTasks = (patterns, taskOpts) => {
+	patterns = [].concat(patterns);
+	assertPatternsInput(patterns);
+
+	const globTasks = [];
+
+	taskOpts = Object.assign({
+		cache: Object.create(null),
+		statCache: Object.create(null),
+		realpathCache: Object.create(null),
+		symlinks: Object.create(null),
+		ignore: [],
+		expandDirectories: true,
+		nodir: true
+	}, taskOpts);
+
+	patterns.forEach((pattern, i) => {
+		if (isNegative(pattern)) {
+			return;
+		}
+
+		const ignore = patterns
+			.slice(i)
+			.filter(isNegative)
+			.map(pattern => pattern.slice(1));
+
+		const opts = Object.assign({}, taskOpts, {
+			ignore: taskOpts.ignore.concat(ignore)
+		});
+
+		globTasks.push({pattern, opts});
+	});
+
+	return globTasks;
+};
+
+const globDirs = (task, fn) => {
+	if (Array.isArray(task.opts.expandDirectories)) {
+		return fn(task.pattern, {files: task.opts.expandDirectories});
+	}
+
+	if (typeof task.opts.expandDirectories === 'object') {
+		return fn(task.pattern, task.opts.expandDirectories);
+	}
+
+	return fn(task.pattern);
+};
+
+const getPattern = (task, fn) => task.opts.expandDirectories ? globDirs(task, fn) : [task.pattern];
+
+module.exports = (patterns, opts) => {
+	let globTasks;
+
+	try {
+		globTasks = generateGlobTasks(patterns, opts);
+	} catch (err) {
+		return Promise.reject(err);
+	}
+
+	const getTasks = Promise.all(globTasks.map(task => Promise.resolve(getPattern(task, dirGlob))
+		.then(globs => Promise.all(globs.map(glob => ({
+			pattern: glob,
+			opts: task.opts
+		}))))
+	))
+		.then(tasks => arrayUnion.apply(null, tasks));
+
+	const getFilter = () => {
+		return Promise.resolve(
+			opts && opts.gitignore ?
+				gitignore({cwd: opts.cwd, ignore: opts.ignore}) :
+				DEFAULT_FILTER
+		);
+	};
+
+	return getFilter()
+		.then(filter => {
+			return getTasks
+				.then(tasks => Promise.all(tasks.map(task => globP(task.pattern, task.opts))))
+				.then(paths => arrayUnion.apply(null, paths))
+				.then(paths => paths.filter(p => !filter(p)));
+		});
+};
+
+module.exports.sync = (patterns, opts) => {
+	const globTasks = generateGlobTasks(patterns, opts);
+
+	const getFilter = () => {
+		return opts && opts.gitignore ?
+			gitignore.sync({cwd: opts.cwd, ignore: opts.ignore}) :
+			DEFAULT_FILTER;
+	};
+
+	const tasks = globTasks.reduce((tasks, task) => {
+		const newTask = getPattern(task, dirGlob.sync).map(glob => ({
+			pattern: glob,
+			opts: task.opts
+		}));
+		return tasks.concat(newTask);
+	}, []);
+
+	const filter = getFilter();
+
+	return tasks.reduce(
+		(matches, task) => arrayUnion(matches, glob.sync(task.pattern, task.opts)),
+		[]
+	).filter(p => !filter(p));
+};
+
+module.exports.generateGlobTasks = generateGlobTasks;
+
+module.exports.hasMagic = (patterns, opts) => []
+	.concat(patterns)
+	.some(pattern => glob.hasMagic(pattern, opts));
+
+module.exports.gitignore = gitignore;
+
+},{"./gitignore":738,"array-union":5,"dir-glob":41,"glob":88,"pify":201}],740:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _processor = require('./processor');
+
+var _processor2 = _interopRequireDefault(_processor);
+
+var _selectors = require('./selectors');
+
+var selectors = _interopRequireWildcard(_selectors);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var parser = function parser(processor) {
+  return new _processor2.default(processor);
+};
+
+Object.assign(parser, selectors);
+
+delete parser.__esModule;
+
+exports.default = parser;
+module.exports = exports['default'];
+},{"./processor":742,"./selectors":751}],741:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _dotProp = require('dot-prop');
+
+var _dotProp2 = _interopRequireDefault(_dotProp);
+
+var _indexesOf = require('indexes-of');
+
+var _indexesOf2 = _interopRequireDefault(_indexesOf);
+
+var _uniq = require('uniq');
+
+var _uniq2 = _interopRequireDefault(_uniq);
+
+var _root = require('./selectors/root');
+
+var _root2 = _interopRequireDefault(_root);
+
+var _selector = require('./selectors/selector');
+
+var _selector2 = _interopRequireDefault(_selector);
+
+var _className = require('./selectors/className');
+
+var _className2 = _interopRequireDefault(_className);
+
+var _comment = require('./selectors/comment');
+
+var _comment2 = _interopRequireDefault(_comment);
+
+var _id = require('./selectors/id');
+
+var _id2 = _interopRequireDefault(_id);
+
+var _tag = require('./selectors/tag');
+
+var _tag2 = _interopRequireDefault(_tag);
+
+var _string = require('./selectors/string');
+
+var _string2 = _interopRequireDefault(_string);
+
+var _pseudo = require('./selectors/pseudo');
+
+var _pseudo2 = _interopRequireDefault(_pseudo);
+
+var _attribute = require('./selectors/attribute');
+
+var _attribute2 = _interopRequireDefault(_attribute);
+
+var _universal = require('./selectors/universal');
+
+var _universal2 = _interopRequireDefault(_universal);
+
+var _combinator = require('./selectors/combinator');
+
+var _combinator2 = _interopRequireDefault(_combinator);
+
+var _nesting = require('./selectors/nesting');
+
+var _nesting2 = _interopRequireDefault(_nesting);
+
+var _sortAscending = require('./sortAscending');
+
+var _sortAscending2 = _interopRequireDefault(_sortAscending);
+
+var _tokenize = require('./tokenize');
+
+var _tokenize2 = _interopRequireDefault(_tokenize);
+
+var _tokenTypes = require('./tokenTypes');
+
+var tokens = _interopRequireWildcard(_tokenTypes);
+
+var _types = require('./selectors/types');
+
+var types = _interopRequireWildcard(_types);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function getSource(startLine, startColumn, endLine, endColumn) {
+    return {
+        start: {
+            line: startLine,
+            column: startColumn
+        },
+        end: {
+            line: endLine,
+            column: endColumn
+        }
+    };
+}
+
+var Parser = function () {
+    function Parser(rule) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        _classCallCheck(this, Parser);
+
+        this.rule = rule;
+        this.options = Object.assign({ lossy: false, safe: false }, options);
+        this.position = 0;
+        this.root = new _root2.default();
+        this.root.errorGenerator = this._errorGenerator();
+
+        var selector = new _selector2.default();
+        this.root.append(selector);
+        this.current = selector;
+
+        this.css = typeof this.rule === 'string' ? this.rule : this.rule.selector;
+
+        if (this.options.lossy) {
+            this.css = this.css.trim();
+        }
+        this.tokens = (0, _tokenize2.default)({
+            css: this.css,
+            error: this._errorGenerator(),
+            safe: this.options.safe
+        });
+
+        this.loop();
+    }
+
+    Parser.prototype._errorGenerator = function _errorGenerator() {
+        var _this = this;
+
+        return function (message, errorOptions) {
+            if (typeof _this.rule === 'string') {
+                return new Error(message);
+            }
+            return _this.rule.error(message, errorOptions);
+        };
+    };
+
+    Parser.prototype.attribute = function attribute() {
+        var attr = [];
+        var startingToken = this.currToken;
+        this.position++;
+        while (this.position < this.tokens.length && this.currToken[0] !== tokens.closeSquare) {
+            attr.push(this.currToken);
+            this.position++;
+        }
+        if (this.currToken[0] !== tokens.closeSquare) {
+            return this.expected('closing square bracket', this.currToken[5]);
+        }
+
+        var len = attr.length;
+        var node = {
+            source: getSource(startingToken[1], startingToken[2], this.currToken[3], this.currToken[4]),
+            sourceIndex: startingToken[5]
+        };
+
+        if (len === 1 && !~[tokens.word].indexOf(attr[0][0])) {
+            return this.expected('attribute', attr[0][5]);
+        }
+
+        var pos = 0;
+        var spaceBefore = '';
+        var commentBefore = '';
+        var lastAdded = null;
+        var spaceAfterMeaningfulToken = false;
+
+        while (pos < len) {
+            var token = attr[pos];
+            var content = this.content(token);
+            var next = attr[pos + 1];
+
+            switch (token[0]) {
+                case tokens.space:
+                    if (len === 1 || pos === 0 && this.content(next) === '|') {
+                        return this.expected('attribute', token[5], content);
+                    }
+                    spaceAfterMeaningfulToken = true;
+                    if (this.options.lossy) {
+                        break;
+                    }
+                    if (lastAdded) {
+                        var spaceProp = 'spaces.' + lastAdded + '.after';
+                        _dotProp2.default.set(node, spaceProp, _dotProp2.default.get(node, spaceProp, '') + content);
+                        var commentProp = 'raws.spaces.' + lastAdded + '.after';
+                        var existingComment = _dotProp2.default.get(node, commentProp);
+                        if (existingComment) {
+                            _dotProp2.default.set(node, commentProp, existingComment + content);
+                        }
+                    } else {
+                        spaceBefore = spaceBefore + content;
+                        commentBefore = commentBefore + content;
+                    }
+                    break;
+                case tokens.asterisk:
+                    if (next[0] === tokens.equals) {
+                        node.operator = content;
+                        lastAdded = 'operator';
+                    } else if ((!node.namespace || lastAdded === "namespace" && !spaceAfterMeaningfulToken) && next) {
+                        if (spaceBefore) {
+                            _dotProp2.default.set(node, 'spaces.attribute.before', spaceBefore);
+                            spaceBefore = '';
+                        }
+                        if (commentBefore) {
+                            _dotProp2.default.set(node, 'raws.spaces.attribute.before', spaceBefore);
+                            commentBefore = '';
+                        }
+                        node.namespace = (node.namespace || "") + content;
+                        var rawValue = _dotProp2.default.get(node, "raws.namespace");
+                        if (rawValue) {
+                            node.raws.namespace += content;
+                        }
+                        lastAdded = 'namespace';
+                    }
+                    spaceAfterMeaningfulToken = false;
+                    break;
+                case tokens.dollar:
+                case tokens.caret:
+                    if (next[0] === tokens.equals) {
+                        node.operator = content;
+                        lastAdded = 'operator';
+                    }
+                    spaceAfterMeaningfulToken = false;
+                    break;
+                case tokens.combinator:
+                    if (content === '~' && next[0] === tokens.equals) {
+                        node.operator = content;
+                        lastAdded = 'operator';
+                    }
+                    if (content !== '|') {
+                        spaceAfterMeaningfulToken = false;
+                        break;
+                    }
+                    if (next[0] === tokens.equals) {
+                        node.operator = content;
+                        lastAdded = 'operator';
+                    } else if (!node.namespace && !node.attribute) {
+                        node.namespace = true;
+                    }
+                    spaceAfterMeaningfulToken = false;
+                    break;
+                case tokens.word:
+                    if (next && this.content(next) === '|' && attr[pos + 2] && attr[pos + 2][0] !== tokens.equals && // this look-ahead probably fails with comment nodes involved.
+                    !node.operator && !node.namespace) {
+                        node.namespace = content;
+                        lastAdded = 'namespace';
+                    } else if (!node.attribute || lastAdded === "attribute" && !spaceAfterMeaningfulToken) {
+                        if (spaceBefore) {
+                            _dotProp2.default.set(node, 'spaces.attribute.before', spaceBefore);
+                            spaceBefore = '';
+                        }
+                        if (commentBefore) {
+                            _dotProp2.default.set(node, 'raws.spaces.attribute.before', commentBefore);
+                            commentBefore = '';
+                        }
+                        node.attribute = (node.attribute || "") + content;
+                        var _rawValue = _dotProp2.default.get(node, "raws.attribute");
+                        if (_rawValue) {
+                            node.raws.attribute += content;
+                        }
+                        lastAdded = 'attribute';
+                    } else if (!node.value || lastAdded === "value" && !spaceAfterMeaningfulToken) {
+                        node.value = (node.value || "") + content;
+                        var _rawValue2 = _dotProp2.default.get(node, "raws.value");
+                        if (_rawValue2) {
+                            node.raws.value += content;
+                        }
+                        lastAdded = 'value';
+                        _dotProp2.default.set(node, 'raws.unquoted', _dotProp2.default.get(node, 'raws.unquoted', '') + content);
+                    } else if (content === 'i') {
+                        if (node.value && (node.quoted || spaceAfterMeaningfulToken)) {
+                            node.insensitive = true;
+                            lastAdded = 'insensitive';
+                            if (spaceBefore) {
+                                _dotProp2.default.set(node, 'spaces.insensitive.before', spaceBefore);
+                                spaceBefore = '';
+                            }
+                            if (commentBefore) {
+                                _dotProp2.default.set(node, 'raws.spaces.insensitive.before', commentBefore);
+                                commentBefore = '';
+                            }
+                        } else if (node.value) {
+                            lastAdded = 'value';
+                            node.value += 'i';
+                            if (node.raws.value) {
+                                node.raws.value += 'i';
+                            }
+                        }
+                    }
+                    spaceAfterMeaningfulToken = false;
+                    break;
+                case tokens.str:
+                    if (!node.attribute || !node.operator) {
+                        return this.error('Expected an attribute followed by an operator preceding the string.', {
+                            index: token[5]
+                        });
+                    }
+                    node.value = content;
+                    node.quoted = true;
+                    lastAdded = 'value';
+                    _dotProp2.default.set(node, 'raws.unquoted', content.slice(1, -1));
+                    spaceAfterMeaningfulToken = false;
+                    break;
+                case tokens.equals:
+                    if (!node.attribute) {
+                        return this.expected('attribute', token[5], content);
+                    }
+                    if (node.value) {
+                        return this.error('Unexpected "=" found; an operator was already defined.', { index: token[5] });
+                    }
+                    node.operator = node.operator ? node.operator + content : content;
+                    lastAdded = 'operator';
+                    spaceAfterMeaningfulToken = false;
+                    break;
+                case tokens.comment:
+                    if (lastAdded) {
+                        if (spaceAfterMeaningfulToken || next && next[0] === tokens.space) {
+                            var lastComment = _dotProp2.default.get(node, 'raws.spaces.' + lastAdded + '.after', _dotProp2.default.get(node, 'spaces.' + lastAdded + '.after', ''));
+                            _dotProp2.default.set(node, 'raws.spaces.' + lastAdded + '.after', lastComment + content);
+                        } else {
+                            var lastValue = _dotProp2.default.get(node, 'raws.' + lastAdded, _dotProp2.default.get(node, lastAdded, ''));
+                            _dotProp2.default.set(node, 'raws.' + lastAdded, lastValue + content);
+                        }
+                    } else {
+                        commentBefore = commentBefore + content;
+                    }
+                    break;
+                default:
+                    return this.error('Unexpected "' + content + '" found.', { index: token[5] });
+            }
+            pos++;
+        }
+
+        this.newNode(new _attribute2.default(node));
+        this.position++;
+    };
+
+    Parser.prototype.combinator = function combinator() {
+        var current = this.currToken;
+        if (this.content() === '|') {
+            return this.namespace();
+        }
+        var node = new _combinator2.default({
+            value: '',
+            source: getSource(current[1], current[2], current[3], current[4]),
+            sourceIndex: current[5]
+        });
+        while (this.position < this.tokens.length && this.currToken && (this.currToken[0] === tokens.space || this.currToken[0] === tokens.combinator)) {
+            var content = this.content();
+            if (this.nextToken && this.nextToken[0] === tokens.combinator) {
+                node.spaces.before = this.parseSpace(content);
+                node.source = getSource(this.nextToken[1], this.nextToken[2], this.nextToken[3], this.nextToken[4]);
+                node.sourceIndex = this.nextToken[5];
+            } else if (this.prevToken && this.prevToken[0] === tokens.combinator) {
+                node.spaces.after = this.parseSpace(content);
+            } else if (this.currToken[0] === tokens.combinator) {
+                node.value = content;
+            } else if (this.currToken[0] === tokens.space) {
+                node.value = this.parseSpace(content, ' ');
+            }
+            this.position++;
+        }
+        return this.newNode(node);
+    };
+
+    Parser.prototype.comma = function comma() {
+        if (this.position === this.tokens.length - 1) {
+            this.root.trailingComma = true;
+            this.position++;
+            return;
+        }
+        var selector = new _selector2.default();
+        this.current.parent.append(selector);
+        this.current = selector;
+        this.position++;
+    };
+
+    Parser.prototype.comment = function comment() {
+        var current = this.currToken;
+        this.newNode(new _comment2.default({
+            value: this.content(),
+            source: getSource(current[1], current[2], current[3], current[4]),
+            sourceIndex: current[5]
+        }));
+        this.position++;
+    };
+
+    Parser.prototype.error = function error(message, opts) {
+        throw this.root.error(message, opts);
+    };
+
+    Parser.prototype.missingBackslash = function missingBackslash() {
+        return this.error('Expected a backslash preceding the semicolon.', {
+            index: this.currToken[5]
+        });
+    };
+
+    Parser.prototype.missingParenthesis = function missingParenthesis() {
+        return this.expected('opening parenthesis', this.currToken[5]);
+    };
+
+    Parser.prototype.missingSquareBracket = function missingSquareBracket() {
+        return this.expected('opening square bracket', this.currToken[5]);
+    };
+
+    Parser.prototype.namespace = function namespace() {
+        var before = this.prevToken && this.content(this.prevToken) || true;
+        if (this.nextToken[0] === tokens.word) {
+            this.position++;
+            return this.word(before);
+        } else if (this.nextToken[0] === tokens.asterisk) {
+            this.position++;
+            return this.universal(before);
+        }
+    };
+
+    Parser.prototype.nesting = function nesting() {
+        var current = this.currToken;
+        this.newNode(new _nesting2.default({
+            value: this.content(),
+            source: getSource(current[1], current[2], current[3], current[4]),
+            sourceIndex: current[5]
+        }));
+        this.position++;
+    };
+
+    Parser.prototype.parentheses = function parentheses() {
+        var last = this.current.last;
+        var balanced = 1;
+        this.position++;
+        if (last && last.type === types.PSEUDO) {
+            var selector = new _selector2.default();
+            var cache = this.current;
+            last.append(selector);
+            this.current = selector;
+            while (this.position < this.tokens.length && balanced) {
+                if (this.currToken[0] === tokens.openParenthesis) {
+                    balanced++;
+                }
+                if (this.currToken[0] === tokens.closeParenthesis) {
+                    balanced--;
+                }
+                if (balanced) {
+                    this.parse();
+                } else {
+                    selector.parent.source.end.line = this.currToken[3];
+                    selector.parent.source.end.column = this.currToken[4];
+                    this.position++;
+                }
+            }
+            this.current = cache;
+        } else {
+            last.value += '(';
+            while (this.position < this.tokens.length && balanced) {
+                if (this.currToken[0] === tokens.openParenthesis) {
+                    balanced++;
+                }
+                if (this.currToken[0] === tokens.closeParenthesis) {
+                    balanced--;
+                }
+                last.value += this.parseParenthesisToken(this.currToken);
+                this.position++;
+            }
+        }
+        if (balanced) {
+            return this.expected('closing parenthesis', this.currToken[5]);
+        }
+    };
+
+    Parser.prototype.pseudo = function pseudo() {
+        var _this2 = this;
+
+        var pseudoStr = '';
+        var startingToken = this.currToken;
+        while (this.currToken && this.currToken[0] === tokens.colon) {
+            pseudoStr += this.content();
+            this.position++;
+        }
+        if (!this.currToken) {
+            return this.expected(['pseudo-class', 'pseudo-element'], this.position - 1);
+        }
+        if (this.currToken[0] === tokens.word) {
+            this.splitWord(false, function (first, length) {
+                pseudoStr += first;
+                _this2.newNode(new _pseudo2.default({
+                    value: pseudoStr,
+                    source: getSource(startingToken[1], startingToken[2], _this2.currToken[3], _this2.currToken[4]),
+                    sourceIndex: startingToken[5]
+                }));
+                if (length > 1 && _this2.nextToken && _this2.nextToken[0] === tokens.openParenthesis) {
+                    _this2.error('Misplaced parenthesis.', {
+                        index: _this2.nextToken[5]
+                    });
+                }
+            });
+        } else {
+            return this.expected(['pseudo-class', 'pseudo-element'], this.currToken[5]);
+        }
+    };
+
+    Parser.prototype.space = function space() {
+        var content = this.content();
+        // Handle space before and after the selector
+        if (this.position === 0 || this.prevToken[0] === tokens.comma || this.prevToken[0] === tokens.openParenthesis) {
+            this.spaces = this.parseSpace(content);
+            this.position++;
+        } else if (this.position === this.tokens.length - 1 || this.nextToken[0] === tokens.comma || this.nextToken[0] === tokens.closeParenthesis) {
+            this.current.last.spaces.after = this.parseSpace(content);
+            this.position++;
+        } else {
+            this.combinator();
+        }
+    };
+
+    Parser.prototype.string = function string() {
+        var current = this.currToken;
+        this.newNode(new _string2.default({
+            value: this.content(),
+            source: getSource(current[1], current[2], current[3], current[4]),
+            sourceIndex: current[5]
+        }));
+        this.position++;
+    };
+
+    Parser.prototype.universal = function universal(namespace) {
+        var nextToken = this.nextToken;
+        if (nextToken && this.content(nextToken) === '|') {
+            this.position++;
+            return this.namespace();
+        }
+        var current = this.currToken;
+        this.newNode(new _universal2.default({
+            value: this.content(),
+            source: getSource(current[1], current[2], current[3], current[4]),
+            sourceIndex: current[5]
+        }), namespace);
+        this.position++;
+    };
+
+    Parser.prototype.splitWord = function splitWord(namespace, firstCallback) {
+        var _this3 = this;
+
+        var nextToken = this.nextToken;
+        var word = this.content();
+        while (nextToken && ~[tokens.dollar, tokens.caret, tokens.equals, tokens.word].indexOf(nextToken[0])) {
+            this.position++;
+            var current = this.content();
+            word += current;
+            if (current.lastIndexOf('\\') === current.length - 1) {
+                var next = this.nextToken;
+                if (next && next[0] === tokens.space) {
+                    word += this.parseSpace(this.content(next), ' ');
+                    this.position++;
+                }
+            }
+            nextToken = this.nextToken;
+        }
+        var hasClass = (0, _indexesOf2.default)(word, '.');
+        var hasId = (0, _indexesOf2.default)(word, '#');
+        // Eliminate Sass interpolations from the list of id indexes
+        var interpolations = (0, _indexesOf2.default)(word, '#{');
+        if (interpolations.length) {
+            hasId = hasId.filter(function (hashIndex) {
+                return !~interpolations.indexOf(hashIndex);
+            });
+        }
+        var indices = (0, _sortAscending2.default)((0, _uniq2.default)([0].concat(hasClass, hasId)));
+        indices.forEach(function (ind, i) {
+            var index = indices[i + 1] || word.length;
+            var value = word.slice(ind, index);
+            if (i === 0 && firstCallback) {
+                return firstCallback.call(_this3, value, indices.length);
+            }
+            var node = void 0;
+            var current = _this3.currToken;
+            var sourceIndex = current[5] + indices[i];
+            var source = getSource(current[1], current[2] + ind, current[3], current[2] + (index - 1));
+            if (~hasClass.indexOf(ind)) {
+                node = new _className2.default({
+                    value: value.slice(1),
+                    source: source,
+                    sourceIndex: sourceIndex
+                });
+            } else if (~hasId.indexOf(ind)) {
+                node = new _id2.default({
+                    value: value.slice(1),
+                    source: source,
+                    sourceIndex: sourceIndex
+                });
+            } else {
+                node = new _tag2.default({
+                    value: value,
+                    source: source,
+                    sourceIndex: sourceIndex
+                });
+            }
+            _this3.newNode(node, namespace);
+            // Ensure that the namespace is used only once
+            namespace = null;
+        });
+        this.position++;
+    };
+
+    Parser.prototype.word = function word(namespace) {
+        var nextToken = this.nextToken;
+        if (nextToken && this.content(nextToken) === '|') {
+            this.position++;
+            return this.namespace();
+        }
+        return this.splitWord(namespace);
+    };
+
+    Parser.prototype.loop = function loop() {
+        while (this.position < this.tokens.length) {
+            this.parse(true);
+        }
+        return this.root;
+    };
+
+    Parser.prototype.parse = function parse(throwOnParenthesis) {
+        switch (this.currToken[0]) {
+            case tokens.space:
+                this.space();
+                break;
+            case tokens.comment:
+                this.comment();
+                break;
+            case tokens.openParenthesis:
+                this.parentheses();
+                break;
+            case tokens.closeParenthesis:
+                if (throwOnParenthesis) {
+                    this.missingParenthesis();
+                }
+                break;
+            case tokens.openSquare:
+                this.attribute();
+                break;
+            case tokens.dollar:
+            case tokens.caret:
+            case tokens.equals:
+            case tokens.word:
+                this.word();
+                break;
+            case tokens.colon:
+                this.pseudo();
+                break;
+            case tokens.comma:
+                this.comma();
+                break;
+            case tokens.asterisk:
+                this.universal();
+                break;
+            case tokens.ampersand:
+                this.nesting();
+                break;
+            case tokens.combinator:
+                this.combinator();
+                break;
+            case tokens.str:
+                this.string();
+                break;
+            // These cases throw; no break needed.
+            case tokens.closeSquare:
+                this.missingSquareBracket();
+            case tokens.semicolon:
+                this.missingBackslash();
+        }
+    };
+
+    /**
+     * Helpers
+     */
+
+    Parser.prototype.expected = function expected(description, index, found) {
+        if (Array.isArray(description)) {
+            var last = description.pop();
+            description = description.join(', ') + ' or ' + last;
+        }
+        var an = /^[aeiou]/.test(description[0]) ? 'an' : 'a';
+        if (!found) {
+            return this.error('Expected ' + an + ' ' + description + '.', { index: index });
+        }
+        return this.error('Expected ' + an + ' ' + description + ', found "' + found + '" instead.', { index: index });
+    };
+
+    Parser.prototype.parseNamespace = function parseNamespace(namespace) {
+        if (this.options.lossy && typeof namespace === 'string') {
+            var trimmed = namespace.trim();
+            if (!trimmed.length) {
+                return true;
+            }
+
+            return trimmed;
+        }
+
+        return namespace;
+    };
+
+    Parser.prototype.parseSpace = function parseSpace(space) {
+        var replacement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+        return this.options.lossy ? replacement : space;
+    };
+
+    Parser.prototype.parseValue = function parseValue(value) {
+        if (!this.options.lossy || !value || typeof value !== 'string') {
+            return value;
+        }
+        return value.trim();
+    };
+
+    Parser.prototype.parseParenthesisToken = function parseParenthesisToken(token) {
+        var content = this.content(token);
+        if (!this.options.lossy) {
+            return content;
+        }
+
+        if (token[0] === tokens.space) {
+            return this.parseSpace(content, ' ');
+        }
+
+        return this.parseValue(content);
+    };
+
+    Parser.prototype.newNode = function newNode(node, namespace) {
+        if (namespace) {
+            node.namespace = this.parseNamespace(namespace);
+        }
+        if (this.spaces) {
+            node.spaces.before = this.spaces;
+            this.spaces = '';
+        }
+        return this.current.append(node);
+    };
+
+    Parser.prototype.content = function content() {
+        var token = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.currToken;
+
+        return this.css.slice(token[5], token[6]);
+    };
+
+    _createClass(Parser, [{
+        key: 'currToken',
+        get: function get() {
+            return this.tokens[this.position];
+        }
+    }, {
+        key: 'nextToken',
+        get: function get() {
+            return this.tokens[this.position + 1];
+        }
+    }, {
+        key: 'prevToken',
+        get: function get() {
+            return this.tokens[this.position - 1];
+        }
+    }]);
+
+    return Parser;
+}();
+
+exports.default = Parser;
+module.exports = exports['default'];
+},{"./selectors/attribute":743,"./selectors/className":744,"./selectors/combinator":745,"./selectors/comment":746,"./selectors/id":750,"./selectors/nesting":753,"./selectors/pseudo":755,"./selectors/root":756,"./selectors/selector":757,"./selectors/string":758,"./selectors/tag":759,"./selectors/types":760,"./selectors/universal":761,"./sortAscending":762,"./tokenTypes":763,"./tokenize":764,"dot-prop":56,"indexes-of":109,"uniq":781}],742:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+
+var _parser = require("./parser");
+
+var _parser2 = _interopRequireDefault(_parser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Processor = function () {
+    function Processor(func, options) {
+        _classCallCheck(this, Processor);
+
+        this.func = func || function noop() {};
+        this.funcRes = null;
+        this.options = options;
+    }
+
+    Processor.prototype._shouldUpdateSelector = function _shouldUpdateSelector(rule) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        var merged = Object.assign({}, this.options, options);
+        if (merged.updateSelector === false) {
+            return false;
+        } else {
+            return typeof rule !== "string";
+        }
+    };
+
+    Processor.prototype._isLossy = function _isLossy() {
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        var merged = Object.assign({}, this.options, options);
+        if (merged.lossless === false) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    Processor.prototype._root = function _root(rule) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        var parser = new _parser2.default(rule, this._parseOptions(options));
+        return parser.root;
+    };
+
+    Processor.prototype._parseOptions = function _parseOptions(options) {
+        return {
+            lossy: this._isLossy(options)
+        };
+    };
+
+    Processor.prototype._run = function _run(rule) {
+        var _this = this;
+
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        return new Promise(function (resolve, reject) {
+            try {
+                var root = _this._root(rule, options);
+                Promise.resolve(_this.func(root)).then(function (transform) {
+                    var string = undefined;
+                    if (_this._shouldUpdateSelector(rule, options)) {
+                        string = root.toString();
+                        rule.selector = string;
+                    }
+                    return { transform: transform, root: root, string: string };
+                }).then(resolve, reject);
+            } catch (e) {
+                reject(e);
+                return;
+            }
+        });
+    };
+
+    Processor.prototype._runSync = function _runSync(rule) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        var root = this._root(rule, options);
+        var transform = this.func(root);
+        if (transform && typeof transform.then === "function") {
+            throw new Error("Selector processor returned a promise to a synchronous call.");
+        }
+        var string = undefined;
+        if (options.updateSelector && typeof rule !== "string") {
+            string = root.toString();
+            rule.selector = string;
+        }
+        return { transform: transform, root: root, string: string };
+    };
+
+    /**
+     * Process rule into a selector AST.
+     * 
+     * @param rule {postcss.Rule | string} The css selector to be processed
+     * @param options The options for processing
+     * @returns {Promise<parser.Root>} The AST of the selector after processing it.
+     */
+
+
+    Processor.prototype.ast = function ast(rule, options) {
+        return this._run(rule, options).then(function (result) {
+            return result.root;
+        });
+    };
+
+    /**
+     * Process rule into a selector AST synchronously.
+     * 
+     * @param rule {postcss.Rule | string} The css selector to be processed
+     * @param options The options for processing
+     * @returns {parser.Root} The AST of the selector after processing it.
+     */
+
+
+    Processor.prototype.astSync = function astSync(rule, options) {
+        return this._runSync(rule, options).root;
+    };
+
+    /**
+     * Process a selector into a transformed value asynchronously
+     * 
+     * @param rule {postcss.Rule | string} The css selector to be processed
+     * @param options The options for processing
+     * @returns {Promise<any>} The value returned by the processor.
+     */
+
+
+    Processor.prototype.transform = function transform(rule, options) {
+        return this._run(rule, options).then(function (result) {
+            return result.transform;
+        });
+    };
+
+    /**
+     * Process a selector into a transformed value synchronously.
+     * 
+     * @param rule {postcss.Rule | string} The css selector to be processed
+     * @param options The options for processing
+     * @returns {any} The value returned by the processor.
+     */
+
+
+    Processor.prototype.transformSync = function transformSync(rule, options) {
+        return this._runSync(rule, options).transform;
+    };
+
+    /**
+     * Process a selector into a new selector string asynchronously.
+     * 
+     * @param rule {postcss.Rule | string} The css selector to be processed
+     * @param options The options for processing
+     * @returns {string} the selector after processing.
+     */
+
+
+    Processor.prototype.process = function process(rule, options) {
+        return this._run(rule, options).then(function (result) {
+            return result.string || result.root.toString();
+        });
+    };
+
+    /**
+     * Process a selector into a new selector string synchronously.
+     * 
+     * @param rule {postcss.Rule | string} The css selector to be processed
+     * @param options The options for processing
+     * @returns {string} the selector after processing.
+     */
+
+
+    Processor.prototype.processSync = function processSync(rule, options) {
+        var result = this._runSync(rule, options);
+        return result.string || result.root.toString();
+    };
+
+    return Processor;
+}();
+
+exports.default = Processor;
+module.exports = exports["default"];
+},{"./parser":741}],743:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _namespace = require('./namespace');
+
+var _namespace2 = _interopRequireDefault(_namespace);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Attribute = function (_Namespace) {
+    _inherits(Attribute, _Namespace);
+
+    function Attribute() {
+        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        _classCallCheck(this, Attribute);
+
+        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
+
+        _this.type = _types.ATTRIBUTE;
+        _this.raws = _this.raws || {};
+        _this._constructed = true;
+        return _this;
+    }
+
+    Attribute.prototype._spacesFor = function _spacesFor(name) {
+        var attrSpaces = { before: '', after: '' };
+        var spaces = this.spaces[name] || {};
+        var rawSpaces = this.raws.spaces && this.raws.spaces[name] || {};
+        return Object.assign(attrSpaces, spaces, rawSpaces);
+    };
+
+    Attribute.prototype._valueFor = function _valueFor(name) {
+        return this.raws[name] || this[name];
+    };
+
+    Attribute.prototype._stringFor = function _stringFor(name) {
+        var spaceName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : name;
+        var concat = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultAttrConcat;
+
+        var attrSpaces = this._spacesFor(spaceName);
+        return concat(this._valueFor(name), attrSpaces);
+    };
+
+    /**
+     * returns the offset of the attribute part specified relative to the
+     * start of the node of the output string.
+     *
+     * * "ns" - alias for "namespace"
+     * * "namespace" - the namespace if it exists.
+     * * "attribute" - the attribute name
+     * * "attributeNS" - the start of the attribute or its namespace
+     * * "operator" - the match operator of the attribute
+     * * "value" - The value (string or identifier)
+     * * "insensitive" - the case insensitivity flag;
+     * @param part One of the possible values inside an attribute.
+     * @returns -1 if the name is invalid or the value doesn't exist in this attribute.
+     */
+
+
+    Attribute.prototype.offsetOf = function offsetOf(name) {
+        var count = 1;
+        var attributeSpaces = this._spacesFor("attribute");
+        count += attributeSpaces.before.length;
+        if (name === "namespace" || name === "ns") {
+            return this.namespace ? count : -1;
+        }
+        if (name === "attributeNS") {
+            return count;
+        }
+
+        count += this.namespaceString.length;
+        if (this.namespace) {
+            count += 1;
+        }
+        if (name === "attribute") {
+            return count;
+        }
+
+        count += this._valueFor("attribute").length;
+        count += attributeSpaces.after.length;
+        var operatorSpaces = this._spacesFor("operator");
+        count += operatorSpaces.before.length;
+        var operator = this._valueFor("operator");
+        if (name === "operator") {
+            return operator ? count : -1;
+        }
+
+        count += operator.length;
+        count += operatorSpaces.after.length;
+        var valueSpaces = this._spacesFor("value");
+        count += valueSpaces.before.length;
+        var value = this._valueFor("value");
+        if (name === "value") {
+            return value ? count : -1;
+        }
+
+        count += value.length;
+        count += valueSpaces.after.length;
+        var insensitiveSpaces = this._spacesFor("insensitive");
+        count += insensitiveSpaces.before.length;
+        if (name === "insensitive") {
+            return this.insensitive ? count : -1;
+        }
+        return -1;
+    };
+
+    Attribute.prototype.toString = function toString() {
+        var _this2 = this;
+
+        var selector = [this.spaces.before, '['];
+
+        selector.push(this._stringFor('qualifiedAttribute', 'attribute'));
+
+        if (this.operator && this.value) {
+            selector.push(this._stringFor('operator'));
+            selector.push(this._stringFor('value'));
+            selector.push(this._stringFor('insensitiveFlag', 'insensitive', function (attrValue, attrSpaces) {
+                if (attrValue.length > 0 && !_this2.quoted && attrSpaces.before.length === 0 && !(_this2.spaces.value && _this2.spaces.value.after)) {
+                    attrSpaces.before = " ";
+                }
+                return defaultAttrConcat(attrValue, attrSpaces);
+            }));
+        }
+
+        selector.push(']');
+        selector.push(this.spaces.after);
+        return selector.join('');
+    };
+
+    _createClass(Attribute, [{
+        key: 'qualifiedAttribute',
+        get: function get() {
+            return this.qualifiedName(this.raws.attribute || this.attribute);
+        }
+    }, {
+        key: 'insensitiveFlag',
+        get: function get() {
+            return this.insensitive ? 'i' : '';
+        }
+    }, {
+        key: 'value',
+        get: function get() {
+            return this._value;
+        },
+        set: function set(v) {
+            this._value = v;
+            if (this._constructed) {
+                delete this.raws.value;
+            }
+        }
+    }, {
+        key: 'namespace',
+        get: function get() {
+            return this._namespace;
+        },
+        set: function set(v) {
+            this._namespace = v;
+            if (this._constructed) {
+                delete this.raws.namespace;
+            }
+        }
+    }, {
+        key: 'attribute',
+        get: function get() {
+            return this._attribute;
+        },
+        set: function set(v) {
+            this._attribute = v;
+            if (this._constructed) {
+                delete this.raws.attibute;
+            }
+        }
+    }]);
+
+    return Attribute;
+}(_namespace2.default);
+
+exports.default = Attribute;
+
+
+function defaultAttrConcat(attrValue, attrSpaces) {
+    return '' + attrSpaces.before + attrValue + attrSpaces.after;
+}
+module.exports = exports['default'];
+},{"./namespace":752,"./types":760}],744:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _namespace = require('./namespace');
+
+var _namespace2 = _interopRequireDefault(_namespace);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ClassName = function (_Namespace) {
+    _inherits(ClassName, _Namespace);
+
+    function ClassName(opts) {
+        _classCallCheck(this, ClassName);
+
+        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
+
+        _this.type = _types.CLASS;
+        return _this;
+    }
+
+    ClassName.prototype.toString = function toString() {
+        return [this.spaces.before, this.ns, String('.' + this.value), this.spaces.after].join('');
+    };
+
+    return ClassName;
+}(_namespace2.default);
+
+exports.default = ClassName;
+module.exports = exports['default'];
+},{"./namespace":752,"./types":760}],745:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Combinator = function (_Node) {
+    _inherits(Combinator, _Node);
+
+    function Combinator(opts) {
+        _classCallCheck(this, Combinator);
+
+        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
+
+        _this.type = _types.COMBINATOR;
+        return _this;
+    }
+
+    return Combinator;
+}(_node2.default);
+
+exports.default = Combinator;
+module.exports = exports['default'];
+},{"./node":754,"./types":760}],746:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Comment = function (_Node) {
+    _inherits(Comment, _Node);
+
+    function Comment(opts) {
+        _classCallCheck(this, Comment);
+
+        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
+
+        _this.type = _types.COMMENT;
+        return _this;
+    }
+
+    return Comment;
+}(_node2.default);
+
+exports.default = Comment;
+module.exports = exports['default'];
+},{"./node":754,"./types":760}],747:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.universal = exports.tag = exports.string = exports.selector = exports.root = exports.pseudo = exports.nesting = exports.id = exports.comment = exports.combinator = exports.className = exports.attribute = undefined;
+
+var _attribute = require('./attribute');
+
+var _attribute2 = _interopRequireDefault(_attribute);
+
+var _className = require('./className');
+
+var _className2 = _interopRequireDefault(_className);
+
+var _combinator = require('./combinator');
+
+var _combinator2 = _interopRequireDefault(_combinator);
+
+var _comment = require('./comment');
+
+var _comment2 = _interopRequireDefault(_comment);
+
+var _id = require('./id');
+
+var _id2 = _interopRequireDefault(_id);
+
+var _nesting = require('./nesting');
+
+var _nesting2 = _interopRequireDefault(_nesting);
+
+var _pseudo = require('./pseudo');
+
+var _pseudo2 = _interopRequireDefault(_pseudo);
+
+var _root = require('./root');
+
+var _root2 = _interopRequireDefault(_root);
+
+var _selector = require('./selector');
+
+var _selector2 = _interopRequireDefault(_selector);
+
+var _string = require('./string');
+
+var _string2 = _interopRequireDefault(_string);
+
+var _tag = require('./tag');
+
+var _tag2 = _interopRequireDefault(_tag);
+
+var _universal = require('./universal');
+
+var _universal2 = _interopRequireDefault(_universal);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var attribute = exports.attribute = function attribute(opts) {
+  return new _attribute2.default(opts);
+};
+var className = exports.className = function className(opts) {
+  return new _className2.default(opts);
+};
+var combinator = exports.combinator = function combinator(opts) {
+  return new _combinator2.default(opts);
+};
+var comment = exports.comment = function comment(opts) {
+  return new _comment2.default(opts);
+};
+var id = exports.id = function id(opts) {
+  return new _id2.default(opts);
+};
+var nesting = exports.nesting = function nesting(opts) {
+  return new _nesting2.default(opts);
+};
+var pseudo = exports.pseudo = function pseudo(opts) {
+  return new _pseudo2.default(opts);
+};
+var root = exports.root = function root(opts) {
+  return new _root2.default(opts);
+};
+var selector = exports.selector = function selector(opts) {
+  return new _selector2.default(opts);
+};
+var string = exports.string = function string(opts) {
+  return new _string2.default(opts);
+};
+var tag = exports.tag = function tag(opts) {
+  return new _tag2.default(opts);
+};
+var universal = exports.universal = function universal(opts) {
+  return new _universal2.default(opts);
+};
+},{"./attribute":743,"./className":744,"./combinator":745,"./comment":746,"./id":750,"./nesting":753,"./pseudo":755,"./root":756,"./selector":757,"./string":758,"./tag":759,"./universal":761}],748:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+var _types = require('./types');
+
+var types = _interopRequireWildcard(_types);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Container = function (_Node) {
+    _inherits(Container, _Node);
+
+    function Container(opts) {
+        _classCallCheck(this, Container);
+
+        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
+
+        if (!_this.nodes) {
+            _this.nodes = [];
+        }
+        return _this;
+    }
+
+    Container.prototype.append = function append(selector) {
+        selector.parent = this;
+        this.nodes.push(selector);
+        return this;
+    };
+
+    Container.prototype.prepend = function prepend(selector) {
+        selector.parent = this;
+        this.nodes.unshift(selector);
+        return this;
+    };
+
+    Container.prototype.at = function at(index) {
+        return this.nodes[index];
+    };
+
+    Container.prototype.index = function index(child) {
+        if (typeof child === 'number') {
+            return child;
+        }
+        return this.nodes.indexOf(child);
+    };
+
+    Container.prototype.removeChild = function removeChild(child) {
+        child = this.index(child);
+        this.at(child).parent = undefined;
+        this.nodes.splice(child, 1);
+
+        var index = void 0;
+        for (var id in this.indexes) {
+            index = this.indexes[id];
+            if (index >= child) {
+                this.indexes[id] = index - 1;
+            }
+        }
+
+        return this;
+    };
+
+    Container.prototype.removeAll = function removeAll() {
+        for (var _iterator = this.nodes, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+            var _ref;
+
+            if (_isArray) {
+                if (_i >= _iterator.length) break;
+                _ref = _iterator[_i++];
+            } else {
+                _i = _iterator.next();
+                if (_i.done) break;
+                _ref = _i.value;
+            }
+
+            var node = _ref;
+
+            node.parent = undefined;
+        }
+        this.nodes = [];
+        return this;
+    };
+
+    Container.prototype.empty = function empty() {
+        return this.removeAll();
+    };
+
+    Container.prototype.insertAfter = function insertAfter(oldNode, newNode) {
+        newNode.parent = this;
+        var oldIndex = this.index(oldNode);
+        this.nodes.splice(oldIndex + 1, 0, newNode);
+
+        newNode.parent = this;
+
+        var index = void 0;
+        for (var id in this.indexes) {
+            index = this.indexes[id];
+            if (oldIndex <= index) {
+                this.indexes[id] = index + 1;
+            }
+        }
+
+        return this;
+    };
+
+    Container.prototype.insertBefore = function insertBefore(oldNode, newNode) {
+        newNode.parent = this;
+        var oldIndex = this.index(oldNode);
+        this.nodes.splice(oldIndex, 0, newNode);
+
+        newNode.parent = this;
+
+        var index = void 0;
+        for (var id in this.indexes) {
+            index = this.indexes[id];
+            if (index <= oldIndex) {
+                this.indexes[id] = index + 1;
+            }
+        }
+
+        return this;
+    };
+
+    Container.prototype.each = function each(callback) {
+        if (!this.lastEach) {
+            this.lastEach = 0;
+        }
+        if (!this.indexes) {
+            this.indexes = {};
+        }
+
+        this.lastEach++;
+        var id = this.lastEach;
+        this.indexes[id] = 0;
+
+        if (!this.length) {
+            return undefined;
+        }
+
+        var index = void 0,
+            result = void 0;
+        while (this.indexes[id] < this.length) {
+            index = this.indexes[id];
+            result = callback(this.at(index), index);
+            if (result === false) {
+                break;
+            }
+
+            this.indexes[id] += 1;
+        }
+
+        delete this.indexes[id];
+
+        if (result === false) {
+            return false;
+        }
+    };
+
+    Container.prototype.walk = function walk(callback) {
+        return this.each(function (node, i) {
+            var result = callback(node, i);
+
+            if (result !== false && node.length) {
+                result = node.walk(callback);
+            }
+
+            if (result === false) {
+                return false;
+            }
+        });
+    };
+
+    Container.prototype.walkAttributes = function walkAttributes(callback) {
+        var _this2 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.ATTRIBUTE) {
+                return callback.call(_this2, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkClasses = function walkClasses(callback) {
+        var _this3 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.CLASS) {
+                return callback.call(_this3, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkCombinators = function walkCombinators(callback) {
+        var _this4 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.COMBINATOR) {
+                return callback.call(_this4, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkComments = function walkComments(callback) {
+        var _this5 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.COMMENT) {
+                return callback.call(_this5, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkIds = function walkIds(callback) {
+        var _this6 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.ID) {
+                return callback.call(_this6, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkNesting = function walkNesting(callback) {
+        var _this7 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.NESTING) {
+                return callback.call(_this7, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkPseudos = function walkPseudos(callback) {
+        var _this8 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.PSEUDO) {
+                return callback.call(_this8, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkTags = function walkTags(callback) {
+        var _this9 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.TAG) {
+                return callback.call(_this9, selector);
+            }
+        });
+    };
+
+    Container.prototype.walkUniversals = function walkUniversals(callback) {
+        var _this10 = this;
+
+        return this.walk(function (selector) {
+            if (selector.type === types.UNIVERSAL) {
+                return callback.call(_this10, selector);
+            }
+        });
+    };
+
+    Container.prototype.split = function split(callback) {
+        var _this11 = this;
+
+        var current = [];
+        return this.reduce(function (memo, node, index) {
+            var split = callback.call(_this11, node);
+            current.push(node);
+            if (split) {
+                memo.push(current);
+                current = [];
+            } else if (index === _this11.length - 1) {
+                memo.push(current);
+            }
+            return memo;
+        }, []);
+    };
+
+    Container.prototype.map = function map(callback) {
+        return this.nodes.map(callback);
+    };
+
+    Container.prototype.reduce = function reduce(callback, memo) {
+        return this.nodes.reduce(callback, memo);
+    };
+
+    Container.prototype.every = function every(callback) {
+        return this.nodes.every(callback);
+    };
+
+    Container.prototype.some = function some(callback) {
+        return this.nodes.some(callback);
+    };
+
+    Container.prototype.filter = function filter(callback) {
+        return this.nodes.filter(callback);
+    };
+
+    Container.prototype.sort = function sort(callback) {
+        return this.nodes.sort(callback);
+    };
+
+    Container.prototype.toString = function toString() {
+        return this.map(String).join('');
+    };
+
+    _createClass(Container, [{
+        key: 'first',
+        get: function get() {
+            return this.at(0);
+        }
+    }, {
+        key: 'last',
+        get: function get() {
+            return this.at(this.length - 1);
+        }
+    }, {
+        key: 'length',
+        get: function get() {
+            return this.nodes.length;
+        }
+    }]);
+
+    return Container;
+}(_node2.default);
+
+exports.default = Container;
+module.exports = exports['default'];
+},{"./node":754,"./types":760}],749:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+exports.isUniversal = exports.isTag = exports.isString = exports.isSelector = exports.isRoot = exports.isPseudo = exports.isNesting = exports.isIdentifier = exports.isComment = exports.isCombinator = exports.isClassName = exports.isAttribute = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _IS_TYPE;
+
+exports.isNode = isNode;
+exports.isPseudoElement = isPseudoElement;
+exports.isPseudoClass = isPseudoClass;
+exports.isContainer = isContainer;
+exports.isNamespace = isNamespace;
+
+var _types = require("./types");
+
+var IS_TYPE = (_IS_TYPE = {}, _IS_TYPE[_types.ATTRIBUTE] = true, _IS_TYPE[_types.CLASS] = true, _IS_TYPE[_types.COMBINATOR] = true, _IS_TYPE[_types.COMMENT] = true, _IS_TYPE[_types.ID] = true, _IS_TYPE[_types.NESTING] = true, _IS_TYPE[_types.PSEUDO] = true, _IS_TYPE[_types.ROOT] = true, _IS_TYPE[_types.SELECTOR] = true, _IS_TYPE[_types.STRING] = true, _IS_TYPE[_types.TAG] = true, _IS_TYPE[_types.UNIVERSAL] = true, _IS_TYPE);
+
+function isNode(node) {
+    return (typeof node === "undefined" ? "undefined" : _typeof(node)) === "object" && IS_TYPE[node.type];
+}
+
+function isNodeType(type, node) {
+    return isNode(node) && node.type === type;
+}
+
+var isAttribute = exports.isAttribute = isNodeType.bind(null, _types.ATTRIBUTE);
+var isClassName = exports.isClassName = isNodeType.bind(null, _types.CLASS);
+var isCombinator = exports.isCombinator = isNodeType.bind(null, _types.COMBINATOR);
+var isComment = exports.isComment = isNodeType.bind(null, _types.COMMENT);
+var isIdentifier = exports.isIdentifier = isNodeType.bind(null, _types.ID);
+var isNesting = exports.isNesting = isNodeType.bind(null, _types.NESTING);
+var isPseudo = exports.isPseudo = isNodeType.bind(null, _types.PSEUDO);
+var isRoot = exports.isRoot = isNodeType.bind(null, _types.ROOT);
+var isSelector = exports.isSelector = isNodeType.bind(null, _types.SELECTOR);
+var isString = exports.isString = isNodeType.bind(null, _types.STRING);
+var isTag = exports.isTag = isNodeType.bind(null, _types.TAG);
+var isUniversal = exports.isUniversal = isNodeType.bind(null, _types.UNIVERSAL);
+
+function isPseudoElement(node) {
+    return isPseudo(node) && node.value && (node.value.startsWith("::") || node.value === ":before" || node.value === ":after");
+}
+function isPseudoClass(node) {
+    return isPseudo(node) && !isPseudoElement(node);
+}
+
+function isContainer(node) {
+    return !!(isNode(node) && node.walk);
+}
+
+function isNamespace(node) {
+    return isClassName(node) || isAttribute(node) || isTag(node);
+}
+},{"./types":760}],750:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _namespace = require('./namespace');
+
+var _namespace2 = _interopRequireDefault(_namespace);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ID = function (_Namespace) {
+    _inherits(ID, _Namespace);
+
+    function ID(opts) {
+        _classCallCheck(this, ID);
+
+        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
+
+        _this.type = _types.ID;
+        return _this;
+    }
+
+    ID.prototype.toString = function toString() {
+        return [this.spaces.before, this.ns, String('#' + this.value), this.spaces.after].join('');
+    };
+
+    return ID;
+}(_namespace2.default);
+
+exports.default = ID;
+module.exports = exports['default'];
+},{"./namespace":752,"./types":760}],751:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+
+var _types = require("./types");
+
+Object.keys(_types).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _types[key];
+    }
+  });
+});
+
+var _constructors = require("./constructors");
+
+Object.keys(_constructors).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _constructors[key];
+    }
+  });
+});
+
+var _guards = require("./guards");
+
+Object.keys(_guards).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _guards[key];
+    }
+  });
+});
+},{"./constructors":747,"./guards":749,"./types":760}],752:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Namespace = function (_Node) {
+    _inherits(Namespace, _Node);
+
+    function Namespace() {
+        _classCallCheck(this, Namespace);
+
+        return _possibleConstructorReturn(this, _Node.apply(this, arguments));
+    }
+
+    Namespace.prototype.qualifiedName = function qualifiedName(value) {
+        if (this.namespace) {
+            return this.namespaceString + '|' + value;
+        } else {
+            return value;
+        }
+    };
+
+    Namespace.prototype.toString = function toString() {
+        return [this.spaces.before, this.qualifiedName(this.value), this.spaces.after].join('');
+    };
+
+    _createClass(Namespace, [{
+        key: 'namespace',
+        get: function get() {
+            return this._namespace;
+        },
+        set: function set(namespace) {
+            this._namespace = namespace;
+            if (this.raws) {
+                delete this.raws.namespace;
+            }
+        }
+    }, {
+        key: 'ns',
+        get: function get() {
+            return this._namespace;
+        },
+        set: function set(namespace) {
+            this._namespace = namespace;
+            if (this.raws) {
+                delete this.raws.namespace;
+            }
+        }
+    }, {
+        key: 'namespaceString',
+        get: function get() {
+            if (this.namespace) {
+                var ns = this.raws && this.raws.namespace || this.namespace;
+                if (ns === true) {
+                    return '';
+                } else {
+                    return ns;
+                }
+            } else {
+                return '';
+            }
+        }
+    }]);
+
+    return Namespace;
+}(_node2.default);
+
+exports.default = Namespace;
+;
+module.exports = exports['default'];
+},{"./node":754}],753:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Nesting = function (_Node) {
+    _inherits(Nesting, _Node);
+
+    function Nesting(opts) {
+        _classCallCheck(this, Nesting);
+
+        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
+
+        _this.type = _types.NESTING;
+        _this.value = '&';
+        return _this;
+    }
+
+    return Nesting;
+}(_node2.default);
+
+exports.default = Nesting;
+module.exports = exports['default'];
+},{"./node":754,"./types":760}],754:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var cloneNode = function cloneNode(obj, parent) {
+    if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object') {
+        return obj;
+    }
+
+    var cloned = new obj.constructor();
+
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) {
+            continue;
+        }
+        var value = obj[i];
+        var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+
+        if (i === 'parent' && type === 'object') {
+            if (parent) {
+                cloned[i] = parent;
+            }
+        } else if (value instanceof Array) {
+            cloned[i] = value.map(function (j) {
+                return cloneNode(j, cloned);
+            });
+        } else {
+            cloned[i] = cloneNode(value, cloned);
+        }
+    }
+
+    return cloned;
+};
+
+var _class = function () {
+    function _class() {
+        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        _classCallCheck(this, _class);
+
+        Object.assign(this, opts);
+        this.spaces = this.spaces || {};
+        this.spaces.before = this.spaces.before || '';
+        this.spaces.after = this.spaces.after || '';
+    }
+
+    _class.prototype.remove = function remove() {
+        if (this.parent) {
+            this.parent.removeChild(this);
+        }
+        this.parent = undefined;
+        return this;
+    };
+
+    _class.prototype.replaceWith = function replaceWith() {
+        if (this.parent) {
+            for (var index in arguments) {
+                this.parent.insertBefore(this, arguments[index]);
+            }
+            this.remove();
+        }
+        return this;
+    };
+
+    _class.prototype.next = function next() {
+        return this.parent.at(this.parent.index(this) + 1);
+    };
+
+    _class.prototype.prev = function prev() {
+        return this.parent.at(this.parent.index(this) - 1);
+    };
+
+    _class.prototype.clone = function clone() {
+        var overrides = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        var cloned = cloneNode(this);
+        for (var name in overrides) {
+            cloned[name] = overrides[name];
+        }
+        return cloned;
+    };
+
+    _class.prototype.toString = function toString() {
+        return [this.spaces.before, String(this.value), this.spaces.after].join('');
+    };
+
+    return _class;
+}();
+
+exports.default = _class;
+module.exports = exports['default'];
+},{}],755:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _container = require('./container');
+
+var _container2 = _interopRequireDefault(_container);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Pseudo = function (_Container) {
+    _inherits(Pseudo, _Container);
+
+    function Pseudo(opts) {
+        _classCallCheck(this, Pseudo);
+
+        var _this = _possibleConstructorReturn(this, _Container.call(this, opts));
+
+        _this.type = _types.PSEUDO;
+        return _this;
+    }
+
+    Pseudo.prototype.toString = function toString() {
+        var params = this.length ? '(' + this.map(String).join(',') + ')' : '';
+        return [this.spaces.before, String(this.value), params, this.spaces.after].join('');
+    };
+
+    return Pseudo;
+}(_container2.default);
+
+exports.default = Pseudo;
+module.exports = exports['default'];
+},{"./container":748,"./types":760}],756:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _container = require('./container');
+
+var _container2 = _interopRequireDefault(_container);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Root = function (_Container) {
+    _inherits(Root, _Container);
+
+    function Root(opts) {
+        _classCallCheck(this, Root);
+
+        var _this = _possibleConstructorReturn(this, _Container.call(this, opts));
+
+        _this.type = _types.ROOT;
+        return _this;
+    }
+
+    Root.prototype.toString = function toString() {
+        var str = this.reduce(function (memo, selector) {
+            var sel = String(selector);
+            return sel ? memo + sel + ',' : '';
+        }, '').slice(0, -1);
+        return this.trailingComma ? str + ',' : str;
+    };
+
+    Root.prototype.error = function error(message, options) {
+        if (this._error) {
+            return this._error(message, options);
+        } else {
+            return new Error(message);
+        }
+    };
+
+    _createClass(Root, [{
+        key: 'errorGenerator',
+        set: function set(handler) {
+            this._error = handler;
+        }
+    }]);
+
+    return Root;
+}(_container2.default);
+
+exports.default = Root;
+module.exports = exports['default'];
+},{"./container":748,"./types":760}],757:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _container = require('./container');
+
+var _container2 = _interopRequireDefault(_container);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Selector = function (_Container) {
+    _inherits(Selector, _Container);
+
+    function Selector(opts) {
+        _classCallCheck(this, Selector);
+
+        var _this = _possibleConstructorReturn(this, _Container.call(this, opts));
+
+        _this.type = _types.SELECTOR;
+        return _this;
+    }
+
+    return Selector;
+}(_container2.default);
+
+exports.default = Selector;
+module.exports = exports['default'];
+},{"./container":748,"./types":760}],758:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _node = require('./node');
+
+var _node2 = _interopRequireDefault(_node);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var String = function (_Node) {
+    _inherits(String, _Node);
+
+    function String(opts) {
+        _classCallCheck(this, String);
+
+        var _this = _possibleConstructorReturn(this, _Node.call(this, opts));
+
+        _this.type = _types.STRING;
+        return _this;
+    }
+
+    return String;
+}(_node2.default);
+
+exports.default = String;
+module.exports = exports['default'];
+},{"./node":754,"./types":760}],759:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _namespace = require('./namespace');
+
+var _namespace2 = _interopRequireDefault(_namespace);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Tag = function (_Namespace) {
+    _inherits(Tag, _Namespace);
+
+    function Tag(opts) {
+        _classCallCheck(this, Tag);
+
+        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
+
+        _this.type = _types.TAG;
+        return _this;
+    }
+
+    return Tag;
+}(_namespace2.default);
+
+exports.default = Tag;
+module.exports = exports['default'];
+},{"./namespace":752,"./types":760}],760:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+var TAG = exports.TAG = 'tag';
+var STRING = exports.STRING = 'string';
+var SELECTOR = exports.SELECTOR = 'selector';
+var ROOT = exports.ROOT = 'root';
+var PSEUDO = exports.PSEUDO = 'pseudo';
+var NESTING = exports.NESTING = 'nesting';
+var ID = exports.ID = 'id';
+var COMMENT = exports.COMMENT = 'comment';
+var COMBINATOR = exports.COMBINATOR = 'combinator';
+var CLASS = exports.CLASS = 'class';
+var ATTRIBUTE = exports.ATTRIBUTE = 'attribute';
+var UNIVERSAL = exports.UNIVERSAL = 'universal';
+},{}],761:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+var _namespace = require('./namespace');
+
+var _namespace2 = _interopRequireDefault(_namespace);
+
+var _types = require('./types');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Universal = function (_Namespace) {
+    _inherits(Universal, _Namespace);
+
+    function Universal(opts) {
+        _classCallCheck(this, Universal);
+
+        var _this = _possibleConstructorReturn(this, _Namespace.call(this, opts));
+
+        _this.type = _types.UNIVERSAL;
+        _this.value = '*';
+        return _this;
+    }
+
+    return Universal;
+}(_namespace2.default);
+
+exports.default = Universal;
+module.exports = exports['default'];
+},{"./namespace":752,"./types":760}],762:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+exports.default = sortAscending;
+function sortAscending(list) {
+    return list.sort(function (a, b) {
+        return a - b;
+    });
+};
+module.exports = exports["default"];
+},{}],763:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+var ampersand = exports.ampersand = '&'.charCodeAt(0);
+var asterisk = exports.asterisk = '*'.charCodeAt(0);
+var at = exports.at = '@'.charCodeAt(0);
+var comma = exports.comma = ','.charCodeAt(0);
+var colon = exports.colon = ':'.charCodeAt(0);
+var semicolon = exports.semicolon = ';'.charCodeAt(0);
+var openParenthesis = exports.openParenthesis = '('.charCodeAt(0);
+var closeParenthesis = exports.closeParenthesis = ')'.charCodeAt(0);
+var openSquare = exports.openSquare = '['.charCodeAt(0);
+var closeSquare = exports.closeSquare = ']'.charCodeAt(0);
+var dollar = exports.dollar = '$'.charCodeAt(0);
+var tilde = exports.tilde = '~'.charCodeAt(0);
+var caret = exports.caret = '^'.charCodeAt(0);
+var plus = exports.plus = '+'.charCodeAt(0);
+var equals = exports.equals = '='.charCodeAt(0);
+var pipe = exports.pipe = '|'.charCodeAt(0);
+var greaterThan = exports.greaterThan = '>'.charCodeAt(0);
+var space = exports.space = ' '.charCodeAt(0);
+var singleQuote = exports.singleQuote = '\''.charCodeAt(0);
+var doubleQuote = exports.doubleQuote = '"'.charCodeAt(0);
+var slash = exports.slash = '/'.charCodeAt(0);
+
+var backslash = exports.backslash = 92;
+var cr = exports.cr = 13;
+var feed = exports.feed = 12;
+var newline = exports.newline = 10;
+var tab = exports.tab = 9;
+
+// Expose aliases primarily for readability.
+var str = exports.str = singleQuote;
+
+// No good single character representation!
+var comment = exports.comment = -1;
+var word = exports.word = -2;
+var combinator = exports.combinator = -3;
+},{}],764:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.default = tokenize;
+
+var _tokenTypes = require('./tokenTypes');
+
+var t = _interopRequireWildcard(_tokenTypes);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var wordEnd = /[ \n\t\r\(\)\*:;!&'"\+\|~>,=$^\[\]\\]|\/(?=\*)/g;
+
+function tokenize(input) {
+    var tokens = [];
+    var css = input.css.valueOf();
+    var _css = css,
+        length = _css.length;
+
+    var offset = -1;
+    var line = 1;
+    var start = 0;
+    var end = 0;
+
+    var code = void 0,
+        content = void 0,
+        endColumn = void 0,
+        endLine = void 0,
+        escaped = void 0,
+        escapePos = void 0,
+        last = void 0,
+        lines = void 0,
+        next = void 0,
+        nextLine = void 0,
+        nextOffset = void 0,
+        quote = void 0,
+        tokenType = void 0;
+
+    function unclosed(what, fix) {
+        if (input.safe) {
+            // fyi: this is never set to true.
+            css += fix;
+            next = css.length - 1;
+        } else {
+            throw input.error('Unclosed ' + what, line, start - offset, start);
+        }
+    }
+
+    while (start < length) {
+        code = css.charCodeAt(start);
+
+        if (code === t.newline) {
+            offset = start;
+            line += 1;
+        }
+
+        switch (code) {
+            case t.newline:
+            case t.space:
+            case t.tab:
+            case t.cr:
+            case t.feed:
+                next = start;
+                do {
+                    next += 1;
+                    code = css.charCodeAt(next);
+                    if (code === t.newline) {
+                        offset = next;
+                        line += 1;
+                    }
+                } while (code === t.space || code === t.newline || code === t.tab || code === t.cr || code === t.feed);
+
+                tokenType = t.space;
+                endLine = line;
+                endColumn = start - offset;
+                end = next;
+                break;
+
+            case t.plus:
+            case t.greaterThan:
+            case t.tilde:
+            case t.pipe:
+                next = start;
+                do {
+                    next += 1;
+                    code = css.charCodeAt(next);
+                } while (code === t.plus || code === t.greaterThan || code === t.tilde || code === t.pipe);
+
+                tokenType = t.combinator;
+                endLine = line;
+                endColumn = start - offset;
+                end = next;
+                break;
+
+            // Consume these characters as single tokens.
+            case t.asterisk:
+            case t.ampersand:
+            case t.comma:
+            case t.equals:
+            case t.dollar:
+            case t.caret:
+            case t.openSquare:
+            case t.closeSquare:
+            case t.colon:
+            case t.semicolon:
+            case t.openParenthesis:
+            case t.closeParenthesis:
+                next = start;
+                tokenType = code;
+                endLine = line;
+                endColumn = start - offset;
+                end = next + 1;
+                break;
+
+            case t.singleQuote:
+            case t.doubleQuote:
+                quote = code === t.singleQuote ? "'" : '"';
+                next = start;
+                do {
+                    escaped = false;
+                    next = css.indexOf(quote, next + 1);
+                    if (next === -1) {
+                        unclosed('quote', quote);
+                    }
+                    escapePos = next;
+                    while (css.charCodeAt(escapePos - 1) === t.backslash) {
+                        escapePos -= 1;
+                        escaped = !escaped;
+                    }
+                } while (escaped);
+
+                tokenType = t.str;
+                endLine = line;
+                endColumn = start - offset;
+                end = next + 1;
+                break;
+
+            case t.backslash:
+                next = start;
+                escaped = true;
+                while (css.charCodeAt(next + 1) === t.backslash) {
+                    next += 1;
+                    escaped = !escaped;
+                }
+                code = css.charCodeAt(next + 1);
+                if (escaped && code !== t.slash && code !== t.space && code !== t.newline && code !== t.tab && code !== t.cr && code !== t.feed) {
+                    next += 1;
+                }
+
+                tokenType = t.word;
+                endLine = line;
+                endColumn = next - offset;
+                end = next + 1;
+                break;
+
+            default:
+                if (code === t.slash && css.charCodeAt(start + 1) === t.asterisk) {
+                    next = css.indexOf('*/', start + 2) + 1;
+                    if (next === 0) {
+                        unclosed('comment', '*/');
+                    }
+
+                    content = css.slice(start, next + 1);
+                    lines = content.split('\n');
+                    last = lines.length - 1;
+
+                    if (last > 0) {
+                        nextLine = line + last;
+                        nextOffset = next - lines[last].length;
+                    } else {
+                        nextLine = line;
+                        nextOffset = offset;
+                    }
+
+                    tokenType = t.comment;
+                    line = nextLine;
+                    endLine = nextLine;
+                    endColumn = next - nextOffset;
+                } else {
+                    wordEnd.lastIndex = start + 1;
+                    wordEnd.test(css);
+                    if (wordEnd.lastIndex === 0) {
+                        next = css.length - 1;
+                    } else {
+                        next = wordEnd.lastIndex - 2;
+                    }
+
+                    tokenType = t.word;
+                    endLine = line;
+                    endColumn = next - offset;
+                }
+
+                end = next + 1;
+                break;
+        }
+
+        // Ensure that the token structure remains consistent
+        tokens.push([tokenType, // [0] Token type
+        line, // [1] Starting line
+        start - offset, // [2] Starting column
+        endLine, // [3] Ending line
+        endColumn, // [4] Ending column
+        start, // [5] Start position / Source index
+        end]);
+
+        // Reset offset for the next token
+        if (nextOffset) {
+            offset = nextOffset;
+            nextOffset = null;
+        }
+
+        start = end;
+    }
+
+    return tokens;
+}
+module.exports = exports['default'];
+},{"./tokenTypes":763}],765:[function(require,module,exports){
 module.exports={
-  "_from": "stylelint@^8.2.0",
-  "_id": "stylelint@8.2.0",
+  "_from": "stylelint@^8.3.1",
+  "_id": "stylelint@8.3.1",
   "_inBundle": false,
-  "_integrity": "sha512-57JWIz/1Uh9ehZMZyAqlFC0EDfQrMXCH8yqt8ZuJQQvV3LBKgAM/JYd+CWi1hC4eJtRODSPbIIBYKdGjkPZdMg==",
+  "_integrity": "sha512-v5K6tv+Ky3SoJfNqGOvgzRDLqZV133CZ7Wtu3y5aAGjQHVi+6dixFLgI82VrJZJdC4HwZplafJcRP+4r7EUt5g==",
   "_location": "/stylelint",
-  "_phantomChildren": {},
+  "_phantomChildren": {
+    "array-union": "1.0.2",
+    "dir-glob": "2.0.0",
+    "dot-prop": "4.2.0",
+    "glob": "7.1.2",
+    "ignore": "3.3.7",
+    "indexes-of": "1.0.1",
+    "pify": "3.0.0",
+    "slash": "1.0.0",
+    "uniq": "1.0.1"
+  },
   "_requested": {
     "type": "range",
     "registry": true,
-    "raw": "stylelint@^8.2.0",
+    "raw": "stylelint@^8.3.1",
     "name": "stylelint",
     "escapedName": "stylelint",
-    "rawSpec": "^8.2.0",
+    "rawSpec": "^8.3.1",
     "saveSpec": null,
-    "fetchSpec": "^8.2.0"
+    "fetchSpec": "^8.3.1"
   },
   "_requiredBy": [
-    "#DEV:/",
-    "#USER"
+    "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/stylelint/-/stylelint-8.2.0.tgz",
-  "_shasum": "6a15044553fb5c3143b16d62013a370314495b0d",
-  "_spec": "stylelint@^8.2.0",
+  "_resolved": "https://registry.npmjs.org/stylelint/-/stylelint-8.3.1.tgz",
+  "_shasum": "424c822f32c88e85025b55d72c7b98355e3fa6de",
+  "_spec": "stylelint@^8.3.1",
   "_where": "Z:\\Repos\\+Misc\\stylelint-bundle",
   "authors": [
     "David Clark",
@@ -84571,15 +99639,15 @@ module.exports={
   },
   "bundleDependencies": false,
   "dependencies": {
-
+    
     "balanced-match": "^1.0.0",
-
+    
     "cosmiconfig": "^3.1.0",
     "debug": "^3.0.0",
     "execall": "^1.0.0",
     "file-entry-cache": "^2.0.0",
     "get-stdin": "^5.0.1",
-    "globby": "^6.1.0",
+    "globby": "^7.0.0",
     "globjoin": "^0.1.4",
     "html-tags": "^2.0.0",
     "ignore": "^3.3.3",
@@ -84593,13 +99661,14 @@ module.exports={
     "normalize-selector": "^0.2.0",
     "pify": "^3.0.0",
     "postcss": "^6.0.6",
+    "postcss-html": "^0.11.0",
     "postcss-less": "^1.1.0",
     "postcss-media-query-parser": "^0.2.3",
     "postcss-reporter": "^5.0.0",
     "postcss-resolve-nested-selector": "^0.1.1",
     "postcss-safe-parser": "^3.0.1",
     "postcss-scss": "^1.0.2",
-    "postcss-selector-parser": "^2.2.3",
+    "postcss-selector-parser": "^3.1.0",
     "postcss-value-parser": "^3.3.0",
     "resolve-from": "^4.0.0",
     "specificity": "^0.3.1",
@@ -84618,19 +99687,17 @@ module.exports={
     "cp-file": "^5.0.0",
     "d3-queue": "^3.0.7",
     "del": "^3.0.0",
-    "eslint": "~4.8.0",
-    "eslint-config-stylelint": "^7.0.0",
+    "eslint": "~4.12.0",
+    "eslint-config-stylelint": "^8.0.0",
     "file-exists-promise": "^1.0.2",
-    "flow-bin": "^0.56.0",
-    "fs-promise": "^2.0.3",
+    "flow-bin": "^0.59.0",
     "husky": "^0.14.3",
     "jest": "^21.1.0",
-    "lint-staged": "^4.0.1",
+    "lint-staged": "^5.0.0",
     "npm-run-all": "^4.0.2",
     "npmpub": "^3.1.0",
-    "postcss-html": "^0.9.0",
     "postcss-import": "^11.0.0",
-    "prettier": "^1.6.1",
+    "prettier": "^1.8.2",
     "remark-cli": "^4.0.0",
     "remark-lint-no-missing-blank-lines": "^1.0.1",
     "remark-preset-lint-consistent": "^2.0.0",
@@ -84751,10 +99818,10 @@ module.exports={
     "test": "jest --coverage",
     "watch": "jest --watch"
   },
-  "version": "8.2.0"
+  "version": "8.3.1"
 }
 
-},{}],598:[function(require,module,exports){
+},{}],766:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -84772,7 +99839,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = { stringify: _stringify2.default, parse: _parse2.default };
 module.exports = exports['default'];
 
-},{"./parse":600,"./stringify":604}],599:[function(require,module,exports){
+},{"./parse":768,"./stringify":772}],767:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -84809,7 +99876,7 @@ function liner(tokens) {
 }
 module.exports = exports['default'];
 
-},{}],600:[function(require,module,exports){
+},{}],768:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -84849,7 +99916,7 @@ function parse(source, opts) {
 }
 module.exports = exports['default'];
 
-},{"./liner":599,"./parser":601,"./preprocess":602,"./tokenize":605,"postcss/lib/input":261}],601:[function(require,module,exports){
+},{"./liner":767,"./parser":769,"./preprocess":770,"./tokenize":773,"postcss/lib/input":302}],769:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -85298,7 +100365,7 @@ var Parser = function () {
 exports.default = Parser;
 module.exports = exports['default'];
 
-},{"postcss/lib/at-rule":256,"postcss/lib/comment":257,"postcss/lib/declaration":260,"postcss/lib/root":272,"postcss/lib/rule":273}],602:[function(require,module,exports){
+},{"postcss/lib/at-rule":297,"postcss/lib/comment":298,"postcss/lib/declaration":301,"postcss/lib/root":313,"postcss/lib/rule":314}],770:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -85420,7 +100487,7 @@ function preprocess(input, lines) {
 }
 module.exports = exports['default'];
 
-},{}],603:[function(require,module,exports){
+},{}],771:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -85548,7 +100615,7 @@ var Stringifier = function () {
 exports.default = Stringifier;
 module.exports = exports['default'];
 
-},{}],604:[function(require,module,exports){
+},{}],772:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -85566,7 +100633,7 @@ function stringify(node, builder) {
 }
 module.exports = exports['default'];
 
-},{"./stringifier":603}],605:[function(require,module,exports){
+},{"./stringifier":771}],773:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -85854,9 +100921,9 @@ function tokenize(input) {
 }
 module.exports = exports['default'];
 
-},{}],606:[function(require,module,exports){
+},{}],774:[function(require,module,exports){
 module.exports = require( './svg-tags.json' );
-},{"./svg-tags.json":607}],607:[function(require,module,exports){
+},{"./svg-tags.json":775}],775:[function(require,module,exports){
 module.exports=[
 	"a",
 	"altGlyph",
@@ -85939,7 +101006,706 @@ module.exports=[
 	"view",
 	"vkern"
 ]
-},{}],608:[function(require,module,exports){
+},{}],776:[function(require,module,exports){
+'use strict';
+
+module.exports = trimTrailingLines;
+
+var line = '\n';
+
+/* Remove final newline characters from `value`. */
+function trimTrailingLines(value) {
+  var val = String(value);
+  var index = val.length;
+
+  while (val.charAt(--index) === line) { /* empty */ }
+
+  return val.slice(0, index + 1);
+}
+
+},{}],777:[function(require,module,exports){
+
+exports = module.exports = trim;
+
+function trim(str){
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  return str.replace(/\s*$/, '');
+};
+
+},{}],778:[function(require,module,exports){
+'use strict';
+
+/* Expose. */
+module.exports = trough;
+
+/* Methods. */
+var slice = [].slice;
+
+/* Create new middleware. */
+function trough() {
+  var fns = [];
+  var middleware = {};
+
+  middleware.run = run;
+  middleware.use = use;
+
+  return middleware;
+
+  /* Run `fns`.  Last argument must be
+   * a completion handler. */
+  function run() {
+    var index = -1;
+    var input = slice.call(arguments, 0, -1);
+    var done = arguments[arguments.length - 1];
+
+    if (typeof done !== 'function') {
+      throw new Error('Expected function as last argument, not ' + done);
+    }
+
+    next.apply(null, [null].concat(input));
+
+    /* Run the next `fn`, if any. */
+    function next(err) {
+      var fn = fns[++index];
+      var params = slice.call(arguments, 0);
+      var values = params.slice(1);
+      var length = input.length;
+      var pos = -1;
+
+      if (err) {
+        done(err);
+        return;
+      }
+
+      /* Copy non-nully input into values. */
+      while (++pos < length) {
+        if (values[pos] === null || values[pos] === undefined) {
+          values[pos] = input[pos];
+        }
+      }
+
+      input = values;
+
+      /* Next or done. */
+      if (fn) {
+        wrap(fn, next).apply(null, input);
+      } else {
+        done.apply(null, [null].concat(input));
+      }
+    }
+  }
+
+  /* Add `fn` to the list. */
+  function use(fn) {
+    if (typeof fn !== 'function') {
+      throw new Error('Expected `fn` to be a function, not ' + fn);
+    }
+
+    fns.push(fn);
+
+    return middleware;
+  }
+}
+
+/* Wrap `fn`.  Can be sync or async; return a promise,
+ * receive a completion handler, return new values and
+ * errors. */
+function wrap(fn, next) {
+  var invoked;
+
+  return wrapped;
+
+  function wrapped() {
+    var params = slice.call(arguments, 0);
+    var callback = fn.length > params.length;
+    var result;
+
+    if (callback) {
+      params.push(done);
+    }
+
+    try {
+      result = fn.apply(null, params);
+    } catch (err) {
+      /* Well, this is quite the pickle.  `fn` received
+       * a callback and invoked it (thus continuing the
+       * pipeline), but later also threw an error.
+       * We’re not about to restart the pipeline again,
+       * so the only thing left to do is to throw the
+       * thing instea. */
+      if (callback && invoked) {
+        throw err;
+      }
+
+      return done(err);
+    }
+
+    if (!callback) {
+      if (result && typeof result.then === 'function') {
+        result.then(then, done);
+      } else if (result instanceof Error) {
+        done(result);
+      } else {
+        then(result);
+      }
+    }
+  }
+
+  /* Invoke `next`, only once. */
+  function done() {
+    if (!invoked) {
+      invoked = true;
+
+      next.apply(null, arguments);
+    }
+  }
+
+  /* Invoke `done` with one value.
+   * Tracks if an error is passed, too. */
+  function then(value) {
+    done(null, value);
+  }
+}
+
+},{}],779:[function(require,module,exports){
+/**
+ * @author Titus Wormer
+ * @copyright 2015 Titus Wormer
+ * @license MIT
+ * @module unherit
+ * @fileoverview Create a custom constructor which can be modified
+ *   without affecting the original class.
+ */
+
+'use strict';
+
+/* Dependencies. */
+var xtend = require('xtend');
+var inherits = require('inherits');
+
+/* Expose. */
+module.exports = unherit;
+
+/**
+ * Create a custom constructor which can be modified
+ * without affecting the original class.
+ *
+ * @param {Function} Super - Super-class.
+ * @return {Function} - Constructor acting like `Super`,
+ *   which can be modified without affecting the original
+ *   class.
+ */
+function unherit(Super) {
+  var result;
+  var key;
+  var value;
+
+  inherits(Of, Super);
+  inherits(From, Of);
+
+  /* Clone values. */
+  result = Of.prototype;
+
+  for (key in result) {
+    value = result[key];
+
+    if (value && typeof value === 'object') {
+      result[key] = 'concat' in value ? value.concat() : xtend(value);
+    }
+  }
+
+  return Of;
+
+  /**
+   * Constructor accepting a single argument,
+   * which itself is an `arguments` object.
+   */
+  function From(parameters) {
+    return Super.apply(this, parameters);
+  }
+
+  /**
+   * Constructor accepting variadic arguments.
+   */
+  function Of() {
+    if (!(this instanceof Of)) {
+      return new From(arguments);
+    }
+
+    return Super.apply(this, arguments);
+  }
+}
+
+},{"inherits":111,"xtend":802}],780:[function(require,module,exports){
+'use strict';
+
+/* Dependencies. */
+var extend = require('extend');
+var bail = require('bail');
+var vfile = require('vfile');
+var trough = require('trough');
+var string = require('x-is-string');
+var func = require('x-is-function');
+var plain = require('is-plain-obj');
+
+/* Expose a frozen processor. */
+module.exports = unified().freeze();
+
+var slice = [].slice;
+var own = {}.hasOwnProperty;
+
+/* Process pipeline. */
+var pipeline = trough().use(pipelineParse).use(pipelineRun).use(pipelineStringify);
+
+function pipelineParse(p, ctx) {
+  ctx.tree = p.parse(ctx.file);
+}
+
+function pipelineRun(p, ctx, next) {
+  p.run(ctx.tree, ctx.file, done);
+
+  function done(err, tree, file) {
+    if (err) {
+      next(err);
+    } else {
+      ctx.tree = tree;
+      ctx.file = file;
+      next();
+    }
+  }
+}
+
+function pipelineStringify(p, ctx) {
+  ctx.file.contents = p.stringify(ctx.tree, ctx.file);
+}
+
+/* Function to create the first processor. */
+function unified() {
+  var attachers = [];
+  var transformers = trough();
+  var namespace = {};
+  var frozen = false;
+  var freezeIndex = -1;
+
+  /* Data management. */
+  processor.data = data;
+
+  /* Lock. */
+  processor.freeze = freeze;
+
+  /* Plug-ins. */
+  processor.attachers = attachers;
+  processor.use = use;
+
+  /* API. */
+  processor.parse = parse;
+  processor.stringify = stringify;
+  processor.run = run;
+  processor.runSync = runSync;
+  processor.process = process;
+  processor.processSync = processSync;
+
+  /* Expose. */
+  return processor;
+
+  /* Create a new processor based on the processor
+   * in the current scope. */
+  function processor() {
+    var destination = unified();
+    var length = attachers.length;
+    var index = -1;
+
+    while (++index < length) {
+      destination.use.apply(null, attachers[index]);
+    }
+
+    destination.data(extend(true, {}, namespace));
+
+    return destination;
+  }
+
+  /* Freeze: used to signal a processor that has finished
+   * configuration.
+   *
+   * For example, take unified itself.  It’s frozen.
+   * Plug-ins should not be added to it.  Rather, it should
+   * be extended, by invoking it, before modifying it.
+   *
+   * In essence, always invoke this when exporting a
+   * processor. */
+  function freeze() {
+    var values;
+    var plugin;
+    var options;
+    var transformer;
+
+    if (frozen) {
+      return processor;
+    }
+
+    while (++freezeIndex < attachers.length) {
+      values = attachers[freezeIndex];
+      plugin = values[0];
+      options = values[1];
+      transformer = null;
+
+      if (options === false) {
+        continue;
+      }
+
+      if (options === true) {
+        values[1] = undefined;
+      }
+
+      transformer = plugin.apply(processor, values.slice(1));
+
+      if (func(transformer)) {
+        transformers.use(transformer);
+      }
+    }
+
+    frozen = true;
+    freezeIndex = Infinity;
+
+    return processor;
+  }
+
+  /* Data management.
+   * Getter / setter for processor-specific informtion. */
+  function data(key, value) {
+    if (string(key)) {
+      /* Set `key`. */
+      if (arguments.length === 2) {
+        assertUnfrozen('data', frozen);
+
+        namespace[key] = value;
+
+        return processor;
+      }
+
+      /* Get `key`. */
+      return (own.call(namespace, key) && namespace[key]) || null;
+    }
+
+    /* Set space. */
+    if (key) {
+      assertUnfrozen('data', frozen);
+      namespace = key;
+      return processor;
+    }
+
+    /* Get space. */
+    return namespace;
+  }
+
+  /* Plug-in management.
+   *
+   * Pass it:
+   * *   an attacher and options,
+   * *   a preset,
+   * *   a list of presets, attachers, and arguments (list
+   *     of attachers and options). */
+  function use(value) {
+    var settings;
+
+    assertUnfrozen('use', frozen);
+
+    if (value === null || value === undefined) {
+      /* Empty */
+    } else if (func(value)) {
+      addPlugin.apply(null, arguments);
+    } else if (typeof value === 'object') {
+      if ('length' in value) {
+        addList(value);
+      } else {
+        addPreset(value);
+      }
+    } else {
+      throw new Error('Expected usable value, not `' + value + '`');
+    }
+
+    if (settings) {
+      namespace.settings = extend(namespace.settings || {}, settings);
+    }
+
+    return processor;
+
+    function addPreset(result) {
+      addList(result.plugins);
+
+      if (result.settings) {
+        settings = extend(settings || {}, result.settings);
+      }
+    }
+
+    function add(value) {
+      if (func(value)) {
+        addPlugin(value);
+      } else if (typeof value === 'object') {
+        if ('length' in value) {
+          addPlugin.apply(null, value);
+        } else {
+          addPreset(value);
+        }
+      } else {
+        throw new Error('Expected usable value, not `' + value + '`');
+      }
+    }
+
+    function addList(plugins) {
+      var length;
+      var index;
+
+      if (plugins === null || plugins === undefined) {
+        /* Empty */
+      } else if (typeof plugins === 'object' && 'length' in plugins) {
+        length = plugins.length;
+        index = -1;
+
+        while (++index < length) {
+          add(plugins[index]);
+        }
+      } else {
+        throw new Error('Expected a list of plugins, not `' + plugins + '`');
+      }
+    }
+
+    function addPlugin(plugin, value) {
+      var entry = find(plugin);
+
+      if (entry) {
+        if (plain(entry[1]) && plain(value)) {
+          value = extend(entry[1], value);
+        }
+
+        entry[1] = value;
+      } else {
+        attachers.push(slice.call(arguments));
+      }
+    }
+  }
+
+  function find(plugin) {
+    var length = attachers.length;
+    var index = -1;
+    var entry;
+
+    while (++index < length) {
+      entry = attachers[index];
+
+      if (entry[0] === plugin) {
+        return entry;
+      }
+    }
+  }
+
+  /* Parse a file (in string or VFile representation)
+   * into a Unist node using the `Parser` on the
+   * processor. */
+  function parse(doc) {
+    var file = vfile(doc);
+    var Parser;
+
+    freeze();
+    Parser = processor.Parser;
+    assertParser('parse', Parser);
+
+    if (newable(Parser)) {
+      return new Parser(String(file), file).parse();
+    }
+
+    return Parser(String(file), file); // eslint-disable-line new-cap
+  }
+
+  /* Run transforms on a Unist node representation of a file
+   * (in string or VFile representation), async. */
+  function run(node, file, cb) {
+    assertNode(node);
+    freeze();
+
+    if (!cb && func(file)) {
+      cb = file;
+      file = null;
+    }
+
+    if (!cb) {
+      return new Promise(executor);
+    }
+
+    executor(null, cb);
+
+    function executor(resolve, reject) {
+      transformers.run(node, vfile(file), done);
+
+      function done(err, tree, file) {
+        tree = tree || node;
+        if (err) {
+          reject(err);
+        } else if (resolve) {
+          resolve(tree);
+        } else {
+          cb(null, tree, file);
+        }
+      }
+    }
+  }
+
+  /* Run transforms on a Unist node representation of a file
+   * (in string or VFile representation), sync. */
+  function runSync(node, file) {
+    var complete = false;
+    var result;
+
+    run(node, file, done);
+
+    assertDone('runSync', 'run', complete);
+
+    return result;
+
+    function done(err, tree) {
+      complete = true;
+      bail(err);
+      result = tree;
+    }
+  }
+
+  /* Stringify a Unist node representation of a file
+   * (in string or VFile representation) into a string
+   * using the `Compiler` on the processor. */
+  function stringify(node, doc) {
+    var file = vfile(doc);
+    var Compiler;
+
+    freeze();
+    Compiler = processor.Compiler;
+    assertCompiler('stringify', Compiler);
+    assertNode(node);
+
+    if (newable(Compiler)) {
+      return new Compiler(node, file).compile();
+    }
+
+    return Compiler(node, file); // eslint-disable-line new-cap
+  }
+
+  /* Parse a file (in string or VFile representation)
+   * into a Unist node using the `Parser` on the processor,
+   * then run transforms on that node, and compile the
+   * resulting node using the `Compiler` on the processor,
+   * and store that result on the VFile. */
+  function process(doc, cb) {
+    freeze();
+    assertParser('process', processor.Parser);
+    assertCompiler('process', processor.Compiler);
+
+    if (!cb) {
+      return new Promise(executor);
+    }
+
+    executor(null, cb);
+
+    function executor(resolve, reject) {
+      var file = vfile(doc);
+
+      pipeline.run(processor, {file: file}, done);
+
+      function done(err) {
+        if (err) {
+          reject(err);
+        } else if (resolve) {
+          resolve(file);
+        } else {
+          cb(null, file);
+        }
+      }
+    }
+  }
+
+  /* Process the given document (in string or VFile
+   * representation), sync. */
+  function processSync(doc) {
+    var complete = false;
+    var file;
+
+    freeze();
+    assertParser('processSync', processor.Parser);
+    assertCompiler('processSync', processor.Compiler);
+    file = vfile(doc);
+
+    process(file, done);
+
+    assertDone('processSync', 'process', complete);
+
+    return file;
+
+    function done(err) {
+      complete = true;
+      bail(err);
+    }
+  }
+}
+
+/* Check if `func` is a constructor. */
+function newable(value) {
+  return func(value) && keys(value.prototype);
+}
+
+/* Check if `value` is an object with keys. */
+function keys(value) {
+  var key;
+  for (key in value) {
+    return true;
+  }
+  return false;
+}
+
+/* Assert a parser is available. */
+function assertParser(name, Parser) {
+  if (!func(Parser)) {
+    throw new Error('Cannot `' + name + '` without `Parser`');
+  }
+}
+
+/* Assert a compiler is available. */
+function assertCompiler(name, Compiler) {
+  if (!func(Compiler)) {
+    throw new Error('Cannot `' + name + '` without `Compiler`');
+  }
+}
+
+/* Assert the processor is not frozen. */
+function assertUnfrozen(name, frozen) {
+  if (frozen) {
+    throw new Error(
+      'Cannot invoke `' + name + '` on a frozen processor.\n' +
+      'Create a new processor first, by invoking it: ' +
+      'use `processor()` instead of `processor`.'
+    );
+  }
+}
+
+/* Assert `node` is a Unist node. */
+function assertNode(node) {
+  if (!node || !string(node.type)) {
+    throw new Error('Expected node, got `' + node + '`');
+  }
+}
+
+/* Assert that `complete` is `true`. */
+function assertDone(name, asyncName, complete) {
+  if (!complete) {
+    throw new Error('`' + name + '` finished async. Use `' + asyncName + '` instead');
+  }
+}
+
+},{"bail":10,"extend":71,"is-plain-obj":130,"trough":778,"vfile":797,"x-is-function":800,"x-is-string":801}],781:[function(require,module,exports){
 "use strict"
 
 function unique_pred(list, compare) {
@@ -85998,7 +101764,335 @@ function unique(list, compare, sorted) {
 
 module.exports = unique
 
-},{}],609:[function(require,module,exports){
+},{}],782:[function(require,module,exports){
+'use strict';
+
+var is = require('unist-util-is');
+
+module.exports = findAllAfter;
+
+/* Find nodes after `index` in `parent` which pass `test`. */
+function findAllAfter(parent, index, test) {
+  var results = [];
+  var children;
+  var child;
+  var length;
+
+  if (!parent || !parent.type || !parent.children) {
+    throw new Error('Expected parent node');
+  }
+
+  children = parent.children;
+  length = children.length;
+
+  if (index && index.type) {
+    index = children.indexOf(index);
+  }
+
+  if (isNaN(index) || index < 0 || index === Infinity) {
+    throw new Error('Expected positive finite index or child node');
+  }
+
+  while (++index < length) {
+    child = children[index];
+
+    if (is(test, child, index, parent)) {
+      results.push(child);
+    }
+  }
+
+  return results;
+}
+
+},{"unist-util-is":783}],783:[function(require,module,exports){
+'use strict';
+
+/* eslint-disable max-params */
+
+/* Expose. */
+module.exports = is;
+
+/* Assert if `test` passes for `node`.
+ * When a `parent` node is known the `index` of node */
+function is(test, node, index, parent, context) {
+  var hasParent = parent !== null && parent !== undefined;
+  var hasIndex = index !== null && index !== undefined;
+  var check = convert(test);
+
+  if (
+    hasIndex &&
+    (typeof index !== 'number' || index < 0 || index === Infinity)
+  ) {
+    throw new Error('Expected positive finite index or child node');
+  }
+
+  if (hasParent && (!is(null, parent) || !parent.children)) {
+    throw new Error('Expected parent node');
+  }
+
+  if (!node || !node.type || typeof node.type !== 'string') {
+    return false;
+  }
+
+  if (hasParent !== hasIndex) {
+    throw new Error('Expected both parent and index');
+  }
+
+  return Boolean(check.call(context, node, index, parent));
+}
+
+function convert(test) {
+  if (typeof test === 'string') {
+    return typeFactory(test);
+  }
+
+  if (test === null || test === undefined) {
+    return ok;
+  }
+
+  if (typeof test === 'object') {
+    return ('length' in test ? anyFactory : matchesFactory)(test);
+  }
+
+  if (typeof test === 'function') {
+    return test;
+  }
+
+  throw new Error('Expected function, string, or object as test');
+}
+
+function convertAll(tests) {
+  var results = [];
+  var length = tests.length;
+  var index = -1;
+
+  while (++index < length) {
+    results[index] = convert(tests[index]);
+  }
+
+  return results;
+}
+
+/* Utility assert each property in `test` is represented
+ * in `node`, and each values are strictly equal. */
+function matchesFactory(test) {
+  return matches;
+
+  function matches(node) {
+    var key;
+
+    for (key in test) {
+      if (node[key] !== test[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+function anyFactory(tests) {
+  var checks = convertAll(tests);
+  var length = checks.length;
+
+  return matches;
+
+  function matches() {
+    var index = -1;
+
+    while (++index < length) {
+      if (checks[index].apply(this, arguments)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+}
+
+/* Utility to convert a string into a function which checks
+ * a given node’s type for said string. */
+function typeFactory(test) {
+  return type;
+
+  function type(node) {
+    return Boolean(node && node.type === test);
+  }
+}
+
+/* Utility to return true. */
+function ok() {
+  return true;
+}
+
+},{}],784:[function(require,module,exports){
+'use strict';
+
+var iterate = require('array-iterate');
+
+module.exports = modifierFactory;
+
+/* Turn `callback` into a child-modifier accepting a parent.
+ * See `array-iterate` for more info. */
+function modifierFactory(callback) {
+  return iteratorFactory(wrapperFactory(callback));
+}
+
+/* Turn `callback` into a `iterator' accepting a parent. */
+function iteratorFactory(callback) {
+  return iterator;
+
+  function iterator(parent) {
+    var children = parent && parent.children;
+
+    if (!children) {
+      throw new Error('Missing children in `parent` for `modifier`');
+    }
+
+    return iterate(children, callback, parent);
+  }
+}
+
+/* Pass the context as the third argument to `callback`. */
+function wrapperFactory(callback) {
+  return wrapper;
+
+  function wrapper(value, index) {
+    return callback(value, index, this);
+  }
+}
+
+},{"array-iterate":4}],785:[function(require,module,exports){
+'use strict';
+
+var visit = require('unist-util-visit');
+
+module.exports = removePosition;
+
+/* Remove `position`s from `tree`. */
+function removePosition(node, force) {
+  visit(node, force ? hard : soft);
+  return node;
+}
+
+function hard(node) {
+  delete node.position;
+}
+
+function soft(node) {
+  node.position = undefined;
+}
+
+},{"unist-util-visit":787}],786:[function(require,module,exports){
+'use strict';
+
+var own = {}.hasOwnProperty;
+
+module.exports = stringify;
+
+function stringify(value) {
+  /* Nothing. */
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  /* Node. */
+  if (own.call(value, 'position') || own.call(value, 'type')) {
+    return location(value.position);
+  }
+
+  /* Location. */
+  if (own.call(value, 'start') || own.call(value, 'end')) {
+    return location(value);
+  }
+
+  /* Position. */
+  if (own.call(value, 'line') || own.call(value, 'column')) {
+    return position(value);
+  }
+
+  /* ? */
+  return null;
+}
+
+function position(pos) {
+  if (!pos || typeof pos !== 'object') {
+    pos = {};
+  }
+
+  return index(pos.line) + ':' + index(pos.column);
+}
+
+function location(loc) {
+  if (!loc || typeof loc !== 'object') {
+    loc = {};
+  }
+
+  return position(loc.start) + '-' + position(loc.end);
+}
+
+function index(value) {
+  return value && typeof value === 'number' ? value : 1;
+}
+
+},{}],787:[function(require,module,exports){
+'use strict';
+
+/* Expose. */
+module.exports = visit;
+
+var is = require('unist-util-is');
+
+/* Visit. */
+function visit(tree, test, visitor, reverse) {
+  if (typeof test === 'function' && typeof visitor !== 'function') {
+    reverse = visitor;
+    visitor = test;
+    test = null;
+  }
+
+  one(tree);
+
+  /* Visit a single node. */
+  function one(node, index, parent) {
+    var result;
+
+    index = index || (parent ? 0 : null);
+
+    if (!test || node.type === test || is(test, node, index, parent || null)) {
+      result = visitor(node, index, parent || null);
+    }
+
+    if (node.children && result !== false) {
+      return all(node.children, node);
+    }
+
+    return result;
+  }
+
+  /* Visit children in `parent`. */
+  function all(children, parent) {
+    var step = reverse ? -1 : 1;
+    var max = children.length;
+    var min = -1;
+    var index = (reverse ? max : min) + step;
+    var child;
+
+    while (index > min && index < max) {
+      child = children[index];
+
+      if (child && one(child, index, parent) === false) {
+        return false;
+      }
+
+      index += step;
+    }
+
+    return true;
+  }
+}
+
+},{"unist-util-is":783}],788:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -86732,7 +102826,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":610,"punycode":284,"querystring":287}],610:[function(require,module,exports){
+},{"./util":789,"punycode":325,"querystring":328}],789:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -86750,7 +102844,7 @@ module.exports = {
   }
 };
 
-},{}],611:[function(require,module,exports){
+},{}],790:[function(require,module,exports){
 (function (global){
 
 /**
@@ -86821,16 +102915,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],612:[function(require,module,exports){
-arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],613:[function(require,module,exports){
+},{}],791:[function(require,module,exports){
+arguments[4][111][0].apply(exports,arguments)
+},{"dup":111}],792:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],614:[function(require,module,exports){
+},{}],793:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -87420,7 +103514,410 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":613,"_process":283,"inherits":612}],615:[function(require,module,exports){
+},{"./support/isBuffer":792,"_process":324,"inherits":791}],794:[function(require,module,exports){
+'use strict';
+
+/* Expose. */
+module.exports = factory;
+
+/* Factory. */
+function factory(file) {
+  var contents = indices(String(file));
+
+  return {
+    toPosition: offsetToPositionFactory(contents),
+    toOffset: positionToOffsetFactory(contents)
+  };
+}
+
+/* Factory to get the line and column-based `position` for
+ * `offset` in the bound indices. */
+function offsetToPositionFactory(indices) {
+  return offsetToPosition;
+
+  /* Get the line and column-based `position` for
+   * `offset` in the bound indices. */
+  function offsetToPosition(offset) {
+    var index = -1;
+    var length = indices.length;
+
+    if (offset < 0) {
+      return {};
+    }
+
+    while (++index < length) {
+      if (indices[index] > offset) {
+        return {
+          line: index + 1,
+          column: (offset - (indices[index - 1] || 0)) + 1,
+          offset: offset
+        };
+      }
+    }
+
+    return {};
+  }
+}
+
+/* Factory to get the `offset` for a line and column-based
+ * `position` in the bound indices. */
+function positionToOffsetFactory(indices) {
+  return positionToOffset;
+
+  /* Get the `offset` for a line and column-based
+   * `position` in the bound indices. */
+  function positionToOffset(position) {
+    var line = position && position.line;
+    var column = position && position.column;
+
+    if (!isNaN(line) && !isNaN(column) && line - 1 in indices) {
+      return ((indices[line - 2] || 0) + column - 1) || 0;
+    }
+
+    return -1;
+  }
+}
+
+/* Get indices of line-breaks in `value`. */
+function indices(value) {
+  var result = [];
+  var index = value.indexOf('\n');
+
+  while (index !== -1) {
+    result.push(index + 1);
+    index = value.indexOf('\n', index + 1);
+  }
+
+  result.push(value.length + 1);
+
+  return result;
+}
+
+},{}],795:[function(require,module,exports){
+'use strict';
+
+var stringify = require('unist-util-stringify-position');
+
+module.exports = VMessage;
+
+/* Inherit from `Error#`. */
+function VMessagePrototype() {}
+VMessagePrototype.prototype = Error.prototype;
+VMessage.prototype = new VMessagePrototype();
+
+/* Message properties. */
+var proto = VMessage.prototype;
+
+proto.file = '';
+proto.name = '';
+proto.reason = '';
+proto.message = '';
+proto.stack = '';
+proto.fatal = null;
+proto.column = null;
+proto.line = null;
+
+/* Construct a new VMessage.
+ *
+ * Note: We cannot invoke `Error` on the created context,
+ * as that adds readonly `line` and `column` attributes on
+ * Safari 9, thus throwing and failing the data. */
+function VMessage(reason, position, origin) {
+  var parts;
+  var range;
+  var location;
+
+  if (typeof position === 'string') {
+    origin = position;
+    position = null;
+  }
+
+  parts = parseOrigin(origin);
+  range = stringify(position) || '1:1';
+
+  location = {
+    start: {line: null, column: null},
+    end: {line: null, column: null}
+  };
+
+  /* Node. */
+  if (position && position.position) {
+    position = position.position;
+  }
+
+  if (position) {
+    /* Position. */
+    if (position.start) {
+      location = position;
+      position = position.start;
+    } else {
+      /* Point. */
+      location.start = position;
+    }
+  }
+
+  if (reason.stack) {
+    this.stack = reason.stack;
+    reason = reason.message;
+  }
+
+  this.message = reason;
+  this.name = range;
+  this.reason = reason;
+  this.line = position ? position.line : null;
+  this.column = position ? position.column : null;
+  this.location = location;
+  this.source = parts[0];
+  this.ruleId = parts[1];
+}
+
+function parseOrigin(origin) {
+  var result = [null, null];
+  var index;
+
+  if (typeof origin === 'string') {
+    index = origin.indexOf(':');
+
+    if (index === -1) {
+      result[1] = origin;
+    } else {
+      result[0] = origin.slice(0, index);
+      result[1] = origin.slice(index + 1);
+    }
+  }
+
+  return result;
+}
+
+},{"unist-util-stringify-position":786}],796:[function(require,module,exports){
+(function (process){
+'use strict';
+
+var path = require('path');
+var replace = require('replace-ext');
+var buffer = require('is-buffer');
+
+module.exports = VFile;
+
+var own = {}.hasOwnProperty;
+var proto = VFile.prototype;
+
+proto.toString = toString;
+
+/* Order of setting (least specific to most), we need this because
+ * otherwise `{stem: 'a', path: '~/b.js'}` would throw, as a path
+ * is needed before a stem can be set. */
+var order = [
+  'history',
+  'path',
+  'basename',
+  'stem',
+  'extname',
+  'dirname'
+];
+
+/* Construct a new file. */
+function VFile(options) {
+  var prop;
+  var index;
+  var length;
+
+  if (!options) {
+    options = {};
+  } else if (typeof options === 'string' || buffer(options)) {
+    options = {contents: options};
+  } else if ('message' in options && 'messages' in options) {
+    return options;
+  }
+
+  if (!(this instanceof VFile)) {
+    return new VFile(options);
+  }
+
+  this.data = {};
+  this.messages = [];
+  this.history = [];
+  this.cwd = process.cwd();
+
+  /* Set path related properties in the correct order. */
+  index = -1;
+  length = order.length;
+
+  while (++index < length) {
+    prop = order[index];
+
+    if (own.call(options, prop)) {
+      this[prop] = options[prop];
+    }
+  }
+
+  /* Set non-path related properties. */
+  for (prop in options) {
+    if (order.indexOf(prop) === -1) {
+      this[prop] = options[prop];
+    }
+  }
+}
+
+/* Access full path (`~/index.min.js`). */
+Object.defineProperty(proto, 'path', {
+  get: function () {
+    return this.history[this.history.length - 1];
+  },
+  set: function (path) {
+    assertNonEmpty(path, 'path');
+
+    if (path !== this.path) {
+      this.history.push(path);
+    }
+  }
+});
+
+/* Access parent path (`~`). */
+Object.defineProperty(proto, 'dirname', {
+  get: function () {
+    return typeof this.path === 'string' ? path.dirname(this.path) : undefined;
+  },
+  set: function (dirname) {
+    assertPath(this.path, 'dirname');
+    this.path = path.join(dirname || '', this.basename);
+  }
+});
+
+/* Access basename (`index.min.js`). */
+Object.defineProperty(proto, 'basename', {
+  get: function () {
+    return typeof this.path === 'string' ? path.basename(this.path) : undefined;
+  },
+  set: function (basename) {
+    assertNonEmpty(basename, 'basename');
+    assertPart(basename, 'basename');
+    this.path = path.join(this.dirname || '', basename);
+  }
+});
+
+/* Access extname (`.js`). */
+Object.defineProperty(proto, 'extname', {
+  get: function () {
+    return typeof this.path === 'string' ? path.extname(this.path) : undefined;
+  },
+  set: function (extname) {
+    var ext = extname || '';
+
+    assertPart(ext, 'extname');
+    assertPath(this.path, 'extname');
+
+    if (ext) {
+      if (ext.charAt(0) !== '.') {
+        throw new Error('`extname` must start with `.`');
+      }
+
+      if (ext.indexOf('.', 1) !== -1) {
+        throw new Error('`extname` cannot contain multiple dots');
+      }
+    }
+
+    this.path = replace(this.path, ext);
+  }
+});
+
+/* Access stem (`index.min`). */
+Object.defineProperty(proto, 'stem', {
+  get: function () {
+    return typeof this.path === 'string' ? path.basename(this.path, this.extname) : undefined;
+  },
+  set: function (stem) {
+    assertNonEmpty(stem, 'stem');
+    assertPart(stem, 'stem');
+    this.path = path.join(this.dirname || '', stem + (this.extname || ''));
+  }
+});
+
+/* Get the value of the file. */
+function toString(encoding) {
+  var value = this.contents || '';
+  return buffer(value) ? value.toString(encoding) : String(value);
+}
+
+/* Assert that `part` is not a path (i.e., does
+ * not contain `path.sep`). */
+function assertPart(part, name) {
+  if (part.indexOf(path.sep) !== -1) {
+    throw new Error('`' + name + '` cannot be a path: did not expect `' + path.sep + '`');
+  }
+}
+
+/* Assert that `part` is not empty. */
+function assertNonEmpty(part, name) {
+  if (!part) {
+    throw new Error('`' + name + '` cannot be empty');
+  }
+}
+
+/* Assert `path` exists. */
+function assertPath(path, name) {
+  if (!path) {
+    throw new Error('Setting `' + name + '` requires `path` to be set too');
+  }
+}
+
+}).call(this,require('_process'))
+},{"_process":324,"is-buffer":116,"path":198,"replace-ext":443}],797:[function(require,module,exports){
+'use strict';
+
+var VMessage = require('vfile-message');
+var VFile = require('./core.js');
+
+module.exports = VFile;
+
+var proto = VFile.prototype;
+
+proto.message = message;
+proto.info = info;
+proto.fail = fail;
+
+/* Slight backwards compatibility.  Remove in the future. */
+proto.warn = message;
+
+/* Create a message with `reason` at `position`.
+ * When an error is passed in as `reason`, copies the stack. */
+function message(reason, position, origin) {
+  var filePath = this.path;
+  var message = new VMessage(reason, position, origin);
+
+  if (filePath) {
+    message.name = filePath + ':' + message.name;
+    message.file = filePath;
+  }
+
+  message.fatal = false;
+
+  this.messages.push(message);
+
+  return message;
+}
+
+/* Fail. Creates a vmessage, associates it with the file,
+ * and throws it. */
+function fail() {
+  var message = this.message.apply(this, arguments);
+
+  message.fatal = true;
+
+  throw message;
+}
+
+/* Info. Creates a vmessage, associates it with the file,
+ * and marks the fatality as null. */
+function info() {
+  var message = this.message.apply(this, arguments);
+
+  message.fatal = null;
+
+  return message;
+}
+
+},{"./core.js":796,"vfile-message":795}],798:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -87455,7 +103952,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],616:[function(require,module,exports){
+},{}],799:[function(require,module,exports){
 /*!
  * write <https://github.com/jonschlinkert/write>
  *
@@ -87550,7 +104047,42 @@ module.exports.stream = function writeFileStream(dest) {
   return fs.createWriteStream(dest);
 };
 
-},{"fs":14,"mkdirp":134,"path":146}],"stylelint":[function(require,module,exports){
+},{"fs":16,"mkdirp":185,"path":198}],800:[function(require,module,exports){
+module.exports = function isFunction (fn) {
+  return Object.prototype.toString.call(fn) === '[object Function]'
+}
+
+},{}],801:[function(require,module,exports){
+var toString = Object.prototype.toString
+
+module.exports = isString
+
+function isString(obj) {
+    return toString.call(obj) === "[object String]"
+}
+
+},{}],802:[function(require,module,exports){
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}],"stylelint":[function(require,module,exports){
 "use strict";
 
 const checkAgainstRule = require("./utils/checkAgainstRule");
@@ -87583,4 +104115,4 @@ api.createLinter = createStylelint;
 
 module.exports = api;
 
-},{"./createPlugin":331,"./createStylelint":332,"./formatters":335,"./postcssPlugin":343,"./rules":427,"./standalone":518,"./utils/checkAgainstRule":527,"./utils/report":592,"./utils/ruleMessages":593,"./utils/validateOptions":595}]},{},[]);
+},{"./createPlugin":470,"./createStylelint":471,"./formatters":474,"./postcssPlugin":482,"./rules":567,"./standalone":659,"./utils/checkAgainstRule":668,"./utils/report":733,"./utils/ruleMessages":734,"./utils/validateOptions":736}]},{},[]);

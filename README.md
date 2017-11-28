@@ -8,15 +8,16 @@ This repository modifies Stylelint &amp; creates a bundle:
 * Using `browserify -r stylelint -o stylelint-bundle.js`:
   * Bundle size before build: `3,843 kB`.
   * Bundle size after build: `2,988 kB` (`1,061 kB` minified)
+* Stylelint bundled with a [webworker script](https://github.com/openstyles/stylelint-bundle/blob/master/build/worker.js) has also been included in the `stylelint-bundle-worker.js` and `stylelint-bundle-worker.min.js` files.
 
 ## Create the bundle
 
 * Download or clone this repository.
 * Run `npm install`
-* Run `npm run build`
+* Run `npm run build` (use `npm run cleanbuild` to remove the older version of stylelint and install the current version).
 * The `stylelint-bundle.js` and `stylelint-bundle.min.js` are updated using the installed version of Stylelint.
-
-* Test the result by running `npm test`.
+* The `stylelint-bundle-worker.js` and `stylelint-bundle-worker.min.js` are updated and include an appended web worker script.
+* Tests are automatically run; or can be manually run using `npm test`.
 
 ## Limitations
 

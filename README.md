@@ -6,8 +6,8 @@ This repository modifies Stylelint &amp; creates a bundle:
 * To reduce the file size of the standalone version.
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
 * Using `browserify -r stylelint -o stylelint-bundle.js`:
-  * Bundle size before build: `3,424 kB`.
-  * Bundle size after build: `2,571 kB` (`867 kB` minified)
+  * Bundle size before build: `3,843 kB`.
+  * Bundle size after build: `2,988 kB` (`1,061 kB` minified)
 
 ## Create the bundle
 

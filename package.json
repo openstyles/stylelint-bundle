@@ -26,16 +26,19 @@
     "browserify": "^14.5.0",
     "del": "^3.0.0",
     "mocha": "^4.0.1",
-    "stylelint": "^8.3.1",
-    "uglify-es": "^3.2.0"
+    "stylelint": "^8.4.0",
+    "uglify-es": "^3.2.2",
+    "updates": "^2.0.3"
   },
   "scripts": {
-    "cleanbuild": "rm -rf node_modules/stylelint && npm install stylelint && npm run build",
-    "build": "node build/index.js && npm run bundle && node build/post-build.js && npm run uglify && npm run test",
+    "cleanbuild": "rm -rf node_modules/stylelint && npm run updater && npm install stylelint && npm run build-noupdate",
+    "build": "npm run updater && npm run build-noupdate",
+    "build-noupdate": "node build/index.js && npm run bundle && node build/post-build.js && npm run uglify && npm run test",
     "bundle": "browserify -r stylelint -o stylelint-bundle.js",
     "test": "mocha",
     "uglify": "npm run uglifybundle && npm run uglifyworker",
     "uglifybundle": "uglifyjs ./stylelint-bundle.js --comments \"/^!=/\" -o stylelint-bundle.min.js -c -m",
-    "uglifyworker": "uglifyjs ./stylelint-bundle-worker.js --comments \"/^!=/\" -o stylelint-bundle-worker.min.js -c -m"
+    "uglifyworker": "uglifyjs ./stylelint-bundle-worker.js --comments \"/^!=/\" -o stylelint-bundle-worker.min.js -c -m",
+    "updater": "updates -u && npm update"
   }
 }

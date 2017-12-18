@@ -1,11 +1,13 @@
 "use strict";
 
-const pkg = require("../node_modules/stylelint/package.json");
+const stylelintPkg = require("../node_modules/stylelint/package.json");
+const pkgPath = require("path").join(__dirname, "..", "/package.json");
+const mainPkg = require(pkgPath);
 const {readFile, writeFile} = require("./files");
 
 const bundle = "stylelint-bundle.js";
 const workerBundle = "stylelint-bundle-worker.js";
-const modComment = `/*!= Stylelint v${pkg.version} bundle =*/\n/* See https://github.com/openstyles/stylelint-bundle */\n`;
+const modComment = `/*!= Stylelint v${stylelintPkg.version} bundle =*/\n/* See https://github.com/openstyles/stylelint-bundle */\n`;
 
 readFile(bundle)
   .then(data => {
@@ -16,4 +18,8 @@ readFile(bundle)
     readFile("./build/worker.js").then(worker => {
       writeFile(workerBundle, data + worker);
     });
+  })
+  .then(() => {
+    mainPkg.version = stylelintPkg.version;
+    writeFile(pkgPath, JSON.stringify(mainPkg, null, 2));
   });

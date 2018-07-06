@@ -1,6 +1,6 @@
 {
   "name": "stylelint-bundle",
-  "version": "8.4.0",
+  "version": "9.3.0",
   "description": "Create & provide a bundled version of Stylelint",
   "keywords": [
     "css",
@@ -23,12 +23,12 @@
   },
   "main": "stylelint-bundle.min.js",
   "devDependencies": {
-    "browserify": "^14.5.0",
+    "browserify": "^16.2.2",
     "del": "^3.0.0",
-    "mocha": "^4.0.1",
-    "stylelint": "^8.4.0",
-    "uglify-es": "^3.2.2",
-    "updates": "^2.0.3"
+    "mocha": "^5.2.0",
+    "stylelint": "^9.3.0",
+    "uglify-es": "^3.3.10",
+    "updates": "^3.0.1"
   },
   "scripts": {
     "cleanbuild": "rm -rf node_modules/stylelint && npm run updater && npm install stylelint && npm run build-noupdate",

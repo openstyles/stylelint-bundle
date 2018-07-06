@@ -49,11 +49,6 @@ const modify = {
   },
   "lib/rules/index.js": file => {
     return commentOut(file, [
-      "const atRuleNoVendorPrefix =",
-      "const mediaFeatureNameNoVendorPrefix =",
-      "const propertyNoVendorPrefix =",
-      "const selectorNoVendorPrefix =",
-      "const valueNoVendorPrefix =",
       "\"at-rule-no-vendor-prefix\"",
       "\"media-feature-name-no-vendor-prefix\"",
       "\"property-no-vendor-prefix\"",

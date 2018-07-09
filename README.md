@@ -1,20 +1,20 @@
 # Stylelint Bundle
 
-This repository modifies Stylelint &amp; creates a bundle:
+This repository branch modifies Stylelint v8.0.0 &amp; creates a bundle:
 
 * To allow bundling of the code.
 * To reduce the file size of the standalone version.
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
 * Using `browserify -r stylelint -o stylelint-bundle.js`:
-  * Bundle size before build: `3,862 kB`.
-  * Bundle size after build: `2,991 kB` (`1,063 kB` minified)
+  * Bundle size before build: `3,862 KB`.
+  * Bundle size after build: `2,629 KB` (`904 KB` minified)
 * Stylelint has also been bundled with a [webworker script](https://github.com/openstyles/stylelint-bundle/blob/master/build/worker.js). These files are named `stylelint-bundle-worker.js` and `stylelint-bundle-worker.min.js`.
 
 ## Create the bundle
 
 * Download or clone this repository.
 * Run `npm install`
-* Run `npm run build` (use `npm run cleanbuild` to remove the older version of stylelint and install the current version).
+* Run `npm run build` (use `npm run cleanbuild` to refresh the modified version of stylelint and install the clean version).
 * The `stylelint-bundle.js` and `stylelint-bundle.min.js` are updated using the installed version of Stylelint.
 * The `stylelint-bundle-worker.js` and `stylelint-bundle-worker.min.js` are updated and include an appended web worker script.
 * Tests are automatically run; or can be manually run using `npm test`.

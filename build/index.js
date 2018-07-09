@@ -49,6 +49,11 @@ const modify = {
   },
   "lib/rules/index.js": file => {
     return commentOut(file, [
+      "const atRuleNoVendorPrefix",
+      "const mediaFeatureNameNoVendorPrefix",
+      "const propertyNoVendorPrefix",
+      "const selectorNoVendorPrefix",
+      "const valueNoVendorPrefix",
       "\"at-rule-no-vendor-prefix\"",
       "\"media-feature-name-no-vendor-prefix\"",
       "\"property-no-vendor-prefix\"",
@@ -60,6 +65,8 @@ const modify = {
     file = commentOut(file, [
       "const fs = require(\"fs\");",
       "const path = require(\"path\");",
+      "const pify = require(\"pify\");",
+      "const pkg = require(\"../package.json\");",
       "ignoreText = fs.",
       "if (readError.code !=="
     ]);
@@ -76,15 +83,17 @@ const modify = {
           // without using path
           /(const absoluteCodeFilename =\s*codeFilename \!== undefined && \!path\.isAbsolute\(codeFilename\)\s*\? path\.join\(process\.cwd\(\), codeFilename\)\s*: codeFilename;)/,
           "    const absoluteCodeFilename = codeFilename;"
-        ], [
+        ],
+        /* [
           // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L127-L133
           // immediately resolve
           /(fs\.stat\(absoluteCodeFilename, err => {\s*if \(err\) {\s*reject\(\);\s*} else {\s*resolve\(\);\s*}\s*}\);)/,
           "          resolve();"
-        ], [
-          // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L178-L253
+        ], */
+        [
+          // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L127-L209
           // return empty string
-          /(if \(useCache\) \{\s*const stylelintVersion =[\s\S]+function prepareReturnValue)/,
+          /(let fileList = files\;[\s\S]+function prepareReturnValue)/,
           "  return \"\";\n\n  function prepareReturnValue"
         ]
       ]

@@ -35,8 +35,6 @@
     "build": "node build/index.js && npm run bundle && node build/post-build.js && npm run uglify && npm run test",
     "bundle": "browserify -r stylelint -o stylelint-bundle.js",
     "test": "mocha",
-    "uglify": "npm run uglifybundle && npm run uglifyworker",
-    "uglifybundle": "uglifyjs ./stylelint-bundle.js --comments \"/^!=/\" -o stylelint-bundle.min.js -c -m",
-    "uglifyworker": "uglifyjs ./stylelint-bundle-worker.js --comments \"/^!=/\" -o stylelint-bundle-worker.min.js -c -m"
+    "uglify": "uglifyjs ./stylelint-bundle.js --comments \"/^!=/\" -o stylelint-bundle.min.js -c -m"
   }
 }

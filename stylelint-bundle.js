@@ -84396,7 +84396,7 @@ module.exports = function(
     });
 
   function prepareReturnValue */
-return "";
+  return "";
 
   function prepareReturnValue(
     stylelintResults /*: Array<stylelint$result>*/

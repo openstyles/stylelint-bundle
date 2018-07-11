@@ -34,7 +34,7 @@ const modify = {
   "lib/formatters/index.js": file => {
     return replaceBlocks(file, [
       [
-        // Replace https://github.com/stylelint/stylelint/blob/master/lib/formatters/index.js#L5-L6
+        // Replace https://github.com/stylelint/stylelint/blob/8.0.0/lib/formatters/index.js#L5-L6
         // with empty functions
         /(string: require\(\"\.\/stringFormatter"\),\s*verbose: require\("\.\/verboseFormatter"\))/,
         "  string: () => {},\n  verbose: () => {}"
@@ -46,6 +46,34 @@ const modify = {
       "const createRuleTester =",
       "api.createRuleTester ="
     ]);
+  },
+  "lib/reference/namedColorData.js": file => {
+    return replaceBlocks(file, [
+      [
+        // Remove "func": https://github.com/stylelint/stylelint/blob/8.0.0/lib/reference/namedColorData.js#L6-L19
+        /,\s+func:(\s)\[[^]+?]\s+}/gm,
+        ""
+      ], [
+        // Remove curly brackets -> aliceblue: ["#f0f8ff", "#ff0f8ff"],
+        /{\s+hex:(\s)/gm,
+        ""
+      ]
+    ], {noCheck: true});
+  },
+  "lib/rules/color-named/index.js": file => {
+    return replaceBlocks(file, [
+      [
+        // Remove named-color checks to the "func" color data:
+        // https://github.com/stylelint/stylelint/blob/8.0.0/lib/rules/color-named/index.js#L105-L130
+        /(if(\s)\(\s+type === "function" &&\s+keywordSets.colorFunctionNames.has[\s\S]+\/\/ Then by checking for alternative hex representations)/gm,
+        ""
+      ],  [
+        // Replace .hex color data with direct access to new namedColor array
+        // https://github.com/stylelint/stylelint/blob/8.0.0/lib/rules/color-named/index.js#L137
+        /(namedColorData\[namedColor\].hex.indexOf\(value.toLowerCase\(\)\) !== -1)/,
+        "            namedColorData[namedColor].indexOf(value.toLowerCase()) !== -1"
+      ]
+    ], {noCheck: true})
   },
   "lib/rules/index.js": file => {
     return commentOut(file, [
@@ -74,24 +102,18 @@ const modify = {
       file,
       [
         [
-          // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L60-L62
+          // Replace https://github.com/stylelint/stylelint/blob/8.0.0/lib/standalone.js#L60-L62
           // without using path
           /(const absoluteIgnoreFilePath = path\.isAbsolute\(ignoreFilePath\)\s*\? ignoreFilePath\s*: path\.resolve\(process.cwd\(\), ignoreFilePath\);)/,
           "  const absoluteIgnoreFilePath = ignoreFilePath;"
         ], [
-          // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L110-L113
+          // Replace https://github.com/stylelint/stylelint/blob/8.0.0/lib/standalone.js#L107-L110
           // without using path
           /(const absoluteCodeFilename =\s*codeFilename \!== undefined && \!path\.isAbsolute\(codeFilename\)\s*\? path\.join\(process\.cwd\(\), codeFilename\)\s*: codeFilename;)/,
           "    const absoluteCodeFilename = codeFilename;"
         ],
-        /* [
-          // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L127-L133
-          // immediately resolve
-          /(fs\.stat\(absoluteCodeFilename, err => {\s*if \(err\) {\s*reject\(\);\s*} else {\s*resolve\(\);\s*}\s*}\);)/,
-          "          resolve();"
-        ], */
         [
-          // Replace https://github.com/stylelint/stylelint/blob/master/lib/standalone.js#L127-L209
+          // Replace https://github.com/stylelint/stylelint/blob/8.0.0/lib/standalone.js#L125-L205
           // return empty string
           /(let fileList = files\;[\s\S]+function prepareReturnValue)/,
           "  return \"\";\n\n  function prepareReturnValue"
@@ -106,7 +128,7 @@ const modify = {
   }
 };
 
-function commentOut(file, lines) {
+function commentOut(file, lines, options = {}) {
   lines.forEach(line => {
     const index = file.indexOf(line);
     if (index > -1) {
@@ -114,7 +136,7 @@ function commentOut(file, lines) {
         .replace(line, `// ${line}`)
         // Don't let these accumulate
         .replace("// //", "//");
-    } else {
+    } else if (options.noCheck !== true) {
       maybeCompatible = false;
       console.log(`*** Error: Could not comment out "${line}"`);
     }

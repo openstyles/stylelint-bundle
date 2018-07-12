@@ -7,7 +7,7 @@ This repository branch modifies Stylelint v8.0.0 &amp; creates a bundle:
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
 * Using `browserify -r stylelint -o stylelint-bundle.js`:
   * Bundle size before build: `3,862 KB`.
-  * Bundle size after build: `2,575 KB` (`864 KB` minified)
+  * Bundle size after build: `2,577 KB` (`865 KB` minified)
 * A [webworker script](https://github.com/openstyles/stylelint-bundle/blob/master/worker.js) has also been included, but it is no longer bundled with Stylelint.
 
 ## Create the bundle

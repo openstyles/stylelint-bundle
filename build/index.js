@@ -171,4 +171,4 @@ Promise.all(remove.map(file => del(fileLoc + file)))
           .then(data => writeFile(fileLoc + file, data));
       })
     )
-  )
+  );

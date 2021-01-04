@@ -4,17 +4,13 @@
   <meta charset="utf-8">
   <title>Stylelint Bundle Testing</title>
   <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../dist/stylelint-bundle.min.js"></script>
 </head>
 <body>
-  <script src="../node_modules/mocha/mocha.js"></script>
-  <script src="../stylelint-bundle.min.js"></script>
-  <!-- Mocha setup and initiation code -->
-  <script>
-  mocha.setup('bdd');
-  window.onload = function() {
-    mocha.run();
-  };
-  </script>
+  <div id="mocha"></div>
+  <script>mocha.setup('bdd');</script>
   <script src="index.js"></script>
-  </body>
+  <script>mocha.run();</script>
+</body>
 </html>

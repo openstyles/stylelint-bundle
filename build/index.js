@@ -1,11 +1,10 @@
 'use strict';
 
 const fs = require('fs');
-const fse = require('fs-extra');
 const childProcess = require('child_process');
 const pkg = require('../package.json');
 
-const version = pkg.dependencies.stylelint.match(/[\d.]+/)[0];
+const version = pkg.version.match(/[\d.]+/)[0];
 const src = 'node_modules/stylelint/';
 
 const remove = [
@@ -16,7 +15,6 @@ const remove = [
   'lib/rules/property-no-vendor-prefix',
   'lib/rules/selector-no-vendor-prefix',
   'lib/rules/value-no-vendor-prefix',
-  'lib/formatters/disableOptionsReportStringFormatter.js',
   'lib/formatters/stringFormatter.js',
   'lib/formatters/verboseFormatter.js',
 ];
@@ -40,9 +38,9 @@ const modify = {
   'lib/createStylelint.js': file => replaceBlocks(file, [
     [
       /const getConfigForFile = require.+/,
-      `const getConfigForFile = ${async stylelint => ({
+      `const getConfigForFile = async stylelint => ({
         config: require('./normalizeAllRuleSettings')(stylelint._options.config),
-      })};`,
+      });`,
     ], [
       /const isPathIgnored = require.+/,
       'const isPathIgnored = async () => false;',
@@ -52,14 +50,8 @@ const modify = {
   ]),
 
   'lib/getPostcssResult.js': file => replaceBlocks(file, [
-    /const fs = require.+/,
-    [
-      /const autoSyntax =.+/,
-      `const autoSyntax = ${config => config.css};`,
-    ], [
-      /function readFile[\s\S]*?\n}/,
-      'function readFile(){}',
-    ],
+    /const { promises: fs } = require.+/,
+    /getCode = await fs\.readFile.+/,
   ]),
 
   'lib/standalone.js': file => replaceBlocks(file, [
@@ -72,35 +64,21 @@ const modify = {
       'fs',
       'globby',
       'hash',
-      'pify',
+      'normalizePath',
+      'path',
       'pkg',
       'writeFileAtomic',
     ].join('|')}) = require.+`, 'g'),
-    new RegExp(`${[
-      'ignoreText = fs\\..+',
-      'if \\(readError\\.code !==.+',
-    ].join('|')}`, 'g'),
+    /ignorer = getFileIgnorer.+/,
+    /let fileList = .+?(?=\n})/s,
     [
-      /(const absoluteIgnoreFilePath = path\.isAbsolute\(ignoreFilePath\)\s*\? ignoreFilePath\s*: path\.resolve\(process.cwd\(\), ignoreFilePath\);)/,
-      '  const absoluteIgnoreFilePath = ignoreFilePath;',
-    ], [
-      /(const absoluteCodeFilename =\s*codeFilename !== undefined && !path\.isAbsolute\(codeFilename\)\s*\? path\.join\(process\.cwd\(\), codeFilename\)\s*: codeFilename;)/,
-      '    const absoluteCodeFilename = codeFilename;',
-    ], [
-      /let fileList = files;(\r?\n(?!}).*)+/,
-      'return ""',
+      /\bpath\.\w+\([^()]*\)/,
+      'true',
     ], [
       /&&\s+!filterFilePaths.+/,
       '&& false',
-    ], [
-      /\/\/ Check for file existence\n\s+return new Promise[\s\S]+?(?=\.then\()/,
-      'return Promise.resolve()',
     ],
   ]),
-
-  'lib/syntaxes/index.js': file => replaceBlocks(file, [
-    /('css-in-js'|html|markdown|sass|scss):\s.+/g,
-  ]).replace(/importLazy\(/g, 'require('),
 
   'package.json': file => {
     const json = JSON.parse(file);
@@ -135,14 +113,10 @@ function replaceBlocks(file, blocks) {
   return file;
 }
 
-fse.removeSync(src);
+fs.rmSync(src, {force: true, recursive: true});
 childProcess.execSync('npm install --no-save stylelint@' + version, {stdio: 'inherit'});
-if (pkg.version !== version) {
-  pkg.version = version;
-  fs.writeFileSync('../package.json', JSON.stringify(pkg, null, 2));
-}
 
-remove.forEach(name => fse.removeSync(src + name));
+remove.forEach(name => fs.rmSync(src + name, {recursive: true}));
 Object.entries(modify).forEach(([name, modifier]) => {
   fs.writeFileSync(src + name, modifier(fs.readFileSync(src + name, 'utf8')));
 });

@@ -35,7 +35,7 @@ browserify(null, {
   .on('data', ch => chunks.push(ch))
   .on('end', () => {
     fse.outputFileSync(pkg.main.replace('.min', ''),
-      `/*!= Stylelint v${pkg.dependencies.stylelint} bundle =*/\n` +
+      `/*!= Stylelint v${pkg.version} bundle =*/\n` +
       `/* See ${pkg.repository.url.replace('.git', '')} */\n` +
       `;(()=>{${babel.transformSync(chunks.join(''), BABEL_OPTS).code}})();`);
   });

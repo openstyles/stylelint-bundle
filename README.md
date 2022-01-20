@@ -6,8 +6,8 @@ This repository branch modifies Stylelint and creates a bundle:
 * To reduce the file size of the standalone version.
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
 * Using `browserify -r stylelint -o stylelint-bundle.js`:
-  * Bundle size before build: `3,862 KB`.
-  * Bundle size after build: `2,577 KB` (`686 KB` minified)
+  * Bundle size before build: 3.5+ MB.
+  * Bundle size after build: 1.5 MB (0.5 MB minified)
 
 ## Create the bundle
 
@@ -60,11 +60,9 @@ The resulting bundle:
 
 ## For contributors
 
-To update to a new version of Stylelint specify an **exact version** in package.json `dependencies`:
+To update to a new version of Stylelint specify its **exact version** in package.json `version`:
 
 ```
-  "dependencies": {
-    "stylelint": "13.8.0"
-  },
+  "version": "14.2.0",
 ```
 Then run the `build` script. In case of failure update the rules in `build/index.js`.

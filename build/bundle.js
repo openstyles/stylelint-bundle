@@ -26,10 +26,17 @@ const BABEL_OPTS = {
   ]],
 };
 const chunks = [];
+const builtins = require('browserify/lib/builtins.js');
+for (const key in builtins) {
+  if (!/^(path|_process)$/.test(key)) {
+    builtins[key] = 'build/empty.js';
+  }
+}
 
 browserify(null, {
   require: 'stylelint',
   standalone: 'stylelint',
+  builtins,
 })
   .bundle()
   .on('data', ch => chunks.push(ch))

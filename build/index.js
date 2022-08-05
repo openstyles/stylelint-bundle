@@ -15,27 +15,39 @@ const remove = [
   'lib/rules/property-no-vendor-prefix',
   'lib/rules/selector-no-vendor-prefix',
   'lib/rules/value-no-vendor-prefix',
-  'lib/formatters/stringFormatter.js',
-  'lib/formatters/verboseFormatter.js',
 ];
 
 const rxComments = /\/\*([^*]|\*(?!\/))*(\*\/|$)/g;
-
 // Specific file modifications
 // Remove use of "fs", "path" and
 // "autoprefixer" - which includes prefixes downloaded from caniuse
 const modify = {
 
-  'lib/formatters/index.js': file => replaceBlocks(file, [
-    [/string: importLazy.*?,/g, 'string: () => {},'],
-    [/verbose: importLazy.*?,/g, 'verbose: () => {},'],
-  ]),
+  'lib/index.js': [
+    [/(?=utils: {)/, 'SugarSSParser: require("sugarss/parser"),'],
+  ],
 
-  'lib/rules/index.js': file => replaceBlocks(file, [
-    /(['"])[-\w]+?-no-vendor-prefix\1:\s*importLazy[\s\S]*?\)\(\),/g,
-  ]),
+  'lib/formatters/index.js': [
+    /const _?importLazy\s*=.+?;/g,
+    [/(?<=json:\s*)importLazy\(/g, 'require('],
+    [/importLazy.*?,/g, '() => {},'],
+  ],
 
-  'lib/createStylelint.js': file => replaceBlocks(file, [
+  'lib/rules/index.js': [
+    [/(['"])[-\w]+?-no-vendor-prefix\1:\s*importLazy\(\s*\1.*?\1\s*\),\r?\n/g, ''],
+    [/const _?importLazy\s*=.+?;/g, ''],
+    [/(?<!\/\*\s*[-'"\w]+:\s*)importLazy\((?=\s*['"])/g, 'require('],
+  ],
+
+  'lib/rules/function-no-unknown/index.js': (file, name) => replaceBlocks(file, [
+    /const (fs|functionsListPath) = require.+/g,
+    [
+      "fs.readFileSync(functionsListPath.toString(), 'utf8')",
+      JSON.stringify(fs.readFileSync(require.resolve('css-functions-list/index.json'), 'utf8')),
+    ]
+  ], name),
+
+  'lib/createStylelint.js': [
     [
       /const getConfigForFile = require.+/,
       `const getConfigForFile = async stylelint => ({
@@ -45,16 +57,21 @@ const modify = {
       /const isPathIgnored = require.+/,
       'const isPathIgnored = async () => false;',
     ],
-    /const (augmentConfig|{\s*cosmiconfig\s*}) = require.+/g,
+    /const\W*(augmentConfig|cosmiconfig)\W*= require.+/g,
     /stylelint\._(full|extend)Explorer = cosmiconfig[\s\S]*?\n[\x20\t]+}\);/g,
-  ]),
+  ],
 
-  'lib/getPostcssResult.js': file => replaceBlocks(file, [
-    /const { promises: fs } = require.+/,
+  'lib/getPostcssResult.js': [
+    /const ({ promises: fs }|path) = require.+/g,
     /getCode = await fs\.readFile.+/,
-  ]),
+    [
+      /(?<=function cssSyntax.+?{)[\s\S]+?return {[\s\S]+?};\s+}/,
+      'return postcss}',
+    ],
+    [/$/, ';cssSyntax.sugarss = require("sugarss")']
+  ],
 
-  'lib/standalone.js': file => replaceBlocks(file, [
+  'lib/standalone.js': [
     new RegExp(`const (${[
       'FileCache',
       'NoFilesFoundError',
@@ -78,7 +95,7 @@ const modify = {
       /&&\s+!filterFilePaths.+/,
       '&& false',
     ],
-  ]),
+  ],
 
   'package.json': file => {
     const json = JSON.parse(file);
@@ -96,10 +113,11 @@ const modify = {
   },
 };
 
-function replaceBlocks(file, blocks) {
+function replaceBlocks(file, blocks, name) {
+  let errors = '';
   blocks.forEach(blk => {
     const [needle, replacement] = Array.isArray(blk) ? blk : [blk];
-    const index = file.search(needle);
+    const index = typeof needle === 'string' ? file.indexOf(needle) : file.search(needle);
     if (index > -1) {
       // Don't comment out blocks that have already been processed
       if (file.substring(index - 3, index) !== '/* ') {
@@ -107,9 +125,10 @@ function replaceBlocks(file, blocks) {
           s => `/* ${s.replace(rxComments, '')} */${replacement ? '\n' + replacement : ''}`);
       }
     } else {
-      console.log(`*** Error: RegExp ${needle} did not match anything`);
+      errors += `*** Error: RegExp ${needle} did not match anything in ${name}\n`;
     }
   });
+  if (errors) console.error('\n' + errors);
   return file;
 }
 
@@ -118,5 +137,9 @@ childProcess.execSync('npm install --no-save stylelint@' + version, {stdio: 'inh
 
 remove.forEach(name => fs.rmSync(src + name, {recursive: true}));
 Object.entries(modify).forEach(([name, modifier]) => {
-  fs.writeFileSync(src + name, modifier(fs.readFileSync(src + name, 'utf8')));
+  const text = fs.readFileSync(src + name, 'utf8');
+  const patched = Array.isArray(modifier)
+    ? replaceBlocks(text, modifier, name)
+    : modifier(text, name);
+  fs.writeFileSync(src + name, patched);
 });

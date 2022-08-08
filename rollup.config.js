@@ -10,6 +10,7 @@ import re from "rollup-plugin-re";
 import analyzer from "rollup-plugin-analyzer";
 import inject from "@rollup/plugin-inject";
 import esInfo from "rollup-plugin-es-info";
+import {visualizer} from "rollup-plugin-visualizer";
 
 const DEBUG = process.env.DEBUG === "1";
 
@@ -115,6 +116,9 @@ export default {
     DEBUG && esInfo({
       file: "stats.json"
     }),
-    DEBUG && analyzer()
+    DEBUG && analyzer(),
+    DEBUG && visualizer({
+      open: true
+    })
   ]
 };

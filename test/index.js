@@ -1,47 +1,31 @@
 'use strict';
 
-const assert = typeof require === 'function' ? require('assert') : {
-  equal(actual, expected, message) {
-    if (actual != expected) { // eslint-disable-line eqeqeq
-      throw new Error(message || `${actual} == ${expected}`);
-    }
-  },
-};
+const assert = require("assert");
+const fs = require("fs");
 
-for (const suffix of ['', '.min']) {
-  const fileName = `stylelint-bundle${suffix}.js`;
-  const isBrowser = typeof window !== 'undefined';
-  if (isBrowser && !document.querySelector(`script[src$="${fileName}"]`)) {
-    continue;
+const cases = [
+  {
+    id: 'color-no-invalid-hex',
+    code: 'a {color: #FFDFF; }'
   }
-  const stylelint = isBrowser ? window.stylelint : require(`../dist/${fileName}`);
+];
 
-  describe(fileName, () => {
+(0, eval)(fs.readFileSync(require.resolve("../dist/stylelint-bundle.min"), "utf8"));
 
-    describe('exists:', () => {
-      it(`loads using ${isBrowser ? 'window.stylelint' : 'require()'}`, () => {
-        assert.equal(typeof stylelint, 'function');
-      });
-      it('has lint() function', () => {
-        assert.equal(typeof stylelint.lint, 'function');
-      });
+for (const c of cases) {
+  it(c.id, async () => {
+    const {results: [res]} = await stylelint.lint({
+      code: c.code,
+      config: {
+        rules: {
+          [c.id]: [true, {severity: 'warning'}],
+        },
+      },
+      // FIXME: the table package is excluded so the formatter doesn't work. Maybe we should exclude all default formatters?
+      // formatter: 'string',
+      formatter: () => {},
     });
-
-    describe('works:', () => {
-      const ID = 'color-no-invalid-hex';
-      it(ID + ' rule works', async () => {
-        const {results: [res]} = await stylelint.lint({
-          code: 'a {color: #FFDFF; }',
-          config: {
-            rules: {
-              [ID]: [true, {severity: 'warning'}],
-            },
-          },
-          formatter: 'string',
-        });
-        assert.equal(res.warnings[0].rule, ID);
-      });
-    });
-
-  });
+    assert.equal(res.warnings[0].rule, c.id);
+  })
 }
+

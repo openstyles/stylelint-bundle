@@ -13,10 +13,6 @@ const BABEL_OPTS = {
   presets: [[
     '@babel/env', {
       targets: {
-        /* https://github.com/openstyles/stylus/blob/master/manifest.json
-         * Chrome: minimum_chrome_version
-         * FF: strict_min_version
-         */
         chrome: 55,
         firefox: 53,
       },

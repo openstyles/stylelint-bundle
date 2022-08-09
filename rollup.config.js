@@ -41,9 +41,9 @@ export default {
           replace: 'require('
         },
         {
-          match: /lib\/rules\/function-no-unknown\/index\.js/,
-          test: /fs\.readFileSync\(functionsListPath\.toString\(\), 'utf8'\)/,
-          replace: JSON.stringify(fs.readFileSync(require.resolve('css-functions-list/index.json'), 'utf8')),
+          match: /lib.rules.function-no-unknown.index\.js/,
+          test: /JSON\.parse\(fs\.readFileSync\(functionsListPath\.toString\(\), 'utf8'\)\)/,
+          replace: fs.readFileSync(require.resolve('css-functions-list/index.json'), 'utf8'),
         },
       ]
     }),

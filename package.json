@@ -28,7 +28,7 @@
     "@babel/preset-env": "^7.12.11",
     "browserify": "^17.0.0",
     "fs-extra": "^10.1.0",
-    "mocha": "^5.2.0",
+    "mocha": "^10.1.0",
     "sugarss": "^4.0.1",
     "uglify-es": "3.3.7"
   },

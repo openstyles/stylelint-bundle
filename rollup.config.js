@@ -48,13 +48,13 @@ export default {
       ]
     }),
     alias({
-      entries: {
-        util: require.resolve("./shim/util"),
-        tty: require.resolve("./shim/tty"),
-        os: require.resolve("./shim/os"),
-        [require.resolve("stylelint/lib/getConfigForFile")]: require.resolve("./shim/getConfigForFile"),
-        [require.resolve("stylelint/lib/isPathIgnored")]: require.resolve("./shim/isPathIgnored"),
-        ...Object.fromEntries([
+      entries: [
+        { find: "util", replacement: require.resolve("./shim/util") },
+        { find: "tty", replacement: require.resolve("./shim/tty") },
+        { find: "os", replacement: require.resolve("./shim/os") },
+        { find: /.*\/getConfigForFile/, replacement: require.resolve("./shim/getConfigForFile") },
+        { find: /.*\/isPathIgnored/, replacement: require.resolve("./shim/isPathIgnored") },
+        ...[
           "cosmiconfig",
           "css-functions-list",
           "debug",
@@ -73,9 +73,10 @@ export default {
           "table",
           "v8-compile-cache",
           "write-file-atomic",
-          require.resolve("stylelint/lib/utils/getFileIgnorer"),
-        ].map(k => [k, require.resolve("./shim/empty")])),
-      }
+          /.*\/getFileIgnorer/,
+          /.*\/FileCache/,
+        ].map(find => ({find, replacement: require.resolve("./shim/empty")}))
+      ]
     }),
     resolve(),
     json(),

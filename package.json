@@ -24,14 +24,14 @@
   },
   "main": "dist/stylelint-bundle.min.js",
   "devDependencies": {
-    "@babel/core": "^7.18.10",
-    "@babel/preset-env": "^7.18.10",
-    "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-babel": "^5.3.1",
-    "@rollup/plugin-inject": "^4.0.4",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "mocha": "^10.0.0",
+    "@babel/core": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-alias": "^4.0.2",
+    "@rollup/plugin-babel": "^6.0.2",
+    "@rollup/plugin-inject": "^5.0.2",
+    "@rollup/plugin-json": "^5.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "mocha": "^10.1.0",
     "rollup": "^2.77.2",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-cjs-es": "^1.1.0",
@@ -39,7 +39,7 @@
     "rollup-plugin-iife": "^0.6.0",
     "rollup-plugin-re": "^1.0.7",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-visualizer": "^5.7.1",
+    "rollup-plugin-visualizer": "^5.8.3",
     "sugarss": "^4.0.1"
   },
   "engines": {
@@ -50,6 +50,6 @@
     "test": "mocha"
   },
   "dependencies": {
-    "stylelint": "^14.9.1"
+    "stylelint": "^14.14.1"
   }
 }

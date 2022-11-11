@@ -37,7 +37,7 @@ The resulting bundle:
   stylelint.lint({
     code: "body { color: #000; }",
     config: {
-      syntax: 'sugarss',
+      customSyntax: 'sugarss',
       rules: { /*...*/ },
       formatter: () => {}
     }

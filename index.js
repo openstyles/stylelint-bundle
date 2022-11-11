@@ -7,4 +7,5 @@ stylelint.lint = options => {
   }
   return _lint.call(stylelint, options);
 }
+stylelint.SugarSSParser = sugarss;
 export {stylelint as default};

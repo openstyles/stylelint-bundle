@@ -13,7 +13,7 @@ This repository branch modifies Stylelint and creates a bundle:
 
 * Download or clone this repository.
 * Run `npm install`
-* Run `npm run build` (will refresh the version of stylelint).
+* Run `npm run build`.
 * An IIFE bundle `stylelint-bundle.min.js` is created in `dist` directory using the modified version of Stylelint.
 * Run `npm test` for testing.
 
@@ -53,12 +53,20 @@ The resulting bundle:
 
 ## For contributors
 
-To update to a new version of Stylelint specify its **exact version** in package.json `version`:
+To update to a new version of Stylelint:
 
 ```
-  "version": "14.2.0",
+npm install stylelint@latest
+npm run build
 ```
-Then run the `build` script. In case of failure update the rules in `build/index.js`.
+
+It will install the latest stylelint, bump the version number in `package.json` and `package-lock.json`, then build the bundle.
+
+To test it:
+
+```
+npm test
+```
 
 ## Debug the bundle
 

@@ -1,6 +1,6 @@
 {
   "name": "stylelint-bundle",
-  "version": "14.9.1-fixup",
+  "version": "14.14.1",
   "description": "Create & provide a bundled version of Stylelint",
   "keywords": [
     "css",

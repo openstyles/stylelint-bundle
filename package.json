@@ -24,21 +24,32 @@
   },
   "main": "dist/stylelint-bundle.min.js",
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "browserify": "^17.0.0",
-    "fs-extra": "^10.1.0",
-    "mocha": "^5.2.0",
-    "sugarss": "^4.0.1",
-    "uglify-es": "3.3.7"
+    "@babel/core": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-alias": "^4.0.2",
+    "@rollup/plugin-babel": "^6.0.2",
+    "@rollup/plugin-inject": "^5.0.2",
+    "@rollup/plugin-json": "^5.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "mocha": "^10.1.0",
+    "rollup": "^2.77.2",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "rollup-plugin-cjs-es": "^1.1.0",
+    "rollup-plugin-es-info": "^0.3.0",
+    "rollup-plugin-iife": "^0.6.0",
+    "rollup-plugin-re": "^1.0.7",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-visualizer": "^5.8.3"
   },
   "engines": {
     "node": ">= 10"
   },
   "scripts": {
-    "build": "node build/index.js && npm run bundle && npm run uglify && npm run test",
-    "bundle": "node build/bundle.js",
-    "test": "mocha",
-    "uglify": "node build/uglify.js"
+    "build": "rollup -c",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "stylelint": "^14.14.1",
+    "sugarss": "^4.0.1"
   }
 }

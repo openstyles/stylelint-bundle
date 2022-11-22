@@ -7,7 +7,7 @@ This repository branch modifies Stylelint and creates a bundle:
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
 * The bundle includes the sugarss syntax. It will be used when `config.customSyntax === "sugarss"`.
 
-[Demo]()
+[Demo](https://raw.githack.com/openstyles/stylelint-bundle/master/demo/index.html)
 
 ## Create the bundle
 

@@ -63,6 +63,7 @@ export default {
     }),
     alias({
       entries: [
+        { find: "css-tree", replacement: require.resolve("css-tree/dist/csstree.esm") },
         { find: "util", replacement: require.resolve("./shim/util") },
         { find: "tty", replacement: require.resolve("./shim/tty") },
         { find: "os", replacement: require.resolve("./shim/os") },

@@ -1,6 +1,6 @@
 {
   "name": "stylelint-bundle",
-  "version": "14.14.1",
+  "version": "15.10.2",
   "description": "Create & provide a bundled version of Stylelint",
   "keywords": [
     "css",
@@ -15,6 +15,7 @@
   ],
   "authors": [
     "Rob Garrison",
+    "eight04",
     "tophf"
   ],
   "license": "MIT",
@@ -31,6 +32,7 @@
     "@rollup/plugin-inject": "^5.0.2",
     "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "chalk": "^2.4.2",
     "mocha": "^10.1.0",
     "rollup": "^2.77.2",
     "rollup-plugin-analyzer": "^4.0.0",
@@ -49,7 +51,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "stylelint": "^14.14.1",
+    "stylelint": "^15.10.2",
     "sugarss": "^4.0.1"
   }
 }

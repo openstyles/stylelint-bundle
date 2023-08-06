@@ -9,6 +9,7 @@ tmp/
 
 # Build
 node_modules/
+.cjsescache
 
 # Windows crap
 Thumbs.db

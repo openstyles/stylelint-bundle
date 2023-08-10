@@ -11,6 +11,7 @@ import analyzer from "rollup-plugin-analyzer";
 import inject from "@rollup/plugin-inject";
 import esInfo from "rollup-plugin-es-info";
 import {visualizer} from "rollup-plugin-visualizer";
+import chalk from "chalk";
 
 const DEBUG = process.env.DEBUG === "1";
 
@@ -26,6 +27,14 @@ export default {
       freeze: false
     }
   ],
+  onwarn(e) {
+    if (!/doesn't export names expected by/.test(e.message)) {
+      console.warn((e.plugin ? `[${e.plugin}] ` : '') +
+        e.loc.file + '\n' +
+        chalk.red(`${e.loc.line}:${e.loc.column}: ${e.message}`) + '\n' +
+        chalk.gray(e.frame) + '\n\n');
+    }
+  },
   // shimMissingExports: true,
   plugins: [
     re({
@@ -37,18 +46,24 @@ export default {
         },
         {
           match: /.*/,
-          test: /\bimportlazy\(/gi,
-          replace: 'require('
+          test: /\bimportLazy\(\(\)\s*=>\s*(require\([^()]+\)),?\s*\)\(\)/g,
+          replace: '$1'
         },
         {
           match: /lib.rules.function-no-unknown.index\.js/,
           test: /JSON\.parse\(fs\.readFileSync\(functionsListPath\.toString\(\), 'utf8'\)\)/,
           replace: fs.readFileSync(require.resolve('css-functions-list/index.json'), 'utf8'),
         },
+        {
+          match: /.*/,
+          test: /source-map-js\/lib\/source-map-generator\.js/,
+          replace: require.resolve("./shim/source-map-generator").replace(/\\/g, '/'),
+        },
       ]
     }),
     alias({
       entries: [
+        { find: "css-tree", replacement: require.resolve("css-tree/dist/csstree.esm") },
         { find: "util", replacement: require.resolve("./shim/util") },
         { find: "tty", replacement: require.resolve("./shim/tty") },
         { find: "os", replacement: require.resolve("./shim/os") },
@@ -69,7 +84,8 @@ export default {
           "path",
           "picomatch",
           "resolve-from",
-          "source-map-js",
+          "sourceMap",
+          /source-map-js(?!\/)/,
           "table",
           "v8-compile-cache",
           "write-file-atomic",
@@ -103,7 +119,7 @@ export default {
              * FF: strict_min_version
              */
             chrome: "55",
-            firefox: "53"
+            firefox: "55"
           },
           // https://github.com/facebook/regenerator/issues/276
           include: ["transform-template-literals"],

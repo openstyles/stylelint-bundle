@@ -14,6 +14,11 @@ import {visualizer} from "rollup-plugin-visualizer";
 import chalk from "chalk";
 
 const DEBUG = process.env.DEBUG === "1";
+const escapeStrRE = s => s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+const makeShim = (find, shim) => ({
+  find,
+  replacement: require.resolve(shim + '.mjs').replace(/\.\w+$/, ''),
+});
 
 export default {
   input: {
@@ -29,7 +34,7 @@ export default {
   ],
   onwarn(e) {
     if (!/doesn't export names expected by/.test(e.message)) {
-      console.warn((e.plugin ? `[${e.plugin}] ` : '') +
+      console.warn(!e.loc ? e : (e.plugin ? `[${e.plugin}] ` : '') +
         e.loc.file + '\n' +
         chalk.red(`${e.loc.line}:${e.loc.column}: ${e.message}`) + '\n' +
         chalk.gray(e.frame) + '\n\n');
@@ -41,16 +46,18 @@ export default {
       patterns: [
         {
           match: /.*/,
-          test: /const _?importLazy\s*=.+?;/g,
-          replace: ''
+          test: new RegExp(
+            /\bget ('[^']+')\(\) {\s*return\s+/.source +
+            escapeStrRE('Promise.resolve().then(() => /*#__PURE__*/_interopNamespaceDefaultOnly(') +
+            /(require\('[^']+'\))/.source +
+            escapeStrRE(')).then((m) => m.default);') +
+            /\s*}/.source,
+            'g'
+          ),
+          replace: '$1: $2'
         },
         {
-          match: /.*/,
-          test: /\bimportLazy\(\(\)\s*=>\s*(require\([^()]+\)),?\s*\)\(\)/g,
-          replace: '$1'
-        },
-        {
-          match: /lib.rules.function-no-unknown.index\.js/,
+          match: /lib.rules.function-no-unknown.index\.[cm]?js/,
           test: /JSON\.parse\(fs\.readFileSync\(functionsListPath\.toString\(\), 'utf8'\)\)/,
           replace: fs.readFileSync(require.resolve('css-functions-list/index.json'), 'utf8'),
         },
@@ -67,10 +74,10 @@ export default {
         { find: "util", replacement: require.resolve("./shim/util") },
         { find: "tty", replacement: require.resolve("./shim/tty") },
         { find: "os", replacement: require.resolve("./shim/os") },
-        { find: /.*\/getConfigForFile/, replacement: require.resolve("./shim/getConfigForFile") },
-        { find: /.*\/isPathIgnored/, replacement: require.resolve("./shim/isPathIgnored") },
+        makeShim(/.*\/getConfigForFile/, "./shim/getConfigForFile"),
+        makeShim(/.*\/isPathIgnored/, "./shim/isPathIgnored"),
+        makeShim("cosmiconfig", "./shim/cosmiconfig"),
         ...[
-          "cosmiconfig",
           "css-functions-list",
           "debug",
           "fast-glob",
@@ -78,7 +85,6 @@ export default {
           "global-modules",
           "globby",
           "ignore",
-          "import-lazy",
           "meow",
           "micromatch",
           "path",
@@ -91,7 +97,7 @@ export default {
           "write-file-atomic",
           /.*\/getFileIgnorer/,
           /.*\/FileCache/,
-        ].map(find => ({find, replacement: require.resolve("./shim/empty")}))
+        ].map(find => makeShim(find, "./shim/empty"))
       ]
     }),
     resolve(),

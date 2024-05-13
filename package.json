@@ -44,14 +44,14 @@
     "rollup-plugin-visualizer": "^5.8.3"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 14.5.0"
   },
   "scripts": {
     "build": "rollup -c",
     "test": "mocha"
   },
   "dependencies": {
-    "stylelint": "^15.10.2",
+    "stylelint": "^16.5.0",
     "sugarss": "^4.0.1"
   }
 }

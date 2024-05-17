@@ -1,1 +1,1 @@
-export const cosmiconfig = {};
+export const cosmiconfig = () => {};

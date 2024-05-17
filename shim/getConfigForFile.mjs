@@ -1,5 +1,5 @@
-import normalize from "stylelint/lib/normalizeAllRuleSettings";
+import normalize from "../node_modules/stylelint/lib/normalizeAllRuleSettings.mjs";
 
 export default async stylelint => ({
-  config: normalize(stylelint._options.config)
+  config: await normalize(stylelint._options.config)
 });

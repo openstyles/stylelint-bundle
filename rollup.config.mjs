@@ -12,12 +12,18 @@ import inject from "@rollup/plugin-inject";
 import esInfo from "rollup-plugin-es-info";
 import {visualizer} from "rollup-plugin-visualizer";
 import chalk from "chalk";
+import {fileURLToPath} from "url";
+
+function resolvePkg(id) {
+  const url = import.meta.resolve(id);
+  return fileURLToPath(url)
+}
 
 const DEBUG = process.env.DEBUG === "1";
 const escapeStrRE = s => s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
 const makeShim = (find, shim) => ({
   find,
-  replacement: require.resolve(shim + '.mjs').replace(/\.\w+$/, ''),
+  replacement: resolvePkg(shim + '.mjs').replace(/\.\w+$/, ''),
 });
 
 export default {
@@ -29,7 +35,8 @@ export default {
       dir: "dist",
       format: 'es',
       sourcemap: true,
-      freeze: false
+      freeze: false,
+      inlineDynamicImports: true
     }
   ],
   onwarn(e) {
@@ -59,21 +66,22 @@ export default {
         {
           match: /lib.rules.function-no-unknown.index\.[cm]?js/,
           test: /JSON\.parse\(fs\.readFileSync\(functionsListPath\.toString\(\), 'utf8'\)\)/,
-          replace: fs.readFileSync(require.resolve('css-functions-list/index.json'), 'utf8'),
+          replace: fs.readFileSync(resolvePkg('css-functions-list/index.json'), 'utf8'),
         },
         {
           match: /.*/,
           test: /source-map-js\/lib\/source-map-generator\.js/,
-          replace: require.resolve("./shim/source-map-generator").replace(/\\/g, '/'),
+          replace: resolvePkg("./shim/source-map-generator").replace(/\\/g, '/'),
         },
       ]
     }),
     alias({
       entries: [
-        { find: "css-tree", replacement: require.resolve("css-tree/dist/csstree.esm") },
-        { find: "util", replacement: require.resolve("./shim/util") },
-        { find: "tty", replacement: require.resolve("./shim/tty") },
-        { find: "os", replacement: require.resolve("./shim/os") },
+        { find: "css-tree", replacement: resolvePkg("css-tree/dist/csstree.esm") },
+        { find: /^(node:)?util$/, replacement: resolvePkg("./shim/util") },
+        { find: /^(node:)?tty$/, replacement: resolvePkg("./shim/tty") },
+        { find: /^(node:)?os$/, replacement: resolvePkg("./shim/os") },
+        makeShim(/.*\/mathMLTags/, "./shim/mathMLTags"),
         makeShim(/.*\/getConfigForFile/, "./shim/getConfigForFile"),
         makeShim(/.*\/isPathIgnored/, "./shim/isPathIgnored"),
         makeShim("cosmiconfig", "./shim/cosmiconfig"),
@@ -87,7 +95,8 @@ export default {
           "ignore",
           "meow",
           "micromatch",
-          "path",
+          /^(node:)?path$/,
+          /^(node:)?process$/,
           "picomatch",
           "resolve-from",
           "sourceMap",
@@ -97,6 +106,7 @@ export default {
           "write-file-atomic",
           /.*\/getFileIgnorer/,
           /.*\/FileCache/,
+          /.*\/resolveSilent/,
         ].map(find => makeShim(find, "./shim/empty"))
       ]
     }),
@@ -104,12 +114,16 @@ export default {
     json(),
     cjs({nested: true}),
     inject({
-      process: require.resolve("./shim/process")
+      process: resolvePkg("./shim/process")
     }),
     iife({
       names: id => {
         if (/stylelint-bundle\.min\.js/.test(id)) {
           return "stylelint";
+        }
+        if (/^node:/.test(id)) {
+          // we only modify internal id so we can get an error when an external id goes wrong
+          id = id.replace(/^node:/, 'node_');
         }
         return `_external_${id}`;
       }

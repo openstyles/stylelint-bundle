@@ -52,25 +52,26 @@ export default {
     re({
       patterns: [
         {
-          match: /.*/,
-          test: new RegExp(
-            /\bget ('[^']+')\(\) {\s*return\s+/.source +
-            escapeStrRE('Promise.resolve().then(() => /*#__PURE__*/_interopNamespaceDefaultOnly(') +
-            /(require\('[^']+'\))/.source +
-            escapeStrRE(')).then((m) => m.default);') +
-            /\s*}/.source,
-            'g'
-          ),
-          replace: '$1: $2'
+          match: /lib[\\/]rules[\\/]index\.mjs/,
+          test: /(const rules = {\s*)(get '[^']+'\(\) {\s*return import[\s\S]+?)(\n};\n)/,
+          replace: (_, pre, main, post) => {
+            const imports = [], rules = [];
+            const rx = /get ('[^']+')\(\) {\s*return import\(('[^']+')\).*\s*}/g;
+            for (let i = 1, m; (m = rx.exec(main)); i++) {
+              imports.push(`import r${i} from ${m[2]};\n`);
+              rules.push(`${m[1]}:r${i},\n`);
+            }
+            return imports.join('') + pre + rules.join('') + post;
+          },
         },
         {
-          match: /lib.rules.function-no-unknown.index\.[cm]?js/,
-          test: /JSON\.parse\(fs\.readFileSync\(functionsListPath\.toString\(\), 'utf8'\)\)/,
+          match: /lib[\\/]rules[\\/]function-no-unknown[\\/]index\.mjs/,
+          test: "JSON.parse(fs.readFileSync(functionsListPath.toString(), 'utf8'))",
           replace: fs.readFileSync(resolvePkg('css-functions-list/index.json'), 'utf8'),
         },
         {
           match: /.*/,
-          test: /source-map-js\/lib\/source-map-generator\.js/,
+          test: /source-map-js[\\/]lib[\\/]source-map-generator\.js/,
           replace: resolvePkg("./shim/source-map-generator").replace(/\\/g, '/'),
         },
       ]

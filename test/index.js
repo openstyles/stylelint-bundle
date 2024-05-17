@@ -25,6 +25,7 @@ for (const c of cases) {
       // formatter: 'string',
       formatter: () => {},
     });
+    assert.equal(res.warnings.length, 1);
     assert.equal(res.warnings[0].rule, c.id);
   })
 }

@@ -1,6 +1,6 @@
 {
   "name": "stylelint-bundle",
-  "version": "15.10.2",
+  "version": "16.5.0",
   "description": "Create & provide a bundled version of Stylelint",
   "keywords": [
     "css",

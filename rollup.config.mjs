@@ -52,11 +52,11 @@ export default {
     re({
       patterns: [
         {
-          match: /lib[\\/]rules[\\/]index\.mjs/,
-          test: /(const rules = {\s*)(get '[^']+'\(\) {\s*return import[\s\S]+?)(\n};\n)/,
+          match: /stylelint[\\/]lib[\\/]rules[\\/]index\.mjs/,
+          test: /(const rules = {\s*)(get '[^']+'\(\) {\s*return import.+?)(\n};\n)/s,
           replace: (_, pre, main, post) => {
             const imports = [], rules = [];
-            const rx = /get ('[^']+')\(\) {\s*return import\(('[^']+')\).*\s*}/g;
+            const rx = /get ('[^']+')\(\) {\s*return import\(('[^']+')\).*?\s*}/sg;
             for (let i = 1, m; (m = rx.exec(main)); i++) {
               imports.push(`import r${i} from ${m[2]};\n`);
               rules.push(`${m[1]}:r${i},\n`);
@@ -65,9 +65,44 @@ export default {
           },
         },
         {
-          match: /lib[\\/]rules[\\/]function-no-unknown[\\/]index\.mjs/,
+          match: /stylelint[\\/]lib[\\/]rules[\\/]function-no-unknown[\\/]index\.mjs/,
           test: "JSON.parse(fs.readFileSync(functionsListPath.toString(), 'utf8'))",
           replace: fs.readFileSync(resolvePkg('css-functions-list/index.json'), 'utf8'),
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]formatters[\\/]index\.mjs/,
+          test: /(const formatters = {\s*).*?('[^']+?jsonFormatter\.mjs').+\n};/s,
+          replace: 'import json from $2; $1json};',
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]getPostcssResult\.mjs/,
+          test: 'if (filePath) {',
+          replace: 'if (false) {',
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
+          test: /(const absoluteCodeFilename =)[^;]+/,
+          replace: '$1 false',
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
+          test: /let fileList = .+?return result;\n}/s,
+          replace: '}',
+        },
+        {
+          match: /postcss[\\/]lib[\\/](input|css-syntax-error)\.js/,
+          test: /(let ((path|sourceMap)Available|terminalHighlight|pico) =).*/g,
+          replace: '$1 false;',
+        },
+        {
+          match: /postcss[\\/]lib[\\/]css-syntax-error\.js/,
+          test: 'showSourceCode(color) {',
+          replace: 'showSourceCode() {let color=false;',
+        },
+        {
+          match: /postcss[\\/]lib[\\/]/,
+          test: "require('./previous-map')",
+          replace: 'false',
         },
         {
           match: /.*/,
@@ -82,6 +117,7 @@ export default {
         { find: /^(node:)?util$/, replacement: resolvePkg("./shim/util") },
         { find: /^(node:)?tty$/, replacement: resolvePkg("./shim/tty") },
         { find: /^(node:)?os$/, replacement: resolvePkg("./shim/os") },
+        { find: /^(node:)?url/, replacement: resolvePkg("./shim/url") },
         makeShim(/.*\/mathMLTags/, "./shim/mathMLTags"),
         makeShim(/.*\/getConfigForFile/, "./shim/getConfigForFile"),
         makeShim(/.*\/isPathIgnored/, "./shim/isPathIgnored"),
@@ -108,7 +144,7 @@ export default {
           /.*\/getFileIgnorer/,
           /.*\/FileCache/,
           /.*\/resolveSilent/,
-        ].map(find => makeShim(find, "./shim/empty"))
+        ].map(find => makeShim(find, "./shim/empty")),
       ]
     }),
     resolve(),

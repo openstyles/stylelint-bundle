@@ -107,46 +107,44 @@ export default {
         },
       ]
     }),
-    alias({
-      entries: makeAlias({
-        alias: {
-          "css-tree": "css-tree/dist/csstree.esm",
-        },
-        noop: [
-          "*/FileCache",
-          "*/getFileIgnorer",
-          "*/resolveSilent",
-          "css-functions-list",
-          "debug",
-          "fast-glob",
-          "file-entry-cache",
-          "global-modules",
-          "globby",
-          "ignore",
-          "meow",
-          "micromatch",
-          "node:path",
-          "node:process",
-          "picomatch",
-          "resolve-from",
-          "source-map-js/*",
-          "sourceMap",
-          "table",
-          "v8-compile-cache",
-          "write-file-atomic",
-        ],
-        shim: [
-          "*/getConfigForFile",
-          "*/isPathIgnored",
-          "*/mathMLTags",
-          "cosmiconfig",
-          "node:os",
-          "node:tty",
-          "node:url",
-          "node:util",
-        ]
-      })
-    }),
+    alias(makeAlias({
+      alias: {
+        "css-tree": "css-tree/dist/csstree.esm",
+      },
+      noop: [
+      "*/FileCache",
+      "*/getFileIgnorer",
+      "*/resolveSilent",
+      "css-functions-list",
+      "debug",
+      "fast-glob",
+      "file-entry-cache",
+      "global-modules",
+      "globby",
+      "ignore",
+      "meow",
+      "micromatch",
+      "node:path",
+      "node:process",
+      "picomatch",
+      "resolve-from",
+      "source-map-js/*",
+      "sourceMap",
+      "table",
+      "v8-compile-cache",
+      "write-file-atomic",
+    ],
+      shim: [
+        "*/getConfigForFile",
+        "*/isPathIgnored",
+        "*/mathMLTags",
+        "cosmiconfig",
+        "node:os",
+        "node:tty",
+        "node:url",
+        "node:util",
+      ]
+    })),
     resolve(),
     json(),
     cjs({nested: true}),
@@ -197,7 +195,7 @@ export default {
   ]
 }
 
-function makeAlias({alias, noop, shim}) {
+function makeAlias({alias, noop, shim, ...opts}) {
   const entries = [];
   const compilePattern = pattern => {
     if (typeof pattern === "string") {
@@ -233,5 +231,5 @@ function makeAlias({alias, noop, shim}) {
     const {find, name} = compilePattern(key);
     entries.push({find, replacement: resolvePath(`shim/${name}`)});
   }
-  return entries;
+  return {entries, ...opts};
 };

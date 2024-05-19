@@ -13,6 +13,7 @@ import esInfo from "rollup-plugin-es-info";
 import {visualizer} from "rollup-plugin-visualizer";
 import chalk from "chalk";
 import {fileURLToPath} from "url";
+import {resolve as resolvePath} from "path";
 
 function resolvePkg(id) {
   const url = import.meta.resolve(id);
@@ -20,11 +21,6 @@ function resolvePkg(id) {
 }
 
 const DEBUG = process.env.DEBUG === "1";
-const escapeStrRE = s => s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
-const makeShim = (find, shim) => ({
-  find,
-  replacement: resolvePkg(shim + '.mjs').replace(/\.\w+$/, ''),
-});
 
 export default {
   input: {
@@ -112,17 +108,14 @@ export default {
       ]
     }),
     alias({
-      entries: [
-        { find: "css-tree", replacement: resolvePkg("css-tree/dist/csstree.esm") },
-        { find: /^(node:)?util$/, replacement: resolvePkg("./shim/util") },
-        { find: /^(node:)?tty$/, replacement: resolvePkg("./shim/tty") },
-        { find: /^(node:)?os$/, replacement: resolvePkg("./shim/os") },
-        { find: /^(node:)?url/, replacement: resolvePkg("./shim/url") },
-        makeShim(/.*\/mathMLTags/, "./shim/mathMLTags"),
-        makeShim(/.*\/getConfigForFile/, "./shim/getConfigForFile"),
-        makeShim(/.*\/isPathIgnored/, "./shim/isPathIgnored"),
-        makeShim("cosmiconfig", "./shim/cosmiconfig"),
-        ...[
+      entries: makeAlias({
+        alias: {
+          "css-tree": "css-tree/dist/csstree.esm",
+        },
+        noop: [
+          "*/FileCache",
+          "*/getFileIgnorer",
+          "*/resolveSilent",
           "css-functions-list",
           "debug",
           "fast-glob",
@@ -132,20 +125,27 @@ export default {
           "ignore",
           "meow",
           "micromatch",
-          /^(node:)?path$/,
-          /^(node:)?process$/,
+          "node:path",
+          "node:process",
           "picomatch",
           "resolve-from",
+          "source-map-js/*",
           "sourceMap",
-          /source-map-js(?!\/)/,
           "table",
           "v8-compile-cache",
           "write-file-atomic",
-          /.*\/getFileIgnorer/,
-          /.*\/FileCache/,
-          /.*\/resolveSilent/,
-        ].map(find => makeShim(find, "./shim/empty")),
-      ]
+        ],
+        shim: [
+          "*/getConfigForFile",
+          "*/isPathIgnored",
+          "*/mathMLTags",
+          "cosmiconfig",
+          "node:os",
+          "node:tty",
+          "node:url",
+          "node:util",
+        ]
+      })
     }),
     resolve(),
     json(),
@@ -195,4 +195,43 @@ export default {
       open: true
     })
   ]
+}
+
+function makeAlias({alias, noop, shim}) {
+  const entries = [];
+  const compilePattern = pattern => {
+    if (typeof pattern === "string") {
+      const match = pattern.match(/^(\*\/)?(node:)?(.*)(\/\*)?$/);
+      if (match) {
+        let rx = match[3];
+        if (match[2]) {
+          rx = `(node:)?${rx}`;
+        }
+        if (match[1]) {
+          rx = `.*/${rx}`;
+        }
+        if (match[4]) {
+          rx = `${rx}(/.*)?`;
+        } else if (match[1]) {
+          rx = `${rx}(\\.[cm]?js)?`;
+        }
+        rx = `^${rx}$`;
+        return {find: new RegExp(rx), name: match[3]};
+      }
+    }
+    return {find: pattern};
+  };
+  for (const key in alias) {
+    const {find} = compilePattern(key);
+    entries.push({find, replacement: alias[key]});
+  }
+  for (const key of noop) {
+    const {find} = compilePattern(key);
+    entries.push({find, replacement: resolvePath("shim/empty")});
+  }
+  for (const key of shim) {
+    const {find, name} = compilePattern(key);
+    entries.push({find, replacement: resolvePath(`shim/${name}`)});
+  }
+  return entries;
 };

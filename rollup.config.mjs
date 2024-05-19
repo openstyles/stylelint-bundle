@@ -193,7 +193,7 @@ export default {
       open: true
     })
   ]
-}
+};
 
 function makeAlias({alias, noop, shim, ...opts}) {
   const entries = [];
@@ -232,4 +232,4 @@ function makeAlias({alias, noop, shim, ...opts}) {
     entries.push({find, replacement: resolvePath(`shim/${name}`)});
   }
   return {entries, ...opts};
-};
+}

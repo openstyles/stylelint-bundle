@@ -12,7 +12,7 @@ This repository branch modifies Stylelint and creates a bundle:
 ## Create the bundle
 
 * Download or clone this repository.
-* Run `npm install`
+* Run `npm install --legacy-peer-deps` (NPM v7 and newer) or `npm install` (older NPM)
 * Run `npm run build`.
 * An IIFE bundle `stylelint-bundle.min.js` is created in `dist` directory using the modified version of Stylelint.
 * Run `npm test` for testing.

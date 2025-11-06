@@ -197,7 +197,7 @@ rules:
   prefer-rest-params: [0]
   prefer-const: [1, {destructuring: all, ignoreReadBeforeAssign: true}]
   quote-props: [0]
-  quotes: [1, single, avoid-escape]
+  quotes: [1, double, avoid-escape]
   radix: [2, as-needed]
   require-jsdoc: [0]
   require-yield: [2]

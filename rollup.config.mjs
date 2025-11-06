@@ -1,7 +1,7 @@
 import fs from "fs";
-import cjs from 'rollup-plugin-cjs-es';
-import {terser} from 'rollup-plugin-terser';
-import babel from '@rollup/plugin-babel';
+import cjs from "rollup-plugin-cjs-es";
+import {terser} from "rollup-plugin-terser";
+import babel from "@rollup/plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";
 import iife from "rollup-plugin-iife";
@@ -21,26 +21,28 @@ function resolvePkg(id) {
 }
 
 const DEBUG = process.env.DEBUG === "1";
+const NO_TERSER = DEBUG || process.env.NO_TERSER === "1";
 
 export default {
   input: {
-    "stylelint-bundle.min": 'index.js'
+    "stylelint-bundle.min": "index.js",
   },
   output: [
     {
       dir: "dist",
-      format: 'es',
+      format: "es",
       sourcemap: true,
       freeze: false,
       inlineDynamicImports: true
     }
   ],
   onwarn(e) {
-    if (!/doesn't export names expected by/.test(e.message)) {
-      console.warn(!e.loc ? e : (e.plugin ? `[${e.plugin}] ` : '') +
-        e.loc.file + '\n' +
-        chalk.red(`${e.loc.line}:${e.loc.column}: ${e.message}`) + '\n' +
-        chalk.gray(e.frame) + '\n\n');
+    if (!/doesn't export names expected by/.test(e.message)
+      && e.code !== "UNUSED_EXTERNAL_IMPORT") {
+      console.warn(!e.loc ? e : (e.plugin ? `[${e.plugin}] ` : "") +
+        e.loc.file + "\n" +
+        chalk.red(`${e.loc.line}:${e.loc.column}: ${e.message}`) + "\n" +
+        chalk.gray(e.frame) + "\n\n");
     }
   },
   // shimMissingExports: true,
@@ -57,53 +59,69 @@ export default {
               imports.push(`import r${i} from ${m[2]};\n`);
               rules.push(`${m[1]}:r${i},\n`);
             }
-            return imports.join('') + pre + rules.join('') + post;
+            return imports.join("") + pre + rules.join("") + post;
           },
         },
         {
           match: /stylelint[\\/]lib[\\/]rules[\\/]function-no-unknown[\\/]index\.mjs/,
-          test: "JSON.parse(fs.readFileSync(functionsListPath.toString(), 'utf8'))",
-          replace: fs.readFileSync(resolvePkg('css-functions-list/index.json'), 'utf8'),
+          test: /(const) require = .+\s+\1 (functionsList) = require.+\s+(\1 (FUNCTIONS) = )\[\s+\.\.\.\2,([\s\S]+?\n)];/,
+          replace: "$3" + fs.readFileSync(resolvePkg("css-functions-list/index.json"), "utf8") +
+            ";\n$4.push($5);",
         },
         {
           match: /stylelint[\\/]lib[\\/]formatters[\\/]index\.mjs/,
           test: /(const formatters = {\s*).*?('[^']+?jsonFormatter\.mjs').+\n};/s,
-          replace: 'import json from $2; $1json};',
+          replace: "import json from $2; $1json};",
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]createStylelint\.mjs/,
+          test: "_fileCache: new FileCache",
+          replace: "_fileCache: null &&",
         },
         {
           match: /stylelint[\\/]lib[\\/]getPostcssResult\.mjs/,
-          test: 'if (filePath) {',
-          replace: 'if (false) {',
+          test: "if (filePath) {",
+          replace: "if (false) {",
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]lintSource\.mjs/,
+          test: "if (options.cache) {",
+          replace: "if (false) {",
         },
         {
           match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
           test: /(const absoluteCodeFilename =)[^;]+/,
-          replace: '$1 false',
+          replace: "$1 false",
         },
         {
           match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
           test: /let fileList = .+?return result;\n}/s,
-          replace: '}',
+          replace: "}",
         },
         {
           match: /postcss[\\/]lib[\\/](input|css-syntax-error)\.js/,
           test: /(let ((path|sourceMap)Available|terminalHighlight|pico) =).*/g,
-          replace: '$1 false;',
+          replace: "$1 false;",
         },
         {
           match: /postcss[\\/]lib[\\/]css-syntax-error\.js/,
-          test: 'showSourceCode(color) {',
-          replace: 'showSourceCode() {let color=false;',
+          test: "showSourceCode(color) {",
+          replace: "showSourceCode() {let color=false;",
         },
         {
           match: /postcss[\\/]lib[\\/]/,
           test: "require('./previous-map')",
-          replace: 'false',
+          replace: "false",
+        },
+        {
+          match: /postcss[\\/]lib[\\/]postcss\\.js/,
+          test: "postcss.fromJSON = fromJSON",
+          replace: "",
         },
         {
           match: /.*/,
           test: /source-map-js[\\/]lib[\\/]source-map-generator\.js/,
-          replace: resolvePkg("./shim/source-map-generator").replace(/\\/g, '/'),
+          replace: resolvePkg("./shim/source-map-generator").replace(/\\/g, "/"),
         },
       ]
     }),
@@ -158,7 +176,7 @@ export default {
         }
         if (/^node:/.test(id)) {
           // we only modify internal id so we can get an error when an external id goes wrong
-          id = id.replace(/^node:/, 'node_');
+          id = id.replace(/^node:/, "node_");
         }
         return `_external_${id}`;
       }
@@ -182,7 +200,7 @@ export default {
         }]
       ]
     }),
-    !DEBUG && terser({
+    !NO_TERSER && terser({
       module: false
     }),
     DEBUG && esInfo({

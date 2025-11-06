@@ -21,7 +21,6 @@ jobs:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: git push --follow-tags
       - uses: notlmn/release-with-changelog@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

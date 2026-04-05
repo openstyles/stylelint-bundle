@@ -1,6 +1,6 @@
 import fs from "fs";
 import cjs from "rollup-plugin-cjs-es";
-import {terser} from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import babel from "@rollup/plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";

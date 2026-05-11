@@ -5,23 +5,35 @@ name: Publish
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
   NPM:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
-          fetch-depth: 20
-      - uses: actions/setup-node@v1
+          fetch-depth: 100
+          fetch-tags: true
+      - uses: actions/setup-node@v6
         with:
-          node-version: 14.x
+          node-version: '>=22.14.0'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci || npm install
-      - uses: fregante/setup-git-user@v1
+          package-manager-cache: false
+
+      - run: npm ci
+      - run: npm test
       - run: npm publish
+
+      - name: Get latest tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Create release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - uses: notlmn/release-with-changelog@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          exclude: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{env.LATEST_TAG}}" --generate-notes --fail-on-no-commits
+        continue-on-error: true

@@ -56,7 +56,7 @@ The resulting bundle:
 To update to a new version of Stylelint:
 
 ```
-npm install stylelint@latest
+npm run update
 npm run build
 ```
 

@@ -50,23 +50,20 @@ export default {
     re({
       patterns: [
         {
-          match: /stylelint[\\/]lib[\\/]rules[\\/]index\.mjs/,
-          test: /(const rules = {\s*)(get '[^']+'\(\) {\s*return import.+?)(\n};\n)/s,
-          replace: (_, pre, main, post) => {
-            const imports = [], rules = [];
-            const rx = /get ('[^']+')\(\) {\s*return import\(('[^']+')\).*?\s*}/sg;
-            for (let i = 1, m; (m = rx.exec(main)); i++) {
-              imports.push(`import r${i} from ${m[2]};\n`);
-              rules.push(`${m[1]}:r${i},\n`);
-            }
-            return imports.join("") + pre + rules.join("") + post;
-          },
+          match: /stylelint[\\/]lib[\\/]cli\.mjs/,
+          test: /if \(isString\(customFormatter.*?} else/s,
+          replace: "",
         },
         {
-          match: /stylelint[\\/]lib[\\/]rules[\\/]function-no-unknown[\\/]index\.mjs/,
-          test: /(const) require = .+\s+\1 (functionsList) = require.+\s+(\1 (FUNCTIONS) = )\[\s+\.\.\.\2,([\s\S]+?\n)];/,
-          replace: "$3" + fs.readFileSync(resolvePkg("css-functions-list/index.json"), "utf8") +
-            ";\n$4.push($5);",
+          match: /stylelint[\\/]lib[\\/]rules[\\/]index\.mjs/,
+          test: /^.*?const ruleNames = \[\s*(.+?\n)\s*].+(export default )rules;\s*$/s,
+          replace: (_, rules, ex) => {
+            let i = 0, res = '{';
+            res = rules.replace(/'(.+?)',/g, (_, a) =>
+              `import r${++i} from '${res += `'${a}': r${i},`, './' + a}';`) +
+              ex + res + '};';
+            return res;
+          },
         },
         {
           match: /stylelint[\\/]lib[\\/]formatters[\\/]index\.mjs/,
@@ -75,12 +72,17 @@ export default {
         },
         {
           match: /stylelint[\\/]lib[\\/]createStylelint\.mjs/,
-          test: "_fileCache: new FileCache",
-          replace: "_fileCache: null &&",
+          test: /_fileCache:.*|_extendExplorer:[\s\S]*?\n\s+}\),|_(augmented|specified)ConfigCache:.*|^import.*?(augmentConfig|FileCache)\.mjs';/g,
+          replace: "",
         },
         {
           match: /stylelint[\\/]lib[\\/]getPostcssResult\.mjs/,
           test: "if (filePath) {",
+          replace: "if (false) {",
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]lintPostcssResult\.mjs/,
+          test: "if (timing.enabled) {",
           replace: "if (false) {",
         },
         {
@@ -90,13 +92,18 @@ export default {
         },
         {
           match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
-          test: /(const absoluteCodeFilename =)[^;]+/,
-          replace: "$1 false",
+          test: /const absoluteCodeFilename =.+?\n\s+}\s+(?=let stylelintResult)|let fileList = .+?return result;\n(?=})|, absoluteCodeFilename|codeFilename: absoluteCodeFilename,/gs,
+          replace: "",
         },
         {
-          match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
-          test: /let fileList = .+?return result;\n}/s,
-          replace: "}",
+          match: /stylelint[\\/]lib[\\/]reference[\\/]atKeywords\.mjs/,
+          test: "'apply',",
+          replace: "'-moz-document', 'apply',",
+        },
+        {
+          match: /stylelint[\\/]lib[\\/]utils[\\/]getFormatter\.mjs/,
+          test: /if \(await pathExists\(formatter.*?dynamicImport.*?} else/s,
+          replace: "",
         },
         {
           match: /postcss[\\/]lib[\\/](input|css-syntax-error)\.js/,
@@ -105,8 +112,8 @@ export default {
         },
         {
           match: /postcss[\\/]lib[\\/]css-syntax-error\.js/,
-          test: "showSourceCode(color) {",
-          replace: "showSourceCode() {let color=false;",
+          test: "if (color",
+          replace: "if (false",
         },
         {
           match: /postcss[\\/]lib[\\/]/,
@@ -156,6 +163,7 @@ export default {
         "*/getConfigForFile",
         "*/isPathIgnored",
         "*/mathMLTags",
+        "*/normalizeFilePath",
         "cosmiconfig",
         "node:os",
         "node:tty",
@@ -191,8 +199,8 @@ export default {
              * Chrome: minimum_chrome_version
              * FF: strict_min_version
              */
-            chrome: "55",
-            firefox: "55"
+            chrome: "86",
+            firefox: "68"
           },
           // https://github.com/facebook/regenerator/issues/276
           include: ["transform-template-literals"],

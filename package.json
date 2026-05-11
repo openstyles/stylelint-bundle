@@ -1,9 +1,9 @@
 {
   "name": "stylelint-bundle",
-  "version": "16.25.0",
+  "version": "17.11.0",
   "description": "Create & provide a bundled version of Stylelint",
   "dependencies": {
-    "stylelint": "16.25.0",
+    "stylelint": "17.11.0",
     "sugarss": "^5.0.0"
   },
   "keywords": [
@@ -50,9 +50,10 @@
     "rollup-plugin-visualizer": "^5.12.0"
   },
   "engines": {
-    "node": ">= 14.5.0"
+    "node": ">= 20.0.0"
   },
   "scripts": {
+    "update": "npm install stylelint@latest --save-exact && node tools/update.js",
     "build": "rollup -c",
     "test": "mocha"
   },

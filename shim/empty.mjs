@@ -8,6 +8,7 @@ export {
   noop as SourceMapConsumer,
   noop as SourceMapGenerator,
   noop as dirname,
+  noop as globby,
   noop as isAbsolute,
   noop as join,
   noop as normalize,

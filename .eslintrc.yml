@@ -222,7 +222,7 @@ rules:
   yoda: [2, never]
 
 overrides:
-  - files: ["test/**"]
+  - files: ["test/**", "tools/**"]
     env:
       browser: true
       node: true

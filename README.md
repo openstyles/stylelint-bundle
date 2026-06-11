@@ -5,14 +5,16 @@ This repository branch modifies Stylelint and creates a bundle:
 * To allow bundling of the code.
 * To reduce the file size of the standalone version.
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
-* The bundle includes the sugarss syntax. It will be used when `config.customSyntax === "sugarss"`.
+* The bundle includes the `postcss-less` and `sugarss` syntaxes:
+  * `stylelint.syntax.less`
+  * `stylelint.syntax.sugarss` + its parser as `stylelint.syntax.sugarss.Parser`
 
 [Demo](https://raw.githack.com/openstyles/stylelint-bundle/master/demo/index.html)
 
 ## Create the bundle
 
 * Download or clone this repository.
-* Run `npm install --legacy-peer-deps` (NPM v7 and newer) or `npm install` (older NPM)
+* Run `npm install`
 * Run `npm run build`.
 * An IIFE bundle `stylelint-bundle.min.js` is created in `dist` directory using the modified version of Stylelint.
 * Run `npm test` for testing.
@@ -23,7 +25,7 @@ The resulting bundle:
 
 * Exposes the standalone version of Stylelint.
 * It does not work from the command line:
-  * All code that uses the node file system (`fs`) or path (`path`) are bypassed or removed.
+  * All code that uses the node file system (`fs`) or path (`path`) is bypassed or removed.
   * All command-line interface (CLI) code is bypassed or removed.
 
 ## Usage
@@ -40,10 +42,10 @@ The resulting bundle:
   stylelint.lint({
     code: "body { color: #000; }",
     config: {
-      customSyntax: 'sugarss',
       rules: { /*...*/ },
       formatter: () => {}
-    }
+    },
+    customSyntax: stylelint.syntax.sugarss,
   }).then(({results}) => {
     console.log(results[0]);
   });

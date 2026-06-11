@@ -1,5 +1,5 @@
 import fs from "fs";
-import cjs from "rollup-plugin-cjs-es";
+import commonjs from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
 import babel from "@rollup/plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
@@ -30,21 +30,13 @@ export default {
   output: [
     {
       dir: "dist",
-      format: "es",
+      format: "umd",
+      name: "stylelint",
       sourcemap: true,
       freeze: false,
       inlineDynamicImports: true
     }
   ],
-  onwarn(e) {
-    if (!/doesn't export names expected by/.test(e.message)
-      && e.code !== "UNUSED_EXTERNAL_IMPORT") {
-      console.warn(!e.loc ? e : (e.plugin ? `[${e.plugin}] ` : "") +
-        e.loc.file + "\n" +
-        chalk.red(`${e.loc.line}:${e.loc.column}: ${e.message}`) + "\n" +
-        chalk.gray(e.frame) + "\n\n");
-    }
-  },
   // shimMissingExports: true,
   plugins: [
     re({
@@ -77,8 +69,11 @@ export default {
         },
         {
           match: /stylelint[\\/]lib[\\/]getPostcssResult\.mjs/,
-          test: "if (filePath) {",
-          replace: "if (false) {",
+          test: regexpFromArray([
+            /import \{ readFile } from .+/,
+            /if \(filePath\) \{/,
+          ]),
+          replace: (s, a) => a ? "" : "if (false) {",
         },
         {
           match: /stylelint[\\/]lib[\\/]lintPostcssResult\.mjs/,
@@ -87,13 +82,27 @@ export default {
         },
         {
           match: /stylelint[\\/]lib[\\/]lintSource\.mjs/,
-          test: "if (options.cache) {",
-          replace: "if (false) {",
+          test: regexpFromArray([
+            /if \(options\.cache\) {/,
+            /config\._resolvedCustomSyntax/,
+            /(?<=const referenceRoots = ).+|import getReferenceRoots.+/,
+          ]),
+          replace: (s, a, b, c) =>
+            a ? "if (false) {" :
+              b ? "stylelint._options.customSyntax"
+                : "[]",
         },
         {
           match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
-          test: /const absoluteCodeFilename =.+?\n\s+}\s+(?=let stylelintResult)|let fileList = .+?return result;\n(?=})|, absoluteCodeFilename|codeFilename: absoluteCodeFilename,/gs,
-          replace: "",
+          test: regexpFromArray([
+            /(?<=const formatterFunction = ).+/,
+            /import (?:getFormatter|pathExists|resolveFilePath|toPath|\{ SuppressionsService) .+/,
+            /const absoluteCodeFilename =[\s\S]+?\n\s+}\s+(?=let stylelintResult)/,
+            /let fileList = [\s\S]+?return result;\n(?=})/,
+            /, absoluteCodeFilename/,
+            /codeFilename: absoluteCodeFilename,/,
+          ]),
+          replace: (s, a) => a ? "()=>''" : "",
         },
         {
           match: /stylelint[\\/]lib[\\/]reference[\\/]atKeywords\.mjs/,
@@ -173,21 +182,9 @@ export default {
     })),
     resolve(),
     json(),
-    cjs({nested: true}),
+    commonjs(),
     inject({
       process: resolvePkg("./shim/process")
-    }),
-    iife({
-      names: id => {
-        if (/stylelint-bundle\.min\.js/.test(id)) {
-          return "stylelint";
-        }
-        if (/^node:/.test(id)) {
-          // we only modify internal id so we can get an error when an external id goes wrong
-          id = id.replace(/^node:/, "node_");
-        }
-        return `_external_${id}`;
-      }
     }),
     babel({
       babelHelpers: "bundled",
@@ -258,4 +255,8 @@ function makeAlias({alias, noop, shim, ...opts}) {
     entries.push({find, replacement: resolvePath(`shim/${name}`)});
   }
   return {entries, ...opts};
+}
+
+function regexpFromArray(arr, flags = "g") {
+  return RegExp(arr.map(rx => `(${rx.source})`).join('|'), flags);
 }

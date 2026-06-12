@@ -1,3 +1,5 @@
+export const SourceMapConsumer = false;
+export const SourceMapGenerator = false;
 function noop() {
   return noop;
 }
@@ -5,8 +7,6 @@ noop.default = noop.catch = noop.env = noop.cwd = noop;
 export default noop;
 
 export {
-  noop as SourceMapConsumer,
-  noop as SourceMapGenerator,
   noop as dirname,
   noop as globby,
   noop as isAbsolute,

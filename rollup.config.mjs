@@ -1,4 +1,3 @@
-import fs from "fs";
 import commonjs from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
 import babel from "@rollup/plugin-babel";
@@ -15,11 +14,12 @@ import {resolve as resolvePath} from "path";
 
 function resolvePkg(id) {
   const url = import.meta.resolve(id);
-  return fileURLToPath(url)
+  return fileURLToPath(url);
 }
 
 const DEBUG = process.env.DEBUG === "1";
 const NO_TERSER = DEBUG || process.env.NO_TERSER === "1";
+const toMatch = new Set();
 
 export default {
   input: {
@@ -43,60 +43,48 @@ export default {
   plugins: [
     re({
       patterns: [
-        {
-          match: /stylelint[\\/]lib[\\/]cli\.mjs/,
-          test: /if \(isString\(customFormatter.*?} else/s,
-          replace: "",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]rules[\\/]index\.mjs/,
-          test: /^.*?const ruleNames = \[\s*(.+?\n)\s*].+(export default )rules;\s*$/s,
-          replace: (_, rules, ex) => {
-            let i = 0, res = '{';
+        ["**/stylelint/lib/rules/index.mjs",
+          /^.*?const ruleNames = \[\s*(.+?\n)\s*].+(export default )rules;\s*$/s,
+          (_, rules, ex) => {
+            let i = 0, res = "{";
             res = rules.replace(/'(.+?)',/g, (_, a) =>
-              `import r${++i} from '${res += `'${a}': r${i},`, './' + a}';`) +
-              ex + res + '};';
+                `import r${++i} from '${res += `'${a}': r${i},`, "./" + a}';`) +
+              ex + res + "};";
             return res;
           },
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]formatters[\\/]index\.mjs/,
-          test: /(const formatters = {\s*).*?('[^']+?jsonFormatter\.mjs').+\n};/s,
-          replace: "import json from $2; $1json};",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]createStylelint\.mjs/,
-          test: /_fileCache:.*|_extendExplorer:[\s\S]*?\n\s+}\),|_(augmented|specified)ConfigCache:.*|^import.*?(augmentConfig|FileCache)\.mjs';/g,
-          replace: "",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]getPostcssResult\.mjs/,
-          test: regexpFromArray([
+        ],
+        ["**/stylelint/lib/formatters/index.mjs",
+          /(const formatters = {\s*).*?('[^']+?jsonFormatter\.mjs').+\n};/s,
+          "import json from $2; $1json};",
+        ],
+        ["**/stylelint/lib/createStylelint.mjs",
+          /_fileCache:.*|_extendExplorer:[\s\S]*?\n\s+}\),|_(augmented|specified)ConfigCache:.*|^import.*?(augmentConfig|FileCache)\.mjs';/g,
+          "",
+        ],
+        ["**/stylelint/lib/getPostcssResult.mjs",
+          regexpFromArray([
             /import \{ readFile } from .+/,
             /if \(filePath\) \{/,
           ]),
-          replace: (s, a) => a ? "" : "if (false) {",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]lintPostcssResult\.mjs/,
-          test: "if (timing.enabled) {",
-          replace: "if (false) {",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]lintSource\.mjs/,
-          test: regexpFromArray([
+          (s, a) => a ? "" : "if (false) {",
+        ],
+        ["**/stylelint/lib/lintPostcssResult.mjs",
+          "if (timing.enabled) {",
+          "if (false) {",
+        ],
+        ["**/stylelint/lib/lintSource.mjs",
+          regexpFromArray([
             /if \(options\.cache\) {/,
             /config\._resolvedCustomSyntax/,
             /(?<=const referenceRoots = ).+|import getReferenceRoots.+/,
           ]),
-          replace: (s, a, b, c) =>
+          (s, a, b, c) =>
             a ? "if (false) {" :
               b ? "stylelint._options.customSyntax"
                 : "[]",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]standalone\.mjs/,
-          test: regexpFromArray([
+        ],
+        ["**/stylelint/lib/standalone.mjs",
+          regexpFromArray([
             /(?<=const formatterFunction = ).+/,
             /import (?:getFormatter|pathExists|resolveFilePath|toPath|\{ SuppressionsService) .+/,
             /const absoluteCodeFilename =[\s\S]+?\n\s+}\s+(?=let stylelintResult)/,
@@ -104,44 +92,25 @@ export default {
             /, absoluteCodeFilename/,
             /codeFilename: absoluteCodeFilename,/,
           ]),
-          replace: (s, a) => a ? "()=>''" : "",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]reference[\\/]atKeywords\.mjs/,
-          test: "'apply',",
-          replace: "'-moz-document', 'apply',",
-        },
-        {
-          match: /stylelint[\\/]lib[\\/]utils[\\/]getFormatter\.mjs/,
-          test: /if \(await pathExists\(formatter.*?dynamicImport.*?} else/s,
-          replace: "",
-        },
-        {
-          match: /postcss[\\/]lib[\\/](input|css-syntax-error)\.js/,
-          test: /(let ((path|sourceMap)Available|terminalHighlight|pico) =).*/g,
-          replace: "$1 false;",
-        },
-        {
-          match: /postcss[\\/]lib[\\/]css-syntax-error\.js/,
-          test: "if (color",
-          replace: "if (false",
-        },
-        {
-          match: /postcss[\\/]lib[\\/]/,
-          test: "require('./previous-map')",
-          replace: "false",
-        },
-        {
-          match: /postcss[\\/]lib[\\/]postcss\\.js/,
-          test: "postcss.fromJSON = fromJSON",
-          replace: "",
-        },
-        {
-          match: /.*/,
-          test: /source-map-js[\\/]lib[\\/]source-map-generator\.js/,
-          replace: resolvePkg("./shim/source-map-generator").replace(/\\/g, "/"),
-        },
-      ]
+          (s, a) => a ? "()=>''" : "",
+        ],
+        ["**/stylelint/lib/reference/atKeywords.mjs",
+          "'apply',",
+          "'-moz-document', 'apply',",
+        ],
+        ["**/postcss/lib/{fromJSON.js,input.js}",
+          "require('./previous-map')",
+          "false",
+        ],
+        ["**/postcss/lib/postcss.js",
+          "postcss.fromJSON = fromJSON",
+          "",
+        ],
+        ["**/postcss-styl/lib/parser/index.js",
+          /(this\.processRawBefore\(\{[^}]+)(parent),\s+}/,
+          "$1},undefined,$2",
+        ],
+      ].map(mustMatch)
     }),
     alias(makeAlias({
       alias: {
@@ -207,6 +176,14 @@ export default {
         }]
       ]
     }),
+    {
+      name: "<re> did not match some files",
+      buildEnd(error) {
+        if (toMatch.size) {
+          throw new Error('\n' + [...toMatch].join(',\n'));
+        }
+      }
+    },
     !NO_TERSER && terser({
       compress: {
         keep_fnames: /^[A-Z]/,
@@ -265,5 +242,18 @@ function makeAlias({alias, noop, shim, ...opts}) {
 }
 
 function regexpFromArray(arr, flags = "g") {
-  return RegExp(arr.map(rx => `(${rx.source})`).join('|'), flags);
+  return RegExp(arr.map(rx => `(${rx.source})`).join("|"), flags);
+}
+
+function mustMatch([match, test, replace]) {
+  toMatch.add(match);
+  return {
+    match,
+    transform(code, id) {
+      const code2 = code.replace(test, replace);
+      if (code2 === code) throw new Error(`${id}: could not find ${test}`);
+      toMatch.delete(match);
+      return code2;
+    }
+  };
 }

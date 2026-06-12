@@ -4,14 +4,12 @@ import terser from "@rollup/plugin-terser";
 import babel from "@rollup/plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";
-import iife from "rollup-plugin-iife";
 import alias from "@rollup/plugin-alias";
 import re from "rollup-plugin-re";
 import analyzer from "rollup-plugin-analyzer";
 import inject from "@rollup/plugin-inject";
 import esInfo from "rollup-plugin-es-info";
 import {visualizer} from "rollup-plugin-visualizer";
-import chalk from "chalk";
 import {fileURLToPath} from "url";
 import {resolve as resolvePath} from "path";
 
@@ -34,9 +32,13 @@ export default {
       name: "stylelint",
       sourcemap: true,
       freeze: false,
-      inlineDynamicImports: true
+      inlineDynamicImports: true,
+      globals: {
+        stylus: "stylus",
+      },
     }
   ],
+  external: ["stylus"],
   // shimMissingExports: true,
   plugins: [
     re({
@@ -206,7 +208,12 @@ export default {
       ]
     }),
     !NO_TERSER && terser({
-      module: false
+      compress: {
+        keep_fnames: /^[A-Z]/,
+      },
+      mangle: {
+        keep_fnames: /^[A-Z]/,
+      },
     }),
     DEBUG && esInfo({
       file: "stats.json"

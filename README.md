@@ -5,9 +5,12 @@ This repository branch modifies Stylelint and creates a bundle:
 * To allow bundling of the code.
 * To reduce the file size of the standalone version.
 * It removes excessive code to make it efficient to use with the [Stylus](https://github.com/openstyles/stylus) browser extension.
-* The bundle includes the `postcss-less` and `sugarss` syntaxes:
-  * `stylelint.syntax.less`
-  * `stylelint.syntax.sugarss` + its parser as `stylelint.syntax.sugarss.Parser`
+* The bundle includes stylelint custom syntaxes for CSS preprocessors:
+  * `stylelint.syntax.less` via `postcss-less`
+  * `stylelint.syntax.stylus` via `postcss-stylus`
+    requires [stylus-lang-bundle](https://github.com/openstyles/stylus-lang-bundle/) to be already loaded in a global `stylus` variable;
+  * `stylelint.syntax.sugarss` via `sugarss`
+     its parser is exposed as `stylelint.syntax.sugarss.Parser` so you can hijack its treatment of semicolons and whatnot.
 
 [Demo](https://raw.githack.com/openstyles/stylelint-bundle/master/demo/index.html)
 

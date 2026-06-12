@@ -4,6 +4,7 @@ const assert = require("assert");
 const stylelint = require("../dist/stylelint-bundle.min");
 
 const CODE_LESS = '#a { top: foo } b { #a() }';
+const CODE_STYLUS = '#a\n  top: foo';
 const cases = [
   {
     id: 'color-no-invalid-hex',
@@ -13,11 +14,22 @@ const cases = [
     cmt: ' without LESS parser',
     code: CODE_LESS,
   }, {
+    id: 'CssSyntaxError',
+    cmt: ' without Stylus parser',
+    code: CODE_STYLUS,
+  }, {
     id: 'declaration-property-value-no-unknown',
     cmt: ' with LESS parser',
     code: CODE_LESS,
     options: {
       customSyntax: stylelint.syntax.less,
+    },
+  }, {
+    id: 'declaration-property-value-no-unknown',
+    cmt: ' with Stylus parser',
+    code: CODE_STYLUS,
+    options: {
+      customSyntax: stylelint.syntax.stylus,
     },
   }
 ];

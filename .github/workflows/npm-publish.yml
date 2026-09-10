@@ -23,9 +23,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      - run: npm ci
-      - run: npm test
-      - run: npm publish
+      - run: pnpm ci
+      - run: pnpm test
+      - run: pnpm publish
 
       - name: Get latest tag
         run: |

@@ -69,7 +69,7 @@ export default {
           (s, a) => a ? "" : "if (false) {",
         ],
         ["**/stylelint/lib/lintPostcssResult.mjs",
-          "if (timing.enabled) {",
+          "if (timing?.enabled) {",
           "if (false) {",
         ],
         ["**/stylelint/lib/lintSource.mjs",

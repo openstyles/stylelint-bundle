@@ -1,6 +1,6 @@
 {
   "name": "stylelint-bundle",
-  "version": "17.13.0-stylus",
+  "version": "17.15.0",
   "description": "Create & provide a bundled version of Stylelint",
   "keywords": [
     "css",
@@ -39,6 +39,7 @@
     "css-functions-list": "^3.3.3",
     "css-tree": "^3.2.1",
     "mocha": "^12.0.0-beta-9.6",
+    "postcss": "^8.5.28",
     "postcss-less": "6.0.0",
     "postcss-styl": "^0.12.3",
     "rollup": "^4.61.1",
@@ -47,24 +48,16 @@
     "rollup-plugin-iife": "^0.8.0",
     "rollup-plugin-re": "^1.0.7",
     "rollup-plugin-visualizer": "^5.14.0",
-    "stylelint": "17.13.0",
+    "stylelint": "17.15.0",
     "sugarss": "^5.0.1"
   },
   "engines": {
-    "node": ">= 20.0.0"
+    "node": ">= 24.0.0"
   },
   "scripts": {
     "update": "npm install stylelint@latest --save-exact && node tools/update.js",
     "build": "rollup -c",
     "test": "mocha"
   },
-  "overrides": {
-    "postcss-styl": {
-      "postcss": "8.5.15",
-      "stylus": "0.64.0"
-    },
-    "rollup-plugin-es-info": {
-      "rollup": "^4.0.0"
-    }
-  }
+  "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b"
 }

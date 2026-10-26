@@ -242,8 +242,8 @@ importers:
         specifier: ^5.14.0
         version: 5.14.0(rollup@4.65.0)
       stylelint:
-        specifier: 17.15.0
-        version: 17.15.0(supports-color@8.1.1)
+        specifier: 17.16.0
+        version: 17.16.0(supports-color@8.1.1)
       sugarss:
         specifier: ^5.0.2
         version: 5.0.2(postcss@8.5.31)
@@ -1800,8 +1800,8 @@ packages:
     resolution: {integrity: sha512-1tB5mhVo7U+ETBKNf92xT4hrQa3pm0MZ0PQvuDnWgAAGHDsfp4lPSpiS6psrSiet87wyGPh9ft6wmhOMQ0hDiw==}
     engines: {node: '>=14.16'}
 
-  stylelint@17.15.0:
-    resolution: {integrity: sha512-mWIkesYQvQjf4Kvdeu9ns0IL8/K/wtjaGxPqsPd6DlLZvaQxGysJsocxUDrBcyHQ5VleAk4uSMat4yMrVED7PA==}
+  stylelint@17.16.0:
+    resolution: {integrity: sha512-ejlWnbJ13x1GU32+zZXa6sYQJsKKkwSdv2B4rAdO3OWdEmvhSJKcXi5pOphQYSzyaj1kXpuGJr7pcMBNfDIuPw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -3498,7 +3498,7 @@ snapshots:
 
   strip-json-comments@5.0.3: {}
 
-  stylelint@17.15.0(supports-color@8.1.1):
+  stylelint@17.16.0(supports-color@8.1.1):
     dependencies:
       '@csstools/css-calc': 3.3.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)

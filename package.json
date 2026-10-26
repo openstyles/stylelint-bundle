@@ -1,6 +1,6 @@
 {
   "name": "stylelint-bundle",
-  "version": "17.15.0",
+  "version": "17.16.0",
   "description": "Create & provide a bundled version of Stylelint",
   "keywords": [
     "css",
@@ -48,7 +48,7 @@
     "rollup-plugin-iife": "^0.8.0",
     "rollup-plugin-re": "^1.0.7",
     "rollup-plugin-visualizer": "^5.14.0",
-    "stylelint": "17.15.0",
+    "stylelint": "17.16.0",
     "sugarss": "^5.0.2"
   },
   "engines": {
